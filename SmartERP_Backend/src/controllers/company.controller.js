@@ -146,7 +146,9 @@ const addToCompany = asyncHandler(async (req, res) => {
 
 const updateCompany = asyncHandler(async (req, res) => {
 
-    const { company_name, email, address, contact_number, state, gst_no, financial_year_start, financial_year_end, company_id } = req.body
+    const { company_name, email, address, contact_number, state, gst_no, financial_year_start, financial_year_end } = req.body
+
+    const {company_id}=req.params
 
     if ([company_name, email, address, contact_number, state, gst_no, financial_year_start, financial_year_end].some((feilds) => !feilds?.trim())) {
         throw new ApiError(400, "All feilds are required")
@@ -155,12 +157,6 @@ const updateCompany = asyncHandler(async (req, res) => {
     const user = req.user.user_id
     if (!user) {
         throw new ApiError(400, "Please login")
-    }
-
-    const checkUser = await pool.query("select * from company_users where user_id=$1 AND company_id=$2 AND role IN ('owner','manager')", [user, company_id])
-
-    if (checkUser.rows.length === 0) {
-        throw new ApiError(400, "Only authorized person can access")
     }
 
     const check_company = await pool.query("SELECT c.company_id, c.company_name FROM companies c join company_users cu on c.company_id = cu.company_id WHERE cu.user_id=$1 and cu.role='owner' and LOWER(TRIM(c.company_name))=LOWER(TRIM($2)) AND c.company_id<>$3", [user, company_name, company_id])
@@ -181,3 +177,5 @@ const updateCompany = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, { result2 }, "Update successful"))
 
 })
+
+export {createCompany,getAllCompany,getCompany,addToCompany,updateCompany}
