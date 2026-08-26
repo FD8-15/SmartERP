@@ -1,5 +1,6 @@
 import pool from "../db/db.js";
 import { ApiError } from "../utils/ApiError";
+import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 const createVoucher = asyncHandler(async (req, res) => {
@@ -20,13 +21,8 @@ const createVoucher = asyncHandler(async (req, res) => {
     try {
         await client.query("begin")
 
-        const result2 = await client.query("select * from suppliers where supplier_id=$1 and company_id=$2", [supplier_id, company_id])
-
-        if (result2.rows.length === 0) {
-            throw new ApiError(400, "Supplier not found")
-        }
-
         let total_amt = 0
+        const processedItems = []
 
         for (const item of items) {
             const { item_id, qty } = item
@@ -37,8 +33,14 @@ const createVoucher = asyncHandler(async (req, res) => {
                 throw new ApiError(400, "item not found")
             }
 
-            const line_total = qty * result3.rows[0].deafult_purchase_price
+            const current_quantity = result3.rows[0].current_quantity
+
+            const line_total = qty * result3.rows[0].default_purchase_price
             total_amt += line_total
+
+            processedItems.push([
+                item_id, qty, line_total, current_quantity
+            ])
         }
 
         const result4 = await client.query("insert into purchase_voucher(company_id,supplier_id,date,total_amt) values($1,$2,$3,$4) returning *", [company_id, supplier_id, date, total_amt])
@@ -46,21 +48,26 @@ const createVoucher = asyncHandler(async (req, res) => {
         const voucher_id = result4.rows[0].voucher_id
 
 
-        for (const item of items) {
-            const { item_id, qty, line_total } = item
+        for (const item of processedItems) {
+            const [item_id, qty, line_total, current_quantity] = item
 
             const result5 = await client.query("insert into purchase_voucher_items(voucher_id,item_id,qty,total_amt) values($1,$2,$3,$4) returning *", [voucher_id, item_id, qty, line_total])
 
-            const result6 = await client.query("select current_quantity from item where item_id=$1 ", [item_id])
-
-            const current_quantity = result6.rows[0].current_quantity + qty
-
-            const result7 = await client.query("update item set current_quantity=$1 where item_id=$2", [current_quantity, item_id])
+            const newCurrentQty = current_quantity + qty
+            const result7 = await client.query("update item set current_quantity=$1 where company_id=$2 and item_id=$3", [newCurrentQty, company_id, item_id])
 
         }
+        await client.query("commit")
 
     } catch (error) {
+        await client.query("rollback")
+        throw error
 
+    } finally {
+        client.release()
     }
 
+    return res
+        .status(201)
+        .json(new ApiResponse(201, "success"))
 })
