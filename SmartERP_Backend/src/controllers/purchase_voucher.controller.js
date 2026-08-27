@@ -81,3 +81,20 @@ const getAllVouchers = asyncHandler(async (req, res) => {
         .status(200)
         .json(new ApiResponse(200, { AllVouchers: result.rows }, "Success"))
 })
+
+const getOneVoucher = asyncHandler(async (req, res) => {
+    const { company_id, voucher_id } = req.params
+
+    //Need to test this in pg admin for differnt endpoints
+    const result = await pool.query("select p.*,i.* from purchase_voucher p join purchase_voucher_items i on p.voucher_id = i.voucher_id where p.company_id=$1 and p.voucher_id=$2 ", [company_id, voucher_id])
+
+    if (result.rows.length === 0) {
+        throw new ApiError(400, "Voucher not found")
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, { Voucher: result.rows }, "Success"))
+
+
+})
