@@ -71,3 +71,13 @@ const createVoucher = asyncHandler(async (req, res) => {
         .status(201)
         .json(new ApiResponse(201, "success"))
 })
+
+const getAllVouchers = asyncHandler(async (req, res) => {
+    const { company_id } = req.params
+
+    const result = await pool.query("select * from purchase_voucher where company_id=$1", [company_id])
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, { AllVouchers: result.rows }, "Success"))
+})
