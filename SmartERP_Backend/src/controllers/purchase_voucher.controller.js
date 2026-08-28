@@ -98,3 +98,28 @@ const getOneVoucher = asyncHandler(async (req, res) => {
 
 
 })
+
+const upadate = asyncHandler(async (req, res) => {
+    const { voucher_id, company_id } = req.params
+    const { qty } = req.body
+
+    const client = await pool.connect();
+    try {
+        await client.query("begin")
+
+        const result = await client.query("select * from purchase_voucher where company_id=$1 and voucher_id=$2", [company_id, voucher_id])
+
+        const result2 = await client.query("select * from purchase_voucher_items where voucher_id=$1", [voucher_id])
+
+        const oldItems = result2.rows.map(item => ({
+            item_id: item.item_id,
+            qty: item.qty,
+            line_total: item.total_amt
+        }))
+
+        
+
+    } catch (error) {
+
+    }
+})
