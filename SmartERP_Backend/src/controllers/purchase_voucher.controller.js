@@ -101,7 +101,7 @@ const getOneVoucher = asyncHandler(async (req, res) => {
 
 const upadate = asyncHandler(async (req, res) => {
     const { voucher_id, company_id } = req.params
-    const { qty } = req.body
+    const { items } = req.body
 
     const client = await pool.connect();
     try {
@@ -109,15 +109,34 @@ const upadate = asyncHandler(async (req, res) => {
 
         const result = await client.query("select * from purchase_voucher where company_id=$1 and voucher_id=$2", [company_id, voucher_id])
 
+        if (result.rows.length === 0) {
+            throw new ApiError(400, "Voucher not found")
+        }
+
         const result2 = await client.query("select * from purchase_voucher_items where voucher_id=$1", [voucher_id])
 
-        const oldItems = result2.rows.map(item => ({
-            item_id: item.item_id,
-            qty: item.qty,
-            line_total: item.total_amt
-        }))
+        const oldItems = result2.rows
 
-        
+        for (const newItems of items) {
+            const { item_id, qty } = newItems
+
+            const oldItem = oldItems.find(
+                oldItem => oldItem.item_id === newItems.item_id
+            )
+
+            if (oldItem) {
+                const difference = newItems.qty - oldItem.qty
+
+                await client.query("update item set current_quantity=current_quantity + $1 where item_id=$2 and company_id=$3", [difference, item_id, company_id])
+            } else {
+
+                current_quantity = await client.query("select current_quantity from item where item_id=$1 and company_id=$2", [item_id, company_id])
+
+                const newCurrentQuantity = current_quantity.rows[0].current_quantity + qty
+
+                await client.query("update item set current_quantity=$1 where item_id=$2 and company_id=$3", [newCurrentQuantity, item_id, company_id])
+            }
+        }
 
     } catch (error) {
 
