@@ -126,17 +126,50 @@ const upadate = asyncHandler(async (req, res) => {
 
             if (oldItem) {
                 const difference = newItems.qty - oldItem.qty
-
                 await client.query("update item set current_quantity=current_quantity + $1 where item_id=$2 and company_id=$3", [difference, item_id, company_id])
+
             } else {
 
-                current_quantity = await client.query("select current_quantity from item where item_id=$1 and company_id=$2", [item_id, company_id])
+                const current_quantity = await client.query("select current_quantity from item where item_id=$1 and company_id=$2", [item_id, company_id])
 
                 const newCurrentQuantity = current_quantity.rows[0].current_quantity + qty
 
                 await client.query("update item set current_quantity=$1 where item_id=$2 and company_id=$3", [newCurrentQuantity, item_id, company_id])
             }
         }
+
+        for (const item of oldItems) {
+            const newItem = items.find(
+                newItem => newItem.item_id === item.oldItems.item_id
+            )
+
+            if (!newItem) {
+                const qty = item.qty
+                const item_id = item.item_id
+                await client.query("update item set current_quantity=current_quantity - $1 where item_id=$2 and company_id=$3", [qty, item_id, company_id])
+            }
+
+        }
+
+        for (const newItem of items) {
+            const oldItem = oldItems.find(
+                oldItem => oldItem.item_id === newItem.item_id
+            )
+            if (oldItem) {
+                const item_id = oldItem.item_id
+                const newQty = newItem.qty
+
+                const purchase_price = await client.query("select default_purchase_price from item where item_id=$1 and company_id=$2", [item_id, company_id])
+
+                const newLineTot = purchase_price.rows[0].default_purchase_price * newQty
+
+                await client.query("update purchase_voucher_items set qty=$1,total_amt=$2 where voucher_id=$3 and item_id=$4", [newQty, newLineTot, voucher_id, item_id])
+            }
+        }
+
+
+
+
 
     } catch (error) {
 
