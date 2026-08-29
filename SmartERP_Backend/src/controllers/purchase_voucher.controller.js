@@ -164,7 +164,17 @@ const upadate = asyncHandler(async (req, res) => {
                 const newLineTot = purchase_price.rows[0].default_purchase_price * newQty
 
                 await client.query("update purchase_voucher_items set qty=$1,total_amt=$2 where voucher_id=$3 and item_id=$4", [newQty, newLineTot, voucher_id, item_id])
+            } else {
+                const item_id = newItem.item_id
+                const newQty = newItem.qty
+
+                const purchase_price = await client.query("select default_purchase_price from item where item_id=$1 and company_id=$2", [item_id, company_id])
+
+                const total_amt = purchase_price.rows[0].default_purchase_price * newQty
+
+                await client.query("insert into purchase_voucher_items(voucher_id,item_id,qty,total_amt) values($1,$2,$3,$4)", [voucher_id, item_id, newQty, total_amt])
             }
+
         }
 
 
