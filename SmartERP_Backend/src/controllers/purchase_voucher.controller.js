@@ -177,6 +177,17 @@ const upadate = asyncHandler(async (req, res) => {
 
         }
 
+        for (const item of oldItems) {
+            const newItem = items.find(
+                newItem => newItem.item_id === item.item_id
+            )
+            if (!newItem) {
+                const item_id = item.item_id
+                await client.query("DELETE FROM purchase_voucher_items where voucher_id=$1 and item_id=$2", [voucher_id, item_id])
+
+            }
+        }
+
 
 
 
