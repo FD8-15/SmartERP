@@ -129,18 +129,15 @@ const upadate = asyncHandler(async (req, res) => {
                 await client.query("update item set current_quantity=current_quantity + $1 where item_id=$2 and company_id=$3", [difference, item_id, company_id])
 
             } else {
-
                 const current_quantity = await client.query("select current_quantity from item where item_id=$1 and company_id=$2", [item_id, company_id])
-
                 const newCurrentQuantity = current_quantity.rows[0].current_quantity + qty
-
                 await client.query("update item set current_quantity=$1 where item_id=$2 and company_id=$3", [newCurrentQuantity, item_id, company_id])
             }
         }
 
         for (const item of oldItems) {
             const newItem = items.find(
-                newItem => newItem.item_id === item.oldItems.item_id
+                newItem => newItem.item_id === item.item_id
             )
 
             if (!newItem) {
@@ -150,7 +147,6 @@ const upadate = asyncHandler(async (req, res) => {
             }
 
         }
-
         for (const newItem of items) {
             const oldItem = oldItems.find(
                 oldItem => oldItem.item_id === newItem.item_id
@@ -158,25 +154,18 @@ const upadate = asyncHandler(async (req, res) => {
             if (oldItem) {
                 const item_id = oldItem.item_id
                 const newQty = newItem.qty
-
                 const purchase_price = await client.query("select default_purchase_price from item where item_id=$1 and company_id=$2", [item_id, company_id])
-
                 const newLineTot = purchase_price.rows[0].default_purchase_price * newQty
-
                 await client.query("update purchase_voucher_items set qty=$1,total_amt=$2 where voucher_id=$3 and item_id=$4", [newQty, newLineTot, voucher_id, item_id])
             } else {
                 const item_id = newItem.item_id
                 const newQty = newItem.qty
-
                 const purchase_price = await client.query("select default_purchase_price from item where item_id=$1 and company_id=$2", [item_id, company_id])
-
                 const total_amt = purchase_price.rows[0].default_purchase_price * newQty
-
                 await client.query("insert into purchase_voucher_items(voucher_id,item_id,qty,total_amt) values($1,$2,$3,$4)", [voucher_id, item_id, newQty, total_amt])
             }
 
         }
-
         for (const item of oldItems) {
             const newItem = items.find(
                 newItem => newItem.item_id === item.item_id
@@ -184,15 +173,27 @@ const upadate = asyncHandler(async (req, res) => {
             if (!newItem) {
                 const item_id = item.item_id
                 await client.query("DELETE FROM purchase_voucher_items where voucher_id=$1 and item_id=$2", [voucher_id, item_id])
-
             }
         }
+        let newTotalAmt = 0
+        for (const newItem of items) {
+            const item_id = newItem.item_id
+            const purchase_price = await client.query("select default_purchase_price from item where item_id=$1 and company_id=$2", [item_id, company_id])
+            const lineTotal = purchase_price.rows[0].default_purchase_price * newItem.qty
+            newTotalAmt = newTotalAmt + lineTotal
+        }
 
-
-
-
+        await client.query("update purchase_voucher set total_amt=$1 where voucher_id=$2 and company_id=$3", [newTotalAmt, voucher_id, company_id])
+        await client.query("commit")
 
     } catch (error) {
-
+        await client.query("rollback")
+        throw error
+    } finally {
+        client.release()
     }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, "success"))
 })
