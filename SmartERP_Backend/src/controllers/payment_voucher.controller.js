@@ -20,7 +20,6 @@ const createPaymentVoucher = asyncHandler(async (req, res) => {
 
         const paidAmt = await client.query("SELECT COALESCE(SUM(amount_paid), 0) AS total_paid FROM payment_voucher WHERE company_id=$1 AND voucher_id=$2 AND supplier_id=$3", [company_id, voucher_id, supplier_id])
 
-
         remainingAmt = purchase_voucher.rows[0].total_amt - paidAmt.rows[0].total_paid
 
         if (paid_amt > remainingAmt) {
@@ -42,3 +41,18 @@ const createPaymentVoucher = asyncHandler(async (req, res) => {
         .status(201)
         .json(new ApiResponse(201, {}))
 })
+
+const getOneVoucher = asyncHandler(async (req, res) => {
+    const { voucher_id, company_id, payment_id, supplier_id } = req.params
+
+    const result = await pool.query("select * from payment_voucher where payment_id=$1 and company_id=$2 and voucher_id=$3 and supplier_id=$4", [payment_id, company_id, voucher_id, supplier_id])
+
+    if (result.rows.length === 0) {
+        throw new ApiError(404, "Voucher not found")
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, { voucher: result.rows[0] }, "Success"))
+})
+
