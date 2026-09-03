@@ -85,3 +85,30 @@ const getAllVouchers = asyncHandler(async (req, res) => {
         .status(200)
         .json(new ApiResponse(200, { voucher: result.rows }, "Success"))
 })
+
+const update = asyncHandler(async (req, res) => {
+    const { amtNew } = req.body
+    const { company_id, voucher_id, supplier_id, payment_id } = req.params
+
+    let remaining
+
+    const purchase_voucher = await client.query("select * from purchase_voucher where company_id=$1 and voucher_id=$2 and supplier_id=$3", [company_id, voucher_id, supplier_id])
+
+    if (purchase_voucher.rows.length === 0) {
+        throw new ApiError(400, "No voucher found")
+    }
+
+    const paidAmt = await client.query("SELECT COALESCE(SUM(amount_paid), 0) AS total_paid FROM payment_voucher WHERE company_id=$1 AND voucher_id=$2 AND supplier_id=$3 and payment_id <> $4", [company_id, voucher_id, supplier_id, payment_id])
+
+    remaining = purchase_voucher.rows[0].total_amt - paidAmt.rows[0].total_paid
+
+    if (amtNew > remaining) {
+        throw new ApiError(400, "Cannot pay more than outstanding amount")
+    }
+
+    const result = await client.query("update payment_voucher set amount_paid=$1 where payment_id=$2 and company_id=$3 and supplier_id=$4 and voucher_id=$5", [amtNew, payment_id, company_id, supplier_id, voucher_id])
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, { voucher: result.rows[0] }, "Success"))
+})
