@@ -23,9 +23,18 @@ const createCustomer = asyncHandler(async (req, res) => {
 
     const result2 = await pool.query("insert into customers(company_id,name,contact_no) values($1,$2,$3)  returning *")
 
-     return res
+    return res
         .status(201)
         .json(new ApiResponse(201, { Customer: result2.rows[0] }, "Customer created successfully"))
+})
 
+const getAllSupplier = asyncHandler(async (req, res) => {
+    const { company_id } = req.params
+
+    const result = await pool.query("select * from customers where company_id=$1 ", [company_id])
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, { suppliers: result.rows }, "customers fetched successful"))
 })
 
