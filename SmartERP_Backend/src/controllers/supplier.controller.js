@@ -61,7 +61,7 @@ const getOneSupplier = asyncHandler(async (req, res) => {
 })
 
 const updateSupplier = asyncHandler(async (req, res) => {
-    const { company_id,supplier_id } = req.params
+    const { company_id, supplier_id } = req.params
     const { name, contact_no, email, address, gst_no } = req.body
 
     if ([name, contact_no, email, address, gst_no]
@@ -73,13 +73,17 @@ const updateSupplier = asyncHandler(async (req, res) => {
         throw new ApiError(400, "All fields are required");
     }
 
-    const result = await pool.query("select * from suppliers where company_id = $1 and gst_no=$2 and supplier_id<>$3", [company_id, gst_no,supplier_id])
+    const result = await pool.query("select * from suppliers where company_id = $1 and gst_no=$2 and supplier_id<>$3", [company_id, gst_no, supplier_id])
 
     if (result.rows.length > 0) {
         throw new ApiError(409, "Already exists")
     }
 
-    const result2 = await pool.query("update suppliers set name=$1,contact_no=$2,email=$3,address=$4,gst_no=$5 where company_id=$6 and supplier_id=$7 returning *", [name, contact_no, email, address, gst_no,company_id,supplier_id])
+    const result2 = await pool.query("update suppliers set name=$1,contact_no=$2,email=$3,address=$4,gst_no=$5 where company_id=$6 and supplier_id=$7 returning *", [name, contact_no, email, address, gst_no, company_id, supplier_id])
+
+    if (result2.rows.length === 0) {
+        throw new ApiError(404, "Customer not found")
+    }
 
     return res
         .status(200)
