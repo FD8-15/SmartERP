@@ -38,7 +38,7 @@ const getAllCustomers = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, { suppliers: result.rows }, "customers fetched successful"))
 })
 
-const getOneCustomers = asyncHandler(async (req, res) => {
+const getOneCustomer = asyncHandler(async (req, res) => {
     const { company_id, customer_id } = req.params
 
     const result = await pool.query("select * from customers where customer_id=$1 and company_id=$2", [customer_id, company_id])
