@@ -28,7 +28,7 @@ const createCustomer = asyncHandler(async (req, res) => {
         .json(new ApiResponse(201, { Customer: result2.rows[0] }, "Customer created successfully"))
 })
 
-const getAllSupplier = asyncHandler(async (req, res) => {
+const getAllCustomers = asyncHandler(async (req, res) => {
     const { company_id } = req.params
 
     const result = await pool.query("select * from customers where company_id=$1 ", [company_id])
@@ -38,3 +38,17 @@ const getAllSupplier = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, { suppliers: result.rows }, "customers fetched successful"))
 })
 
+const getOneCustomers = asyncHandler(async (req, res) => {
+    const { company_id, customer_id } = req.params
+
+    const result = await pool.query("select * from customers where customer_id=$1 and company_id=$2", [customer_id, company_id])
+
+    if (result.rows.length === 0) {
+        throw new ApiError(404, "customer does not exists now!!")
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, { customer: result.rows[0] }, "customer fetched successfully"))
+
+})
