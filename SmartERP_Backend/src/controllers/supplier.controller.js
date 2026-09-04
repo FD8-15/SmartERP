@@ -32,7 +32,6 @@ const createSupplier = asyncHandler(async (req, res) => {
         .json(new ApiResponse(201, { supplier: result2.rows[0] }, "Supplier created successfully"))
 
 
-
 })
 
 const getAllSupplier = asyncHandler(async (req, res) => {
