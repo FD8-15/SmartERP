@@ -28,3 +28,4 @@ const createCustomer = asyncHandler(async (req, res) => {
         .json(new ApiResponse(201, { Customer: result2.rows[0] }, "Customer created successfully"))
 
 })
+
