@@ -71,3 +71,16 @@ const getAllVouchers = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, { Vouchers: result.rows }, "All vouchers fetched successfully"))
 })
 
+const getOneVoucher = asyncHandler(async (req, res) => {
+    const { company_id, sales_id } = req.params
+
+    const result = await pool.query("select s.*,si.* from sales_voucher s join sales_voucher_items si on s.sales_id = si.sales_id where s.company_id=$1 and s.sales_id=$2", [company_id, sales_id])
+
+    if (result.rows.length === 0) {
+        throw new ApiError(400, "Voucher not found")
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, { Vouchers: result.rows[0] }, "voucher fetched successfully"))
+})
