@@ -84,3 +84,88 @@ const getOneVoucher = asyncHandler(async (req, res) => {
         .status(200)
         .json(new ApiResponse(200, { Vouchers: result.rows[0] }, "voucher fetched successfully"))
 })
+
+const update = asyncHandler(async (req, res) => {
+    const { company_id, sales_id } = req.params
+    const { items } = req.body
+
+    const client = await pool.connect()
+
+    try {
+        await client.query("begin")
+
+        const result = await client.query("select * from sales_voucher where sales_id=$1 and company_id=$2", [sales_id, company_id])
+
+        if (result.rows.length === 0) {
+            throw new ApiError(400, "Voucher not found")
+        }
+
+        const result2 = await client.query("select * from sales_voucher_item where sales_id=$1 ", [sales_id])
+
+        const oldItems = result2.rows
+
+        for (const newItem of items) {
+            const { item_id, qty } = newItem
+            const oldItem = oldItems.find(
+                oldItems => oldItems.item_id === newItem.item_id
+            )
+            if (oldItem) {
+                const difference = newItem.qty - oldItem.qty
+                const result4 = await client.query("update items set current_quantity=current_quantity + $1 where item_id=$2 and company_id=$3", [difference, item_id, company_id])
+
+            } else {
+                const result5 = await client.query("select * from items where item_id=$1 and company_id=$2", [item_id, company_id])
+
+                const newCurrentQuantity = result5.rows[0].current_quantity - qty
+
+                await client.query("update items set current_quantity=$1 where item_id=$2 and company_id=$3", [newCurrentQuantity, item_id, company_id])
+            }
+        }
+
+        for (const oldItem of oldItems) {
+            const newItem = items.find(
+                newItem => newItem.item_id === oldItem.item_id
+            )
+            if (!newItem) {
+                const item_id = oldItem.item_id
+                const result6 = await client.query("select * from items where item_id=$1 and company_id=$2", [item_id, company_id])
+                const newCurrentQuantity = result6.rows[0].current_quantity + oldItem.qty
+                await client.query("update items set current_quantity=$1 where item_id=$2 and company_id=$3", [newCurrentQuantity, item_id, company_id])
+            }
+        }
+
+        for (const newItem of items) {
+            const { qty, item_id } = newItem
+            const oldItem = oldItems.find(
+                oldItem => newItem.item_id === oldItem.item_id
+            )
+            if (oldItem) {
+                const item = await client.query("select * from items where item_id=$1 and company_id=$2", [item_id, company_id])
+                const line_tot = item.rows[0].default_selling_price * qty
+                await client.query("update sales_voucher_items set qty=$1,total_amt=$2 where item_id=$3 and sales_id=$4", [qty, line_tot, item_id, sales_id])
+            } else {
+                const result7 = await client.query("select * from items where item_id=$1 and company_id=$2", [item_id, company_id])
+                const line_tot = result7.rows[0].default_selling_price * qty
+                await client.query("insert into sales_voucher_items (sales_id, item_id, qty, total_amt) values($1,$2,$3,$4)", [sales_id, item_id, qty, line_tot])
+            }
+
+        }
+
+        for (const oldItem of oldItems) {
+            const newItem = oldItem.find(
+                newItem => newItem.item_id === oldItem.item_id
+            )
+
+        }
+
+
+
+
+
+    } catch (error) {
+
+    }
+
+
+
+})
