@@ -16,7 +16,7 @@ const createVoucher = asyncHandler(async (req, res) => {
 
         let total_amt = 0
         const proccesedItems = []
-        
+
         for (const item of items) {
             const { item_id, qty } = item
             const result2 = await client.query("select * from items where item_id=$1 and company_id=$2", [item_id, company_id])
@@ -60,3 +60,14 @@ const createVoucher = asyncHandler(async (req, res) => {
         .status(201)
         .json(new ApiResponse(201, "success"))
 })
+
+const getAllVouchers = asyncHandler(async (req, res) => {
+    const { company_id } = req.params
+
+    const result = await pool.query("select * from sales_voucher where company_id=$1", [company_id])
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, { Vouchers: result.rows }, "All vouchers fetched successfully"))
+})
+
