@@ -100,7 +100,7 @@ const update = asyncHandler(async (req, res) => {
             throw new ApiError(400, "Voucher not found")
         }
 
-        const result2 = await client.query("select * from sales_voucher_item where sales_id=$1 ", [sales_id])
+        const result2 = await client.query("select * from sales_voucher_items where sales_id=$1 ", [sales_id])
 
         const oldItems = result2.rows
 
@@ -152,20 +152,35 @@ const update = asyncHandler(async (req, res) => {
         }
 
         for (const oldItem of oldItems) {
-            const newItem = oldItem.find(
+            const newItem = oldItems.find(
                 newItem => newItem.item_id === oldItem.item_id
             )
-
+            if (!newItem) {
+                const item_id = oldItem.item_id
+                await client.query("DELETE FROM sales_voucher_items where sales_id=$1 and item_id=$2", [sales_id, item_id])
+            }
         }
 
+        let total_amt = 0
+        for (const newItem of items) {
+            const item_id = newItem.item_id
+            const result8 = await client.query("select * from items where item_id=$1 and company_id=$2", [item_id, company_id])
+            const line_tot = result8.rows[0].default_selling_price * newItem.qty
+            total_amt = total_amt + line_tot
 
-
-
-
+        }
+        await client.query("update sales_voucher set total_amt=$1 where company_id=$2 and sales_id=$3", [total_amt, company_id, sales_id])
+        await client.query("commit")
     } catch (error) {
 
+        await client.query("rollback")
+        throw error
+    } finally {
+        client.release()
     }
 
-
+    return res
+        .status(200)
+        .json(new ApiResponse(200, "success"))
 
 })
