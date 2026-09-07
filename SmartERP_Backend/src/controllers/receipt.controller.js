@@ -105,7 +105,7 @@ const update = asyncHandler(async (req, res) => {
 const getAllVouchers = asyncHandler(async (req, res) => {
     const { company_id } = req.params
 
-    const result = await pool.query("select * from receipt_voucher where company_id=$1")
+    const result = await pool.query("select * from receipt_voucher where company_id=$1",[company_id])
 
 
     if (result.rows.length === 0) {
@@ -113,7 +113,38 @@ const getAllVouchers = asyncHandler(async (req, res) => {
     }
     return res
         .status(200)
-        .json(new ApiResponse(200, { voucher: result.rows }, "Success"))
+        .json(new ApiResponse(200, { receipt_voucher: result.rows }, "Success"))
 
 })
 
+const getOneVoucher = asyncHandler(async(req,res)=>{
+    const {company_id,receipt_id}=req.params
+
+    
+    const result = await pool.query("select * from receipt_voucher where receipt_id=$1 and company_id=$2", [receipt_id, company_id])
+
+    if (result.rows.length === 0) {
+        throw new ApiError(404, "Voucher not found")
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, { receipt_voucher: result.rows[0] }, "Success"))
+
+})
+
+const getAllReceiptsBySalesVoucher = asyncHandler(async (req, res) => {
+    const { sales_id, company_id, customer_id } = req.params
+
+
+    const result = await pool.query("select * from receipt_voucher where  company_id=$1 and sales_id=$2 and customer_id=$3", [company_id, sales_id, customer_id])
+
+    if (result.rows.length === 0) {
+        throw new ApiError(404, "Vouchers not found")
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, { receipt_voucher: result.rows }, "Success"))
+
+})
