@@ -101,3 +101,19 @@ const update = asyncHandler(async (req, res) => {
         .status(200)
         .json(new ApiResponse(200, "Success"))
 })
+
+const getAllVouchers = asyncHandler(async (req, res) => {
+    const { company_id } = req.params
+
+    const result = await pool.query("select * from receipt_voucher where company_id=$1")
+
+
+    if (result.rows.length === 0) {
+        throw new ApiError(404, "Vouchers not found")
+    }
+    return res
+        .status(200)
+        .json(new ApiResponse(200, { voucher: result.rows }, "Success"))
+
+})
+
