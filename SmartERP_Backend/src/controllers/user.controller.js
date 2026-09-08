@@ -12,7 +12,7 @@ const register = asyncHandler(async (req, res) => {
     const { name, email, password, role } = req.body
 
     if (!name || !email || !password || !role) {
-        throw new ApiError(400, "All feilds are required")
+        throw new ApiError(400, "All fields are required")
     }
 
     const existingUser = await pool.query("select email from users where email=$1", [email])
