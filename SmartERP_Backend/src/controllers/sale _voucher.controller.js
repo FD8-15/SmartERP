@@ -13,7 +13,6 @@ const createVoucher = asyncHandler(async (req, res) => {
         if (result.rows.length === 0) {
             throw new ApiError(400, "No customer found")
         }
-
         let total_amt = 0
         const proccesedItems = []
 
