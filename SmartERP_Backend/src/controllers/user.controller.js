@@ -34,7 +34,7 @@ const login = asyncHandler(async (req, res) => {
     const { email, password } = req.body
 
     if ([email, password].some((field) => !field?.trim())) {
-        throw new ApiError(400, "All filds are required")
+        throw new ApiError(400, "All fields are required")
     }
 
     const result = await pool.query('select user_id,name,email,password,refresh_token from users where email=$1', [email])

@@ -72,3 +72,101 @@ describe("POST /api/v1/users/register", () => {
     expect(response2.body.message).toBe("User already registered");
   })
 })
+
+describe("POST /api/v1/users/login", () => {
+  it("should login ", async () => {
+
+    const email = `vitest_${Date.now()}@example.com`;
+
+    const response1 = await request(app)
+      .post("/api/v1/users/register")
+      .send({
+        name: "Test User",
+        email,
+        password: "password123",
+        role: "employee"
+      });
+
+
+    const response2 = await request(app)
+      .post("/api/v1/users/login")
+      .send({
+        email,
+        password: "password123"
+      });
+
+
+    expect(response1.status).toBe(201)
+    expect(response1.body.data.email).toBe(response2.body.user.email);
+    expect(response2.status).toBe(200);
+    console.log(response2.body);
+    console.log("Login test successful");
+
+
+  })
+})
+
+describe("POST /api/v1/users/login", () => {
+
+  it("should email not found", async () => {
+    const response = await request(app)
+      .post("/api/v1/users/login")
+      .send({
+        email: "Raj",
+        password: "password123"
+      });
+
+    expect(response.status).toBe(400)
+    expect(response.body.message).toBe("User email or password is invalid")
+    console.log(response.body);
+    console.log("test email not found successful");
+
+  })
+})
+
+describe("POST /api/v1/users/login", () => {
+  it("should identify wrong password in login", async () => {
+    const email = `vitest_${Date.now()}@example.com`;
+
+    const response1 = await request(app)
+      .post("/api/v1/users/register")
+      .send({
+        name: "Test User",
+        email,
+        password: "password123",
+        role: "employee"
+      });
+
+
+    const response2 = await request(app)
+      .post("/api/v1/users/login")
+      .send({
+        email,
+        password: "password"
+      });
+
+
+    expect(response1.status).toBe(201)
+    expect(response2.status).toBe(400);
+    expect(response2.body.message).toBe("User email or password is invalid")
+    console.log(response2.body);
+    console.log("incorrect password test successful");
+  })
+})
+
+
+describe("POST /api/v1/users/login", () => {
+  it("should identify missing feilds ", async () => {
+
+    const response = await request(app)
+      .post("/api/v1/users/login")
+      .send({
+        email:"",
+        password: ""
+      });
+    expect(response.status).toBe(400)
+    expect(response.body.message).toBe("All fields are required");
+    console.log(response.body.message)
+    console.log("Login missing feild test successful");
+  })
+})
