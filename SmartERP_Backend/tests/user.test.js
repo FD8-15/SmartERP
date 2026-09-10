@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import request from "supertest";
+import request, { cookies } from "supertest";
 import app from "../src/app.js";
 
 describe("POST /api/v1/users/register", () => {
@@ -90,6 +90,9 @@ describe("POST /api/v1/users/login", () => {
     expect(response1.status).toBe(201)
     expect(response1.body.data.email).toBe(response2.body.user.email);
     expect(response2.status).toBe(200);
+    console.log(response2.headers);
+    expect(response2.headers["set-cookie"].some(cookie => cookie.startsWith("accessToken="))).toBe(true);
+    expect(response2.headers["set-cookie"].some(cookie => cookie.startsWith("refreshToken="))).toBe(true);
     console.log(response2.body);
     console.log("Login test successful");
 
@@ -158,3 +161,4 @@ describe("POST /api/v1/users/login", () => {
     console.log("Login missing feild test successful");
   })
 })
+
