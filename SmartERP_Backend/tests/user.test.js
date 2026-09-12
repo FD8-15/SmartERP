@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeAll, beforeEach } from "vitest";
 import request, { cookies } from "supertest";
 import app from "../src/app.js";
 
@@ -95,8 +95,6 @@ describe("POST /api/v1/users/login", () => {
     expect(response2.headers["set-cookie"].some(cookie => cookie.startsWith("refreshToken="))).toBe(true);
     console.log(response2.body);
     console.log("Login test successful");
-
-
   })
 })
 
@@ -162,3 +160,45 @@ describe("POST /api/v1/users/login", () => {
   })
 })
 
+
+describe("POST /api/v1/users/logout", () => {
+  let email;
+  let cookies;
+  beforeEach(async () => {
+
+    email = `vitest_${Date.now()}@example.com`;
+    const response1 = await request(app)
+      .post("/api/v1/users/register")
+      .send({
+        name: "Test User",
+        email,
+        password: "password123",
+        role: "employee"
+      });
+
+    const response2 = await request(app)
+      .post("/api/v1/users/login")
+      .send({
+        email,
+        password: "password123"
+      });
+    cookies = response2.headers["set-cookie"];
+  })
+
+  it("should logout", async () => {
+    const response = await request(app)
+      .post("/api/v1/users/logout")
+      .set("Cookie", cookies);
+
+    expect(response.status).toBe(200)
+    console.log(response.body);
+  });
+
+  it("should reject logout without authentication", async () => {
+    const response = await request(app)
+      .post("/api/v1/users/logout");
+
+    expect(response.status).toBe(401);
+  });
+
+})
