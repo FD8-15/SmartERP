@@ -13,7 +13,7 @@ const createCompany = asyncHandler(async (req, res) => {
     const user = req.user.user_id
 
     if (!user) {
-        throw new ApiError(400, "Please login")
+        throw new ApiError(401, "Please login")
     }
 
     const result = await pool.query("select count(*) company_id from company_users where user_id=$1 and role='owner' ", [user])
