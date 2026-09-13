@@ -15,11 +15,13 @@ const createCompany = asyncHandler(async (req, res) => {
     if (!user) {
         throw new ApiError(401, "Please login")
     }
-
-    const result = await pool.query("select count(*) company_id from company_users where user_id=$1 and role='owner' ", [user])
+    const result = await pool.query(
+        "SELECT count(*) FROM company_users WHERE user_id=$1 AND role='owner'",
+        [user]
+    );
 
     if (Number(result.rows[0].count) >= 5) {
-        throw new ApiError(400, "Perticular user cannot create more then 5 companies")
+        throw new ApiError(400, "Perticular user cannot create more then 5 companies");
     }
     // This is used to check company is already exists or not 
     const check_company = await pool.query(
@@ -148,7 +150,7 @@ const updateCompany = asyncHandler(async (req, res) => {
 
     const { company_name, email, address, contact_number, state, gst_no, financial_year_start, financial_year_end } = req.body
 
-    const {company_id}=req.params
+    const { company_id } = req.params
 
     if ([company_name, email, address, contact_number, state, gst_no, financial_year_start, financial_year_end].some((feilds) => !feilds?.trim())) {
         throw new ApiError(400, "All feilds are required")
@@ -178,4 +180,4 @@ const updateCompany = asyncHandler(async (req, res) => {
 
 })
 
-export {createCompany,getAllCompany,getCompany,addToCompany,updateCompany}
+export { createCompany, getAllCompany, getCompany, addToCompany, updateCompany }
