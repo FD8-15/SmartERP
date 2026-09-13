@@ -32,30 +32,30 @@ async function createCompany(cookies, companyName) {
     return response;
 }
 
-async function createUserAndLogin(cookie, email) {
+async function createUserAndLogin() {
     let cookies;
-    beforeEach(async () => {
-        const email = `vitest_${Date.now()}@example.com`;
+    const email = `vitest_${Date.now()}@example.com`;
+    await request(app)
+        .post("/api/v1/users/register")
+        .send({
+            name: "Test User",
+            email,
+            password: "password123",
+            role: "owner"
+        });
 
-        await request(app)
-            .post("/api/v1/users/register")
-            .send({
-                name: "Test User",
-                email,
-                password: "password123",
-                role: "owner"
-            });
+    const response2 = await request(app)
+        .post("/api/v1/users/login")
+        .send({
+            email,
+            password: "password123"
+        });
 
-        const response2 = await request(app)
-            .post("/api/v1/users/login")
-            .send({
-                email,
-                password: "password123"
-            });
+    cookies = response2.headers["set-cookie"];
 
-        cookies = response2.headers["set-cookie"];
-    });
+    return { cookies, email };
 }
+
 describe("POST /api/v1/company", () => {
 
     let cookies;
@@ -104,8 +104,6 @@ describe("POST /api/v1/company", () => {
         console.log(response.body)
     });
 
-
-
     it("should reject create company more then 5 times with same user", async (req, res) => {
         await createCompany(cookies, "companyName1");
         await createCompany(cookies, "companyName2");
@@ -120,4 +118,22 @@ describe("POST /api/v1/company", () => {
 
 });
 
+describe("POST /api/v1/company/:company_id/users", () => {
+    it("should add emp to the company ", async (req, res) => {
+        const owner = await createUserAndLogin()
+        const companyResponse = await createCompany(owner.cookies, "companyName8")
+        const emp = await createUserAndLogin()
+        const companyId = companyResponse.body.data.resp.company_id;
+        const response = await request(app)
+            .post(`/api/v1/company/${companyId}/users`)
+            .set("Cookie", owner.cookies)
+            .send({
+                email: emp.email,
+                role: "employee"
+            });
+        expect(response.status).toBe(201);
+        console.log(response.body)
+        console.log("successfull should add emp to the company ")
+    })
+})
 
