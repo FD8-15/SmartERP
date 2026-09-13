@@ -1,3 +1,4 @@
+
 import { describe, it, expect, beforeAll, beforeEach } from "vitest";
 import request, { cookies } from "supertest";
 import app from "../src/app.js";
@@ -11,8 +12,7 @@ describe("POST /api/v1/users/register", () => {
       .send({
         name: "Test User",
         email: email,
-        password: "password123",
-        role: "employee"
+        password: "password123"
       });
 
     console.log(response.body);
@@ -21,7 +21,6 @@ describe("POST /api/v1/users/register", () => {
     expect(response.body.message).toBe("Success");
     expect(response.body.data.name).toBe("Test User");
     expect(response.body.data.email).toBe(email);
-    expect(response.body.data.role).toBe("employee");
   });
 });
 
@@ -33,8 +32,7 @@ describe("POST /api/v1/users/register", () => {
       .send({
         name: "",
         email: "",
-        password: "",
-        role: ""
+        password: ""
       })
     expect(response.status).toBe(400)
     expect(response.body.message).toBe("All fields are required")
@@ -49,8 +47,7 @@ describe("POST /api/v1/users/register", () => {
       .send({
         name: "Test User",
         email,
-        password: "password123",
-        role: "employee"
+        password: "password123"
       });
 
     const response2 = await request(app)
@@ -58,8 +55,7 @@ describe("POST /api/v1/users/register", () => {
       .send({
         name: "Another User",
         email,
-        password: "password123",
-        role: "employee"
+        password: "password123"
       });
     expect(response1.status).toBe(201);
     expect(response2.status).toBe(400);
@@ -76,8 +72,7 @@ describe("POST /api/v1/users/login", () => {
       .send({
         name: "Test User",
         email,
-        password: "password123",
-        role: "employee"
+        password: "password123"
       });
 
     const response2 = await request(app)
@@ -124,8 +119,7 @@ describe("POST /api/v1/users/login", () => {
       .send({
         name: "Test User",
         email,
-        password: "password123",
-        role: "employee"
+        password: "password123"
       });
 
     const response2 = await request(app)
@@ -172,8 +166,7 @@ describe("POST /api/v1/users/logout", () => {
       .send({
         name: "Test User",
         email,
-        password: "password123",
-        role: "employee"
+        password: "password123"
       });
 
     const response2 = await request(app)
@@ -199,6 +192,7 @@ describe("POST /api/v1/users/logout", () => {
       .post("/api/v1/users/logout");
 
     expect(response.status).toBe(401);
-  });
+  })
 
 })
+
