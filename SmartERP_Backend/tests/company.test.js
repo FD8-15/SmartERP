@@ -119,7 +119,7 @@ describe("POST /api/v1/company", () => {
 });
 
 describe("POST /api/v1/company/:company_id/users", () => {
-    it("should add emp to the company ", async (req, res) => {
+    it("should add manager to the company ", async (req, res) => {
         const owner = await createUserAndLogin()
         const companyResponse = await createCompany(owner.cookies, "companyName8")
         const emp = await createUserAndLogin()
@@ -135,5 +135,33 @@ describe("POST /api/v1/company/:company_id/users", () => {
         console.log(response.body)
         console.log("successfull should add emp to the company ")
     })
+
+    it("should add emp by manager to the company ", async (req, res) => {
+        const owner = await createUserAndLogin()
+        const companyResponse = await createCompany(owner.cookies, "companyName8")
+        const manager = await createUserAndLogin()
+        const emp = await createUserAndLogin()
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .post(`/api/v1/company/${companyId}/users`)
+            .set("Cookie", owner.cookies)
+            .send({
+                email: manager.email,
+                role: "manager"
+            });
+        const response2 = await request(app)
+            .post(`/api/v1/company/${companyId}/users`)
+            .set("Cookie", manager.cookies)
+            .send({
+                email: emp.email,
+                role: "employee"
+            });
+        expect(response2.status).toBe(201);
+        console.log(response.body)
+        console.log(response2.body)
+        console.log("successfull should add emp by manager to the company ")
+    })
+
 })
 
