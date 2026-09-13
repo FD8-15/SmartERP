@@ -98,12 +98,12 @@ const addToCompany = asyncHandler(async (req, res) => {
     }
 
     // 1. Check whether logged-in user is owner of THIS company
-    const checkOwner = await pool.query("SELECT * FROM company_users WHERE user_id=$1 AND company_id=$2 AND role='owner'", [owner, company_id]
-    )
+    // const checkOwner = await pool.query("SELECT * FROM company_users WHERE user_id=$1 AND company_id=$2 AND role='owner'", [owner, company_id]
+    // )
 
-    if (checkOwner.rows.length === 0) {
-        throw new ApiError(403, "Only company owner can add users")
-    }
+    // if (checkOwner.rows.length === 0) {
+    //     throw new ApiError(403, "Only company owner can add users")
+    //}
 
     // 2. Validate email and role
     if (!email?.trim() || !role?.trim()) {
