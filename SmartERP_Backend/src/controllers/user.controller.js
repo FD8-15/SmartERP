@@ -9,9 +9,9 @@ import { generateAccessToken, generateRefreshToken } from "../utils/generateToke
 
 const register = asyncHandler(async (req, res) => {
 
-    const { name, email, password, role } = req.body
+    const { name, email, password } = req.body
 
-    if (!name || !email || !password || !role) {
+    if (!name || !email || !password) {
         throw new ApiError(400, "All fields are required")
     }
 
@@ -22,7 +22,7 @@ const register = asyncHandler(async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    const result = await pool.query('insert into users(name,email,password,role) values($1,$2,$3,$4) RETURNING user_id, name, email, role', [name, email, hashedPassword, role])
+    const result = await pool.query('insert into users(name,email,password) values($1,$2,$3) RETURNING user_id, name, email', [name, email, hashedPassword])
 
     return res
         .status(201)
@@ -128,24 +128,24 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 })
 
-const logout = asyncHandler(async(req,res)=>{
+const logout = asyncHandler(async (req, res) => {
     const userId = req.user.user_id
 
-    const result = await pool.query("update users set refresh_token=null where user_id=$1",[userId])
+    const result = await pool.query("update users set refresh_token=null where user_id=$1", [userId])
 
-    const options={
-        httpOnly:true,
-        secure:true
+    const options = {
+        httpOnly: true,
+        secure: true
     }
 
     return res
-    .status(200)
-    .clearCookie("accessToken",options)
-    .clearCookie("refreshToken",options)
-    .json({
-        success:true,
-        message:"User logged out successfully"
-    })
+        .status(200)
+        .clearCookie("accessToken", options)
+        .clearCookie("refreshToken", options)
+        .json({
+            success: true,
+            message: "User logged out successfully"
+        })
 })
 
-export {register,login,logout}
+export { register, login, logout }
