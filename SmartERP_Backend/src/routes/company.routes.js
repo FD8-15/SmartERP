@@ -16,7 +16,7 @@ const router = Router();
 router.post("/", auth, createCompany);
 router.get("/", auth, getAllCompany);
 router.get("/:company_id", auth, company_access, getCompany);
-router.post("/:company_id/users", auth, addToCompany);
+router.post("/:company_id/users", auth, company_access, checkRole("owner", "manager"), addToCompany);
 router.patch("/:company_id", auth, company_access, checkRole("owner"), updateCompany);
 
 

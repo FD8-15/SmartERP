@@ -15,7 +15,7 @@ export const company_access = asyncHandler(async(req,res,next)=>{
 
     if(result.rows.length===0){
 
-        throw new ApiError(400,"You are not authorized")
+        throw new ApiError(403,"You are not authorized")
     }
 
     req.companyRole = result.rows[0].role
