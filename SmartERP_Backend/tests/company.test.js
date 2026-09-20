@@ -163,7 +163,6 @@ describe("POST /api/v1/company/:company_id/users", () => {
         console.log(response2.body)
         console.log("successfull should add emp by manager to the company ")
     })
-
     it("Invalid user cannot add emps in company", async () => {
         const owner = await createUserAndLogin()
         const companyResponse = await createCompany(owner.cookies, "companyName8")
@@ -183,6 +182,35 @@ describe("POST /api/v1/company/:company_id/users", () => {
         console.log(companyId)
         console.log("Successful test of invalid user to create emps")
     })
+
+    it("manager should not add another maneger", async () => {
+        const owner = await createUserAndLogin()
+        const companyResponse = await createCompany(owner.cookies, "companyName8")
+        const manager = await createUserAndLogin()
+        const manager2 = await createUserAndLogin()
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .post(`/api/v1/company/${companyId}/users`)
+            .set("Cookie", owner.cookies)
+            .send({
+                email: manager.email,
+                role: "manager"
+            });
+        const response2 = await request(app)
+            .post(`/api/v1/company/${companyId}/users`)
+            .set("Cookie", manager.cookies)
+            .send({
+                email: manager2.email,
+                role: "manager"
+            });
+        expect(response2.status).toBe(403);
+        console.log(response.body)
+        console.log(response2.body)
+        console.log("successfull should not add manager to manager ")
+    })
+
+    
 
 })
 
