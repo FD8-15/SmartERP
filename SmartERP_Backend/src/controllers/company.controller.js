@@ -117,6 +117,10 @@ const addToCompany = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Invalid role")
     }
 
+    if (req.companyRole === "manager" && newRole === "manager") {
+        throw new ApiError(403, "Manager cannot add another manager")
+    }
+
     // 4. Find the user
     const result = await pool.query("SELECT user_id FROM users WHERE email=$1", [email.trim()]
     )
