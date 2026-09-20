@@ -210,7 +210,33 @@ describe("POST /api/v1/company/:company_id/users", () => {
         console.log("successfull should not add manager to manager ")
     })
 
-    
+    it("employee cannot add users to company", async () => {
+        const owner = await createUserAndLogin()
+        const companyResponse = await createCompany(owner.cookies, "companyName8")
+        const emp1 = await createUserAndLogin()
+        const emp2 = await createUserAndLogin()
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .post(`/api/v1/company/${companyId}/users`)
+            .set("Cookie", owner.cookies)
+            .send({
+                email: emp1.email,
+                role: "employee"
+            });
+        const response2 = await request(app)
+            .post(`/api/v1/company/${companyId}/users`)
+            .set("Cookie", emp1.cookies)
+            .send({
+                email: emp2.email,
+                role: "employee"
+            });
+        expect(response2.status).toBe(403);
+        console.log(response.body)
+        console.log(response2.body)
+        console.log("successfull should not add any emp by emp ")
+    })
+
 
 })
 
