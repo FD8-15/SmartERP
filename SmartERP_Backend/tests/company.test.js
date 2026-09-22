@@ -236,7 +236,32 @@ describe("POST /api/v1/company/:company_id/users", () => {
         console.log(response2.body)
         console.log("successfull should not add any emp by emp ")
     })
-
-
 })
+describe("POST /api/v1/company/:company_id/users", () => {
 
+    it("company owner updates its own company", async () => {
+        const owner = await createUserAndLogin()
+        const companyResponse = await createCompany(owner.cookies, "companyName8")
+        const companyId = companyResponse.body.data.resp.company_id;
+        const email = `vitest_${Date.now()}@example.com`;
+        const response = await request(app)
+            .patch(`/api/v1/company/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                company_id: companyId,
+                company_name: "Updated Company",
+                email,
+                address: "Updated Address",
+                contact_number: "9876543210",
+                state: "Goa",
+                gst_no: "30ABCDE1234F1Z5",
+                financial_year_start: "2026-04-01",
+                financial_year_end: "2027-03-31"
+            });
+        expect(response.status).toBe(200);
+        console.log(response.body)
+        expect(response.body.data.result2.company_name).toBe("Updated Company");
+        expect(response.body.message).toBe("Update successful");
+        console.log("successfull update company by its valid owner")
+    })
+})
