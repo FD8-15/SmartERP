@@ -322,4 +322,19 @@ describe("POST /api/v1/company/:company_id/users", () => {
         expect(response.body.message).toBe("You already have a company with this name");
         console.log("successfully reject company update with same name")
     })
+
+    it("should reject update for inaccessible company", async () => {
+        const owner = await createUserAndLogin()
+        const companyResponse = await createCompany(owner.cookies, "companyName8")
+        const companyId = companyResponse.body.data.resp.company_id;
+        const email = `vitest_${Date.now()}@example.com`;
+        const response = await request(app)
+            .patch(`/api/v1/company/000`)
+            .set("Cookie", owner.cookies)
+        expect(response.status).toBe(403);
+        console.log(response.body)
+        console.log("successfully tested inaccessible company")
+    })
+
+
 })
