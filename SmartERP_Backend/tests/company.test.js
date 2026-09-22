@@ -275,4 +275,26 @@ describe("POST /api/v1/company/:company_id/users", () => {
         console.log(response.body)
         console.log("successfully reject unautheticated user ")
     })
+    it("should reject unthourized user to update company", async () => {
+        const owner = await createUserAndLogin()
+        const manager = await createUserAndLogin()
+        const companyResponse = await createCompany(owner.cookies, "companyName8")
+        const companyId = companyResponse.body.data.resp.company_id;
+        const email = `vitest_${Date.now()}@example.com`;
+        const response1 = await request(app)
+            .post(`/api/v1/company/${companyId}/users`)
+            .set("Cookie", owner.cookies)
+            .send({
+                email: manager.email,
+                role: "manager"
+            });
+        const response2 = await request(app)
+            .patch(`/api/v1/company/${companyId}`)
+            .set("Cookie", manager.cookies)
+        expect(response2.status).toBe(403);
+        console.log(response2.body)
+        console.log("successfully reject unauthorized user")
+    })
+
+
 })
