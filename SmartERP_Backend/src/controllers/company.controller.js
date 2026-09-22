@@ -162,7 +162,7 @@ const updateCompany = asyncHandler(async (req, res) => {
 
     const user = req.user.user_id
     if (!user) {
-        throw new ApiError(400, "Please login")
+        throw new ApiError(401, "Please login")
     }
 
     const check_company = await pool.query("SELECT c.company_id, c.company_name FROM companies c join company_users cu on c.company_id = cu.company_id WHERE cu.user_id=$1 and cu.role='owner' and LOWER(TRIM(c.company_name))=LOWER(TRIM($2)) AND c.company_id<>$3", [user, company_name, company_id])
@@ -174,7 +174,7 @@ const updateCompany = asyncHandler(async (req, res) => {
     const result = await pool.query("update  companies set company_name=$1, email=$2, address=$3, contact_number=$4, state=$5, gst_no=$6, financial_year_start=$7, financial_year_end=$8 where company_id=$9 returning *", [company_name, email, address, contact_number, state, gst_no, financial_year_start, financial_year_end, company_id])
 
     if (result.rows.length === 0) {
-        throw new ApiError(400, "Company not found ")
+        throw new ApiError(404, "Company not found ")
     }
 
     const result2 = result.rows[0]

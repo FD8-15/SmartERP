@@ -264,4 +264,15 @@ describe("POST /api/v1/company/:company_id/users", () => {
         expect(response.body.message).toBe("Update successful");
         console.log("successfull update company by its valid owner")
     })
+    it("should reject unautheticated user", async () => {
+        const owner = await createUserAndLogin()
+        const companyResponse = await createCompany(owner.cookies, "companyName8")
+        const companyId = companyResponse.body.data.resp.company_id;
+        const email = `vitest_${Date.now()}@example.com`;
+        const response = await request(app)
+            .patch(`/api/v1/company/${companyId}`)
+        expect(response.status).toBe(401);
+        console.log(response.body)
+        console.log("successfully reject unautheticated user ")
+    })
 })
