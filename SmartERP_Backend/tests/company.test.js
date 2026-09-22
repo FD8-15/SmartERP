@@ -296,5 +296,30 @@ describe("POST /api/v1/company/:company_id/users", () => {
         console.log("successfully reject unauthorized user")
     })
 
-
+    it("should reject company update with same name", async () => {
+        const owner = await createUserAndLogin()
+        const companyResponse = await createCompany(owner.cookies, "companyName8")
+        const companyResponse2 = await createCompany(owner.cookies, "companyName9")
+        const companyId1 = companyResponse.body.data.resp.company_id;
+        const companyId2 = companyResponse2.body.data.resp.company_id;
+        const email = `vitest_${Date.now()}@example.com`;
+        const response = await request(app)
+            .patch(`/api/v1/company/${companyId2}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                company_id: companyId2,
+                company_name: "companyName8",
+                email,
+                address: "Updated Address",
+                contact_number: "9876543210",
+                state: "Goa",
+                gst_no: "30ABCDE1234F1Z5",
+                financial_year_start: "2026-04-01",
+                financial_year_end: "2027-03-31"
+            });
+        expect(response.status).toBe(400);
+        console.log(response.body)
+        expect(response.body.message).toBe("You already have a company with this name");
+        console.log("successfully reject company update with same name")
+    })
 })
