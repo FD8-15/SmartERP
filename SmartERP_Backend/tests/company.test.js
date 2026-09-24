@@ -40,8 +40,7 @@ async function createUserAndLogin() {
         .send({
             name: "Test User",
             email,
-            password: "password123",
-            role: "owner"
+            password: "password123"
         });
 
     const response2 = await request(app)
@@ -67,8 +66,7 @@ describe("POST /api/v1/company", () => {
             .send({
                 name: "Test User",
                 email,
-                password: "password123",
-                role: "owner"
+                password: "password123"
             });
 
         const response2 = await request(app)
@@ -237,7 +235,7 @@ describe("POST /api/v1/company/:company_id/users", () => {
         console.log("successfull should not add any emp by emp ")
     })
 })
-describe("POST /api/v1/company/:company_id/users", () => {
+describe("POST /api/v1/company/:company_id/updates", () => {
 
     it("company owner updates its own company", async () => {
         const owner = await createUserAndLogin()
