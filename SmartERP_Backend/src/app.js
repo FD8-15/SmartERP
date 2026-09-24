@@ -4,6 +4,9 @@ import express from "express";
 
 import userRouter from "./routes/user.routes.js";
 import companyRouter from "./routes/company.routes.js";
+import unitRouter from "./routes/unit.routes.js";
+import categoryRouter from "./routes/categories.routes.js";
+import itemRouter from "./routes/item.routes.js";
 
 const app = express();
 
@@ -12,6 +15,9 @@ app.use(cookieParser());
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/company", companyRouter);
+app.use("/api/v1/unit", unitRouter);
+app.use("/api/v1/category", categoryRouter);
+app.use("/api/v1/item", itemRouter);
 
 app.use((err, req, res, next) => {
     res.status(err.statusCode || 500).json({

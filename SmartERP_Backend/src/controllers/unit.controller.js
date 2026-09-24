@@ -1,3 +1,8 @@
+import pool from "../db/db.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+
 const createUnit = asyncHandler(async (req, res) => {
     const { unit_name } = req.body;
     const { company_id } = req.params;
@@ -6,11 +11,14 @@ const createUnit = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Unit name is required");
     }
 
+    const unitName = unit_name.trim();
+
     const result = await pool.query(
         `SELECT unit_id
          FROM units
-         WHERE LOWER(TRIM(unit_name)) = LOWER(TRIM($1))`,
-        [unit_name]
+         WHERE company_id = $1
+         AND LOWER(TRIM(unit_name)) = LOWER(TRIM($2))`,
+        [company_id, unitName]
     );
 
     if (result.rows.length > 0) {
@@ -18,10 +26,10 @@ const createUnit = asyncHandler(async (req, res) => {
     }
 
     const result2 = await pool.query(
-        `INSERT INTO units(unit_name)
-         VALUES($1)
+        `INSERT INTO units(company_id, unit_name)
+         VALUES($1, $2)
          RETURNING *`,
-        [unit_name.trim()]
+        [company_id, unitName]
     );
 
     return res
@@ -36,10 +44,14 @@ const createUnit = asyncHandler(async (req, res) => {
 });
 
 const getUnits = asyncHandler(async (req, res) => {
+    const { company_id } = req.params;
+
     const result = await pool.query(
         `SELECT *
          FROM units
-         ORDER BY unit_name ASC`
+         WHERE company_id = $1
+         ORDER BY unit_name ASC`,
+        [company_id]
     );
 
     if (result.rows.length === 0) {
@@ -58,13 +70,14 @@ const getUnits = asyncHandler(async (req, res) => {
 });
 
 const getOneUnit = asyncHandler(async (req, res) => {
-    const { unit_id } = req.params;
+    const { company_id, unit_id } = req.params;
 
     const result = await pool.query(
         `SELECT *
          FROM units
-         WHERE unit_id=$1`,
-        [unit_id]
+         WHERE unit_id = $1
+         AND company_id = $2`,
+        [unit_id, company_id]
     );
 
     if (result.rows.length === 0) {
@@ -81,20 +94,24 @@ const getOneUnit = asyncHandler(async (req, res) => {
             )
         );
 });
+
 const updateUnit = asyncHandler(async (req, res) => {
     const { unit_name } = req.body;
-    const { unit_id } = req.params;
+    const { company_id, unit_id } = req.params;
 
     if (!unit_name?.trim()) {
         throw new ApiError(400, "Unit name is required");
     }
 
+    const unitName = unit_name.trim();
+
     const result = await pool.query(
         `SELECT unit_id
          FROM units
-         WHERE LOWER(TRIM(unit_name)) = LOWER(TRIM($1))
-         AND unit_id <> $2`,
-        [unit_name, unit_id]
+         WHERE company_id = $1
+         AND LOWER(TRIM(unit_name)) = LOWER(TRIM($2))
+         AND unit_id <> $3`,
+        [company_id, unitName, unit_id]
     );
 
     if (result.rows.length > 0) {
@@ -103,10 +120,11 @@ const updateUnit = asyncHandler(async (req, res) => {
 
     const result2 = await pool.query(
         `UPDATE units
-         SET unit_name=$1
-         WHERE unit_id=$2
+         SET unit_name = $1
+         WHERE company_id = $2
+         AND unit_id = $3
          RETURNING *`,
-        [unit_name.trim(), unit_id]
+        [unitName, company_id, unit_id]
     );
 
     if (result2.rows.length === 0) {
@@ -123,3 +141,10 @@ const updateUnit = asyncHandler(async (req, res) => {
             )
         );
 });
+
+export {
+    createUnit,
+    getUnits,
+    getOneUnit,
+    updateUnit
+};

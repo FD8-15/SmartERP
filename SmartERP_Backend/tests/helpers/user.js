@@ -1,3 +1,6 @@
+import request from "supertest";
+import app from "../../src/app.js";
+
 async function createUser() {
     let cookies;
     const email = `vitest_${Date.now()}@example.com`;
@@ -35,3 +38,4 @@ async function createUserAndLogin() {
         cookies: login.cookies
     }
 }
+export {createUser,loginUser,createUserAndLogin}

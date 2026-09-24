@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { createItem, getItems, getOneItem, update } from "../controllers/item.controller.js";
-import { auth } from "../middlewares/auth.middleware.js";
+import { auth } from "../middlewares/jwt.js";
 import { company_access } from "../middlewares/company_access.middleware.js";
 import { checkRole } from "../middlewares/checkRole.middleware.js";
 

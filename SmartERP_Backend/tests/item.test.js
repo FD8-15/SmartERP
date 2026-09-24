@@ -1,0 +1,37 @@
+import { createUser, loginUser, createUserAndLogin } from "./helpers/user.js";
+import { describe, it, expect, beforeAll, beforeEach } from "vitest";
+import request from "supertest";
+import app from "../src/app.js";
+import { createCompany } from "./helpers/company.js";
+import { createUnit } from "./helpers/unit.js";
+import { createCategory } from "./helpers/category.js";
+
+describe("POST /api/v1/item/:company_id", () => {
+
+    it("should create item", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company10");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const unitResponse = await createUnit(owner.cookies, companyId, "KG");
+        const categoryResponse = await createCategory(owner.cookies, companyId, "Eletronices")
+        const response = await request(app)
+            .post(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse.body.data.category_id,
+                unit_id: unitResponse.body.data.unit_id,
+                gst_percentage: 18,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+        expect(response.status).toBe(201);
+        console.log(response.body)
+        console.log("Successfully tested create items")
+    })
+
+})
