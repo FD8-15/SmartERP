@@ -18,6 +18,22 @@ const createItem = asyncHandler(async (req, res) => {
         throw new ApiError(400, "All fields are required");
     }
 
+    if (gst_percentage < 0) {
+        throw new ApiError(400, "GST percentage cannot be negative");
+    }
+
+    if (default_purchase_price < 0) {
+        throw new ApiError(400, "Purchase price cannot be negative");
+    }
+
+    if (default_selling_price < 0) {
+        throw new ApiError(400, "Selling price cannot be negative");
+    }
+
+    if (current_quantity < 0) {
+        throw new ApiError(400, "Current quantity cannot be negative");
+    }
+
     const result = await pool.query("select * from items where sku=$1 and company_id=$2", [sku, company_id])
 
     if (result.rows.length > 0) {

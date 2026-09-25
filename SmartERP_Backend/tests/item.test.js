@@ -123,5 +123,155 @@ describe("POST /api/v1/item/:company_id", () => {
         console.log(response2.body)
         console.log("Successfully tested same sku in different company")
     })
+    it("should reject item when required field is empty", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company10");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const unitResponse = await createUnit(owner.cookies, companyId, "KG");
+        const categoryResponse = await createCategory(owner.cookies, companyId, "Eletronices")
+        const response = await request(app)
+            .post(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse.body.data.category_id,
+                unit_id: unitResponse.body.data.unit_id,
+                gst_percentage:"" ,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+        expect(response.status).toBe(400);
+        console.log(response.body)
+        console.log("Successfully tested missing feilds")
+    })
+    it("should reject item when required field is whitespaced", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company10");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const unitResponse = await createUnit(owner.cookies, companyId, "KG");
+        const categoryResponse = await createCategory(owner.cookies, companyId, "Eletronices")
+        const response = await request(app)
+            .post(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse.body.data.category_id,
+                unit_id: unitResponse.body.data.unit_id,
+                gst_percentage:"      " ,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+        expect(response.status).toBe(400);
+        console.log(response.body)
+        console.log("Successfully tested missing feilds")
+    })
+    it("should reject item when required field is invalid numeric values", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company10");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const unitResponse = await createUnit(owner.cookies, companyId, "KG");
+        const categoryResponse = await createCategory(owner.cookies, companyId, "Eletronices")
+        const response = await request(app)
+            .post(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse.body.data.category_id,
+                unit_id: unitResponse.body.data.unit_id,
+                gst_percentage:-10,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+        expect(response.status).toBe(400);
+        console.log(response.body)
+        console.log("Successfully tested invalid feilds")
+    })
+    it("should reject item when default_purchase_price is invalid numeric values", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company10");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const unitResponse = await createUnit(owner.cookies, companyId, "KG");
+        const categoryResponse = await createCategory(owner.cookies, companyId, "Eletronices")
+        const response = await request(app)
+            .post(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse.body.data.category_id,
+                unit_id: unitResponse.body.data.unit_id,
+                gst_percentage:10,
+                default_purchase_price: -50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+        expect(response.status).toBe(400);
+        console.log(response.body)
+        console.log("Successfully tested invalid feilds")
+    })
+    it("should reject item when default_selling_price is invalid numeric values", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company10");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const unitResponse = await createUnit(owner.cookies, companyId, "KG");
+        const categoryResponse = await createCategory(owner.cookies, companyId, "Eletronices")
+        const response = await request(app)
+            .post(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse.body.data.category_id,
+                unit_id: unitResponse.body.data.unit_id,
+                gst_percentage:10,
+                default_purchase_price: 50000,
+                default_selling_price: -60000,
+                current_quantity: 10,
+                status: "active"
+            })
+        expect(response.status).toBe(400);
+        console.log(response.body)
+        console.log("Successfully tested invalid feilds")
+    })
+    it("should reject item when current_quantity is invalid numeric values", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company10");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const unitResponse = await createUnit(owner.cookies, companyId, "KG");
+        const categoryResponse = await createCategory(owner.cookies, companyId, "Eletronices")
+        const response = await request(app)
+            .post(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse.body.data.category_id,
+                unit_id: unitResponse.body.data.unit_id,
+                gst_percentage:10,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: -10,
+                status: "active"
+            })
+        expect(response.status).toBe(400);
+        console.log(response.body)
+        console.log("Successfully tested invalid feilds")
+    })
 
 })
