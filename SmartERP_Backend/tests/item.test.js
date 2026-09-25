@@ -121,7 +121,7 @@ describe("POST /api/v1/item/:company_id", () => {
         expect(response2.status).toBe(201);
         console.log(response.body)
         console.log(response2.body)
-        console.log("Successfully tested smae sku in different company")
+        console.log("Successfully tested same sku in different company")
     })
 
 })
