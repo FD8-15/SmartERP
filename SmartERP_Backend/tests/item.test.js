@@ -33,5 +33,46 @@ describe("POST /api/v1/item/:company_id", () => {
         console.log(response.body)
         console.log("Successfully tested create items")
     })
+    it("should check duplicate sku", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company10");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const unitResponse = await createUnit(owner.cookies, companyId, "KG");
+        const categoryResponse = await createCategory(owner.cookies, companyId, "Eletronices")
+        const response = await request(app)
+            .post(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: "100-HP",
+                brand: "HP",
+                category_id: categoryResponse.body.data.category_id,
+                unit_id: unitResponse.body.data.unit_id,
+                gst_percentage: 18,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+        const response2 = await request(app)
+            .post(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: "100-HP",
+                brand: "HP",
+                category_id: categoryResponse.body.data.category_id,
+                unit_id: unitResponse.body.data.unit_id,
+                gst_percentage: 18,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+        expect(response.status).toBe(201);
+        expect(response2.status).toBe(409);
+        console.log(response2.body)
+        console.log("Successfully tested duplicate items sku")
+    })
 
 })
