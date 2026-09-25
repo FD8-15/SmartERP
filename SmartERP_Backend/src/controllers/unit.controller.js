@@ -106,11 +106,7 @@ const updateUnit = asyncHandler(async (req, res) => {
     const unitName = unit_name.trim();
 
     const result = await pool.query(
-        `SELECT unit_id
-         FROM units
-         WHERE company_id = $1
-         AND LOWER(TRIM(unit_name)) = LOWER(TRIM($2))
-         AND unit_id <> $3`,
+        `SELECT unit_id FROM units WHERE company_id = $1 AND LOWER(TRIM(unit_name)) = LOWER(TRIM($2)) AND unit_id <> $3`,
         [company_id, unitName, unit_id]
     );
 
@@ -119,11 +115,7 @@ const updateUnit = asyncHandler(async (req, res) => {
     }
 
     const result2 = await pool.query(
-        `UPDATE units
-         SET unit_name = $1
-         WHERE company_id = $2
-         AND unit_id = $3
-         RETURNING *`,
+        `UPDATE units SET unit_name = $1WHERE company_id = $2 AND unit_id = $3 RETURNING *`,
         [unitName, company_id, unit_id]
     );
 
@@ -133,18 +125,9 @@ const updateUnit = asyncHandler(async (req, res) => {
 
     return res
         .status(200)
-        .json(
-            new ApiResponse(
-                200,
-                result2.rows[0],
-                "Unit updated successfully"
-            )
-        );
+        .json(new ApiResponse(200, result2.rows[0], "Unit updated successfully"));
 });
 
 export {
-    createUnit,
-    getUnits,
-    getOneUnit,
-    updateUnit
+    createUnit, getUnits, getOneUnit, updateUnit
 };
