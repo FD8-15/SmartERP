@@ -40,6 +40,17 @@ const createItem = asyncHandler(async (req, res) => {
         throw new ApiError(409, "sku already exists")
     }
 
+    const check_categoty_id = await pool.query("select * from categories where category_id=$1 and company_id=$2", [category_id, company_id])
+
+    if (check_categoty_id.rows.length === 0) {
+        throw new ApiError(400, "category does not exist in company")
+    }
+    const check_unit_id = await pool.query("select * from units where unit_id=$1 and company_id=$2", [unit_id, company_id])
+
+    if (check_unit_id.rows.length === 0) {
+        throw new ApiError(400, "unit does not exist in company")
+    }
+
     const result2 = await pool.query("insert into items(company_id,item_name,sku, brand,category_id,unit_id, gst_percentage, default_purchase_price, default_selling_price, current_quantity, status) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,$11) returning *", [company_id, item_name, sku, brand, category_id, unit_id, gst_percentage, default_purchase_price, default_selling_price, current_quantity, status])
 
     const result3 = result2.rows[0]

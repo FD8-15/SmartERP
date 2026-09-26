@@ -58,6 +58,7 @@ describe("POST /api/v1/users/register", () => {
         password: "password123"
       });
     expect(response1.status).toBe(201);
+    console.log("RESPONSE 1:", response1.status, response1.body);
     expect(response2.status).toBe(400);
     expect(response2.body.message).toBe("User already registered");
   })

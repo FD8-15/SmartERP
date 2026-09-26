@@ -138,7 +138,7 @@ describe("POST /api/v1/item/:company_id", () => {
                 brand: "HP",
                 category_id: categoryResponse.body.data.category_id,
                 unit_id: unitResponse.body.data.unit_id,
-                gst_percentage:"" ,
+                gst_percentage: "",
                 default_purchase_price: 50000,
                 default_selling_price: 60000,
                 current_quantity: 10,
@@ -163,7 +163,7 @@ describe("POST /api/v1/item/:company_id", () => {
                 brand: "HP",
                 category_id: categoryResponse.body.data.category_id,
                 unit_id: unitResponse.body.data.unit_id,
-                gst_percentage:"      " ,
+                gst_percentage: "      ",
                 default_purchase_price: 50000,
                 default_selling_price: 60000,
                 current_quantity: 10,
@@ -188,7 +188,7 @@ describe("POST /api/v1/item/:company_id", () => {
                 brand: "HP",
                 category_id: categoryResponse.body.data.category_id,
                 unit_id: unitResponse.body.data.unit_id,
-                gst_percentage:-10,
+                gst_percentage: -10,
                 default_purchase_price: 50000,
                 default_selling_price: 60000,
                 current_quantity: 10,
@@ -213,7 +213,7 @@ describe("POST /api/v1/item/:company_id", () => {
                 brand: "HP",
                 category_id: categoryResponse.body.data.category_id,
                 unit_id: unitResponse.body.data.unit_id,
-                gst_percentage:10,
+                gst_percentage: 10,
                 default_purchase_price: -50000,
                 default_selling_price: 60000,
                 current_quantity: 10,
@@ -238,7 +238,7 @@ describe("POST /api/v1/item/:company_id", () => {
                 brand: "HP",
                 category_id: categoryResponse.body.data.category_id,
                 unit_id: unitResponse.body.data.unit_id,
-                gst_percentage:10,
+                gst_percentage: 10,
                 default_purchase_price: 50000,
                 default_selling_price: -60000,
                 current_quantity: 10,
@@ -263,7 +263,7 @@ describe("POST /api/v1/item/:company_id", () => {
                 brand: "HP",
                 category_id: categoryResponse.body.data.category_id,
                 unit_id: unitResponse.body.data.unit_id,
-                gst_percentage:10,
+                gst_percentage: 10,
                 default_purchase_price: 50000,
                 default_selling_price: 60000,
                 current_quantity: -10,
@@ -273,5 +273,339 @@ describe("POST /api/v1/item/:company_id", () => {
         console.log(response.body)
         console.log("Successfully tested invalid feilds")
     })
+    it("should reject category of different company", async () => {
+        const owner = await createUserAndLogin();
+        const owner2 = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company10");
+        const companyResponse2 = await createCompany(owner2.cookies, "company11");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const companyId2 = companyResponse2.body.data.resp.company_id;
+        const unitResponse = await createUnit(owner.cookies, companyId, "KG");
+        const unitResponse2 = await createUnit(owner2.cookies, companyId2, "KG");
+        const categoryResponse = await createCategory(owner.cookies, companyId, "Eletronices")
+        const categoryResponse2 = await createCategory(owner2.cookies, companyId2, "Eletronices")
+        const response = await request(app)
+            .post(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse.body.data.category_id,
+                unit_id: unitResponse.body.data.unit_id,
+                gst_percentage: 18,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+        const response2 = await request(app)
+            .post(`/api/v1/item/${companyId2}`)
+            .set("Cookie", owner2.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse2.body.data.category_id,
+                unit_id: unitResponse2.body.data.unit_id,
+                gst_percentage: 18,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+        const response3 = await request(app)
+            .post(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse2.body.data.category_id,
+                unit_id: unitResponse.body.data.unit_id,
+                gst_percentage: 18,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+
+        expect(response.status).toBe(201);
+        expect(response2.status).toBe(201);
+        expect(response3.status).toBe(400);
+        console.log(response.body)
+        console.log(response2.body)
+        console.log(response3.body)
+        console.log("Successfully tested category of different company");
+    })
+    it("should reject unit of different company", async () => {
+        const owner = await createUserAndLogin();
+        const owner2 = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company10");
+        const companyResponse2 = await createCompany(owner2.cookies, "company11");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const companyId2 = companyResponse2.body.data.resp.company_id;
+        const unitResponse = await createUnit(owner.cookies, companyId, "KG");
+        const unitResponse2 = await createUnit(owner2.cookies, companyId2, "KG");
+        const categoryResponse = await createCategory(owner.cookies, companyId, "Eletronices")
+        const categoryResponse2 = await createCategory(owner2.cookies, companyId2, "Eletronices")
+        const response = await request(app)
+            .post(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse.body.data.category_id,
+                unit_id: unitResponse.body.data.unit_id,
+                gst_percentage: 18,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+        const response2 = await request(app)
+            .post(`/api/v1/item/${companyId2}`)
+            .set("Cookie", owner2.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse2.body.data.category_id,
+                unit_id: unitResponse2.body.data.unit_id,
+                gst_percentage: 18,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+        const response3 = await request(app)
+            .post(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse.body.data.category_id,
+                unit_id: unitResponse2.body.data.unit_id,
+                gst_percentage: 18,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+
+        expect(response.status).toBe(201);
+        expect(response2.status).toBe(201);
+        expect(response3.status).toBe(400);
+        console.log(response.body)
+        console.log(response2.body)
+        console.log(response3.body)
+        console.log("Successfully tested unit of different company");
+    })
+    it("should get all items of same company", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company10");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const unitResponse = await createUnit(owner.cookies, companyId, "KG");
+        const categoryResponse = await createCategory(owner.cookies, companyId, "Eletronices")
+        const response = await request(app)
+            .post(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse.body.data.category_id,
+                unit_id: unitResponse.body.data.unit_id,
+                gst_percentage: 18,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+        const response2 = await request(app)
+            .post(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse.body.data.category_id,
+                unit_id: unitResponse.body.data.unit_id,
+                gst_percentage: 18,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+        const response3 = await request(app)
+            .post(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse.body.data.category_id,
+                unit_id: unitResponse.body.data.unit_id,
+                gst_percentage: 18,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+        const response4 = await request(app)
+            .get(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+
+        expect(response.status).toBe(201);
+        expect(response2.status).toBe(201);
+        expect(response3.status).toBe(201);
+        expect(response4.status).toBe(200);
+        console.log(response4.body)
+        console.log("Successfully tested get all items of a company");
+    })
+    it("should get all items of requested  company", async () => {
+        const owner = await createUserAndLogin();
+        const owner2 = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company10");
+        const companyResponse2 = await createCompany(owner2.cookies, "company11");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const companyId2 = companyResponse2.body.data.resp.company_id;
+        const unitResponse = await createUnit(owner.cookies, companyId, "KG");
+        const unitResponse2 = await createUnit(owner2.cookies, companyId2, "KG");
+        const categoryResponse = await createCategory(owner.cookies, companyId, "Eletronices")
+        const categoryResponse2 = await createCategory(owner2.cookies, companyId2, "Eletronices")
+        const response = await request(app)
+            .post(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse.body.data.category_id,
+                unit_id: unitResponse.body.data.unit_id,
+                gst_percentage: 18,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+        const response2 = await request(app)
+            .post(`/api/v1/item/${companyId2}`)
+            .set("Cookie", owner2.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse2.body.data.category_id,
+                unit_id: unitResponse2.body.data.unit_id,
+                gst_percentage: 18,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+        const response3 = await request(app)
+            .post(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse.body.data.category_id,
+                unit_id: unitResponse.body.data.unit_id,
+                gst_percentage: 18,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+        const response4 = await request(app)
+            .get(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+
+        expect(response.status).toBe(201);
+        expect(response2.status).toBe(201);
+        expect(response3.status).toBe(201);
+        expect(response4.status).toBe(200);
+        expect(response4.body.data.length).toBe(2);
+        expect(response4.body.data.every(item => item.company_id === companyId)).toBe(true);
+        console.log(response4.body)
+        console.log("Successfully tested get all items of a company");
+    })
+
+    it("should GET all items when the company has no items", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company10");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const response = await request(app)
+            .get(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+        expect(response.status).toBe(404);
+        expect(response.body.message).toBe("No items found");
+        console.log(response.body)
+        console.log("Successfully tested no items in company")
+    })
+
+    it("should GET one item", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company10");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const unitResponse = await createUnit(owner.cookies, companyId, "KG");
+        const categoryResponse = await createCategory(owner.cookies, companyId, "Eletronices")
+        const response = await request(app)
+            .post(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse.body.data.category_id,
+                unit_id: unitResponse.body.data.unit_id,
+                gst_percentage: 10,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+        const response2 = await request(app)
+            .post(`/api/v1/item/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: `SKU-${Date.now()}`,
+                brand: "HP",
+                category_id: categoryResponse.body.data.category_id,
+                unit_id: unitResponse.body.data.unit_id,
+                gst_percentage: 10,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                current_quantity: 10,
+                status: "active"
+            })
+        const item_id = response2.body.data.result3.item_id
+        console.log("item_id:",item_id)
+        const response3 = await request(app)
+            .get(`/api/v1/item/${companyId}/${item_id}`)
+            .set("Cookie", owner.cookies)
+        expect(response.status).toBe(201);
+        expect(response2.status).toBe(201);
+        expect(response3.status).toBe(200);
+        console.log(response3.body)
+        console.log("Successfully tested get one item")
+    })
+    it("should reject non-existent item", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company10");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const response = await request(app)
+            .get(`/api/v1/item/${companyId}/99999999`)
+            .set("Cookie", owner.cookies)
+        expect(response.status).toBe(404);
+        console.log(response.body)
+        console.log("Successfully tested item not found item")
+    })
 
 })
+
