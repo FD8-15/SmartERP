@@ -7,7 +7,7 @@ import companyRouter from "./routes/company.routes.js";
 import unitRouter from "./routes/unit.routes.js";
 import categoryRouter from "./routes/categories.routes.js";
 import itemRouter from "./routes/item.routes.js";
-
+import supplierRouter from "./routes/supplier.routes.js";
 const app = express();
 
 app.use(express.json());
@@ -18,6 +18,7 @@ app.use("/api/v1/company", companyRouter);
 app.use("/api/v1/unit", unitRouter);
 app.use("/api/v1/category", categoryRouter);
 app.use("/api/v1/item", itemRouter);
+app.use("/api/v1/supplier", supplierRouter);
 
 app.use((err, req, res, next) => {
     console.log("DB ERROR:", err.code, err.constraint, err.message);

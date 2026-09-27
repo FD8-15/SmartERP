@@ -89,3 +89,4 @@ const updateSupplier = asyncHandler(async (req, res) => {
         .status(200)
         .json(new ApiResponse(200, { supplierUpdated: result2.rows[0] }, "Supplier updated successfully"))
 })
+export {createSupplier,getAllSupplier,getOneSupplier,updateSupplier}
