@@ -334,5 +334,94 @@ describe("POST /api/v1/company/:company_id/updates", () => {
         console.log("successfully tested inaccessible company")
     })
 
+    describe("GET /api/v1/company", () => {
+        it("should get all companies of logged in user", async () => {
+            const owner = await createUserAndLogin();
+            const companyResponse = await createCompany(owner.cookies, "companyName10");
+            const companyResponse2 = await createCompany(owner.cookies, "companyName11");
+            const companyId1 = companyResponse.body.data.resp.company_id;
+            const companyId2 = companyResponse2.body.data.resp.company_id;
+            const response = await request(app)
+                .get("/api/v1/company")
+                .set("Cookie", owner.cookies);
+            expect(response.status).toBe(200);
+            expect(response.body.data.result2.length).toBe(2);
+            expect(response.body.data.result2.every(company => company.company_id === companyId1 || company.company_id === companyId2)).toBe(true);
+            console.log(response.body);
+            console.log("Successfully tested get all companies");
+        });
 
+        it("should reject user when no companies are found", async () => {
+            const owner = await createUserAndLogin();
+            const response = await request(app)
+                .get("/api/v1/company")
+                .set("Cookie", owner.cookies);
+            expect(response.status).toBe(400);
+            expect(response.body.message).toBe("No companies found !!");
+            console.log(response.body);
+            console.log("Successfully tested no companies found");
+        });
+        it("should only return companies belonging to logged in user", async () => {
+            const owner = await createUserAndLogin();
+            const owner2 = await createUserAndLogin();
+            const companyResponse = await createCompany(owner.cookies, "companyName12");
+            await createCompany(owner2.cookies, "companyName13");
+            const companyId = companyResponse.body.data.resp.company_id;
+            const response = await request(app)
+                .get("/api/v1/company")
+                .set("Cookie", owner.cookies);
+            expect(response.status).toBe(200);
+            expect(response.body.data.result2.every(company => company.company_id === companyId)).toBe(true);
+            console.log(response.body);
+            console.log("Successfully tested company isolation in get all companies");
+        });
+        it("should reject unauthenticated user", async () => {
+            const response = await request(app)
+                .get("/api/v1/company");
+            expect(response.status).toBe(401);
+            console.log(response.body);
+            console.log("Successfully rejected unauthenticated user");
+        });
+
+    });
+    describe("GET /api/v1/company/:company_id", () => {
+        it("should get one company", async () => {
+            const owner = await createUserAndLogin();
+            const companyResponse = await createCompany(
+                owner.cookies,
+                "companyName14"
+            );
+            const companyId = companyResponse.body.data.resp.company_id;
+            const response = await request(app)
+                .get(`/api/v1/company/${companyId}`)
+                .set("Cookie", owner.cookies);
+            expect(response.status).toBe(200);
+            expect(response.body.data.result2.company_id).toBe(companyId);
+            expect(response.body.data.result2.company_name).toBe("companyName14");
+            console.log(response.body);
+            console.log("Successfully tested get one company");
+        });
+        it("should reject user from accessing another user's company", async () => {
+            const owner = await createUserAndLogin();
+            const owner2 = await createUserAndLogin();
+            const companyResponse = await createCompany(owner.cookies, "companyName15");
+            const companyId = companyResponse.body.data.resp.company_id;
+            const response = await request(app)
+                .get(`/api/v1/company/${companyId}`)
+                .set("Cookie", owner2.cookies);
+            expect(response.status).toBe(403);
+            console.log(response.body);
+            console.log("Successfully tested inaccessible company");
+        });
+        it("should reject unauthenticated user", async () => {
+            const owner = await createUserAndLogin();
+            const companyResponse = await createCompany(owner.cookies, "companyName16");
+            const companyId = companyResponse.body.data.resp.company_id;
+            const response = await request(app)
+                .get(`/api/v1/company/${companyId}`);
+            expect(response.status).toBe(401);
+            console.log(response.body);
+            console.log("Successfully rejected unauthenticated user");
+        });
+    });
 })
