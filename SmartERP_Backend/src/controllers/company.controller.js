@@ -65,7 +65,7 @@ const getAllCompany = asyncHandler(async (req, res) => {
 })
 
 const getCompany = asyncHandler(async (req, res) => {
-    const { company_id } = req.body
+    const { company_id } = req.params
 
     const user = req.user.user_id
 
