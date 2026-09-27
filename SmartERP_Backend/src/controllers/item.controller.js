@@ -105,11 +105,37 @@ const update = asyncHandler(async (req, res) => {
         )) {
         throw new ApiError(400, "All fields are required");
     }
+    const check = await pool.query("select item_id from items where item_id=$1 and company_id=$2", [item_id, company_id])
+
+    if (check.rows.length === 0) {
+        throw new ApiError(404, "Item not exist")
+    }
 
     const result = await pool.query("select * from items where company_id=$1 and sku=$2 and item_id<>$3", [company_id, sku, item_id])
 
     if (result.rows.length > 0) {
         throw new ApiError(409, "Sku already exists")
+    }
+    if (gst_percentage < 0) {
+        throw new ApiError(400, "GST percentage cannot be negative");
+    }
+
+    if (default_purchase_price < 0) {
+        throw new ApiError(400, "Purchase price cannot be negative");
+    }
+
+    if (default_selling_price < 0) {
+        throw new ApiError(400, "Selling price cannot be negative");
+    }
+    const check_categoty_id = await pool.query("select * from categories where category_id=$1 and company_id=$2", [category_id, company_id])
+
+    if (check_categoty_id.rows.length === 0) {
+        throw new ApiError(400, "category does not exist in company")
+    }
+    const check_unit_id = await pool.query("select * from units where unit_id=$1 and company_id=$2", [unit_id, company_id])
+
+    if (check_unit_id.rows.length === 0) {
+        throw new ApiError(400, "unit does not exist in company")
     }
 
     const result2 = await pool.query("update items set item_name=$1, sku=$2, brand=$3, category_id=$4, unit_id=$5, gst_percentage=$6, default_purchase_price=$7,default_selling_price=$8,status=$9 where company_id=$10 and item_id=$11 returning *", [item_name, sku, brand, category_id, unit_id, gst_percentage, default_purchase_price, default_selling_price, status, company_id, item_id])
