@@ -8,6 +8,5 @@ asyncHandler(async(req,res,next)=>{
     if(!allowedRoles.includes(userRole)){
         throw new ApiError(403,"You are not authorized")
     }
-
     next();
 })
