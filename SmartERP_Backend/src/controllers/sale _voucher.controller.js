@@ -88,7 +88,7 @@ const getOneVoucher = asyncHandler(async (req, res) => {
 
     return res
         .status(200)
-        .json(new ApiResponse(200, { Vouchers: result.rows[0] }, "voucher fetched successfully"))
+        .json(new ApiResponse(200, { Vouchers: result.rows }, "voucher fetched successfully"))
 })
 
 const update = asyncHandler(async (req, res) => {
