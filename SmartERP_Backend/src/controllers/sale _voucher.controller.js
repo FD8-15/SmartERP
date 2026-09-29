@@ -1,11 +1,13 @@
 import pool from "../db/db.js";
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 const createVoucher = asyncHandler(async (req, res) => {
     const { company_id, customer_id, contact_no } = req.params
     const { date, items } = req.body
     const client = await pool.connect()
+    let result3
     try {
         await client.query("begin")
         const result = await client.query("select * from customers where contact_no=$1 and company_id=$2", [contact_no, company_id])
@@ -34,7 +36,7 @@ const createVoucher = asyncHandler(async (req, res) => {
             proccesedItems.push([current_quantity, item_id, qty, line_total])
         }
 
-        const result3 = await client.query("insert into sales_voucher(company_id,customer_id,total_amt,date) values($1,$2,$3,$4) returning *", [company_id, customer_id, total_amt, date])
+        result3 = await client.query("insert into sales_voucher(company_id,customer_id,total_amt,date) values($1,$2,$3,$4) returning *", [company_id, customer_id, total_amt, date])
 
         const sales_id = result3.rows[0].sales_id
 
@@ -54,10 +56,9 @@ const createVoucher = asyncHandler(async (req, res) => {
     } finally {
         client.release()
     }
-
     return res
         .status(201)
-        .json(new ApiResponse(201, "success"))
+        .json(new ApiResponse(201, { Voucher: result3.rows[0] }, "Sales voucher created successfully"));
 })
 
 const getAllVouchers = asyncHandler(async (req, res) => {
@@ -73,7 +74,13 @@ const getAllVouchers = asyncHandler(async (req, res) => {
 const getOneVoucher = asyncHandler(async (req, res) => {
     const { company_id, sales_id } = req.params
 
-    const result = await pool.query("select s.*,si.* from sales_voucher s join sales_voucher_items si on s.sales_id = si.sales_id where s.company_id=$1 and s.sales_id=$2", [company_id, sales_id])
+    const result = await pool.query(`
+    select s.sales_id, s.company_id, s.customer_id, s.total_amt as voucher_total_amt, s.date,
+           si.sales_items_id, si.item_id, si.qty, si.total_amt as line_total_amt
+    from sales_voucher s
+    join sales_voucher_items si on s.sales_id = si.sales_id
+    where s.company_id=$1 and s.sales_id=$2
+`, [company_id, sales_id])
 
     if (result.rows.length === 0) {
         throw new ApiError(400, "Voucher not found")
@@ -110,7 +117,7 @@ const update = asyncHandler(async (req, res) => {
             )
             if (oldItem) {
                 const difference = newItem.qty - oldItem.qty
-                const result4 = await client.query("update items set current_quantity=current_quantity + $1 where item_id=$2 and company_id=$3", [difference, item_id, company_id])
+                const result4 = await client.query("update items set current_quantity=current_quantity - $1 where item_id=$2 and company_id=$3", [difference, item_id, company_id])
 
             } else {
                 const result5 = await client.query("select * from items where item_id=$1 and company_id=$2", [item_id, company_id])
@@ -183,3 +190,4 @@ const update = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, "success"))
 
 })
+export { createVoucher, getAllVouchers, getOneVoucher, update }

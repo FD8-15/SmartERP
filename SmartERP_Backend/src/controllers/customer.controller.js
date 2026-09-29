@@ -85,3 +85,4 @@ const update = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, { customerUpdated: result2.rows[0] }, "customer updated successfully"))
 
 })
+export {createCustomer,getAllCustomers,getOneCustomer,update}
