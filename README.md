@@ -1,3 +1,6 @@
+<p align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=26&duration=3000&pause=1000&color=2F81F7&center=true&vCenter=true&width=800&lines=SmartERP+Backend;Node.js+%7C+Express+5+%7C+PostgreSQL;Multi-Company+ERP+REST+API" alt="SmartERP Backend" />
+</p>
 # SmartERP Backend
 
 A multi-company ERP REST API for managing **inventory, purchases, sales, payments, and receipts**. Built with **Node.js, Express 5, and PostgreSQL**, with cookie-based JWT authentication and per-company role-based access control.
