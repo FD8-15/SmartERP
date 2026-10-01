@@ -206,7 +206,8 @@ The database schema is defined in:
 ```text
 src/db/schema.sql
 ```
-<img width="1000" alt="SmartERP Database Architecture" src="https://github.com/user-attachments/assets/ef0264de-a4c4-4056-be22-aa6ed0a4fedc" />
+<img width="1000" alt="SmartERP Database Architecture" src="https://github.com/user-attachments/assets/a807a636-3908-4b81-8273-a91b9e0dbaa1" />
+
 
 ### Main Tables
 
