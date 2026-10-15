@@ -77,18 +77,34 @@ const getAllPaymentsByPurchaseVoucher = asyncHandler(async (req, res) => {
 const getAllVouchers = asyncHandler(async (req, res) => {
     const { company_id } = req.params
     const { search } = req.query
-    const page = Math.max(1, Number(req.query.page) || 1);
-    const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 10));
-    const offset = (page - 1) * limit;
+
+    const page = Math.max(1, Number(req.query.page) || 1)
+    const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 10))
+    const offset = (page - 1) * limit
     const searchPattern = search ? `%${search}%` : null
 
-    const result = await pool.query("select * from payment_voucher where company_id=$1 and ($2::text IS NULL OR voucher_number::text ILIKE $2) order by voucher_id ASC limit $3 offset $4", [company_id, searchPattern, limit, offset])
+    const result = await pool.query(
+        "SELECT * FROM payment_voucher WHERE company_id=$1 AND ($2::text IS NULL OR voucher_id::text ILIKE $2) ORDER BY payment_id ASC LIMIT $3 OFFSET $4",
+        [company_id, searchPattern, limit, offset]
+    )
+
+    if (result.rows.length === 0) {
+        throw new ApiError(404, "Vouchers not found")
+    }
 
     return res
         .status(200)
-        .json(new ApiResponse(200, { vouchers: result.rows, pagination: { page, limit } }, "Vouchers fetched successfully"))
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    voucher: result.rows,
+                    pagination: { page, limit }
+                },
+                "Vouchers fetched successfully"
+            )
+        )
 })
-
 
 const update = asyncHandler(async (req, res) => {
     const { amtNew } = req.body

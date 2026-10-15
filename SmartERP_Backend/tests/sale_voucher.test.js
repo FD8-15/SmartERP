@@ -473,6 +473,7 @@ describe("GET /api/v1/sales-voucher/:company_id/:sales_id", () => {
 
         expect(result.response.status).toBe(201);
         expect(response.status).toBe(200);
+        console.dir(response.body, { depth: null });
         expect(response.body.data.Vouchers.sales_id).toBe(salesId);
 
         console.log(response.body);

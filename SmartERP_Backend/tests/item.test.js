@@ -529,8 +529,8 @@ describe("POST /api/v1/item/:company_id", () => {
         expect(response2.status).toBe(201);
         expect(response3.status).toBe(201);
         expect(response4.status).toBe(200);
-        expect(response4.body.data.length).toBe(2);
-        expect(response4.body.data.every(item => item.company_id === companyId)).toBe(true);
+        expect(response4.body.data.items.length).toBe(2);
+        expect(response4.body.data.items.every(item => item.company_id === companyId)).toBe(true);
         console.log(response4.body)
         console.log("Successfully tested get all items of a company");
     })

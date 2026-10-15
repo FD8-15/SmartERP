@@ -423,8 +423,7 @@ describe("GET /api/v1/receipt-voucher/:company_id/:sales_id/:customer_id", () =>
         console.log("Successfully tested all receipts for sales voucher");
     });
 
-
-    it("should reject when sales voucher has no receipts", async () => {
+    it("should return empty receipts when sales voucher has no receipts", async () => {
         const owner = await createUserAndLogin();
         const companyResponse = await createCompany(owner.cookies, "company25");
         const companyId = companyResponse.body.data.resp.company_id;
@@ -436,13 +435,16 @@ describe("GET /api/v1/receipt-voucher/:company_id/:sales_id/:customer_id", () =>
             .get(`/api/v1/receipt-voucher/${companyId}/${salesId}/${result.customerId}`)
             .set("Cookie", owner.cookies);
 
-        expect(response.status).toBe(404);
-        expect(response.body.message).toBe("Vouchers not found");
+        expect(response.status).toBe(200);
+        expect(response.body.data.receipt_voucher).toHaveLength(0);
+        expect(response.body.data.pagination).toEqual({
+            page: 1,
+            limit: 10
+        });
 
         console.log(response.body);
-        console.log("Successfully tested no receipts");
+        console.log("Successfully tested empty receipts");
     });
-
 
     it("should reject unauthenticated user", async () => {
         const response = await request(app)

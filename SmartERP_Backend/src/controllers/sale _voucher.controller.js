@@ -90,21 +90,14 @@ const getAllVouchers = asyncHandler(async (req, res) => {
 const getOneVoucher = asyncHandler(async (req, res) => {
     const { company_id, sales_id } = req.params
 
-    const result = await pool.query(`
-    select s.sales_id, s.company_id, s.customer_id, s.total_amt as voucher_total_amt, s.date,
-           si.sales_items_id, si.item_id, si.qty, si.total_amt as line_total_amt
-    from sales_voucher s
-    join sales_voucher_items si on s.sales_id = si.sales_id
-    where s.company_id=$1 and s.sales_id=$2
-`, [company_id, sales_id])
+    const result = await pool.query("SELECT s.sales_id, s.company_id, s.customer_id, s.total_amt AS voucher_total_amt, s.date, si.sales_items_id, si.item_id, si.qty, si.total_amt AS line_total_amt FROM sales_voucher s JOIN sales_voucher_items si ON s.sales_id=si.sales_id WHERE s.company_id=$1 AND s.sales_id=$2 ORDER BY si.sales_items_id ASC", [company_id, sales_id])
 
-    if (result.rows.length === 0) {
-        throw new ApiError(400, "Voucher not found")
-    }
+    if (result.rows.length === 0) throw new ApiError(400, "Voucher not found")
 
-    return res
-        .status(200)
-        .json(new ApiResponse(200, { Vouchers: result.rows }, "voucher fetched successfully"))
+    const firstRow = result.rows[0]
+    const voucher = { sales_id: firstRow.sales_id, company_id: firstRow.company_id, customer_id: firstRow.customer_id, voucher_total_amt: firstRow.voucher_total_amt, date: firstRow.date, items: result.rows.map(row => ({ sales_items_id: row.sales_items_id, item_id: row.item_id, qty: row.qty, line_total_amt: row.line_total_amt })) }
+
+    return res.status(200).json(new ApiResponse(200, { Vouchers: voucher }, "Voucher fetched successfully"))
 })
 
 const update = asyncHandler(async (req, res) => {

@@ -469,6 +469,8 @@ describe("GET /api/v1/payment-voucher/:company_id", () => {
             .get(`/api/v1/payment-voucher/${companyId}`)
             .set("Cookie", owner.cookies);
 
+        console.log("GET PAYMENTS STATUS:", response2.status);
+        console.dir(response2.body, { depth: null });
         expect(response.status).toBe(201);
         expect(response2.status).toBe(200);
         expect(response2.body.data.voucher.length).toBe(1);
