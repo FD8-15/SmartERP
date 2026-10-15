@@ -226,7 +226,7 @@ export default function ItemList() {
       key: "status",
       align: "center",
       render: (row) => (
-        <span className={`badge ${row.status === "active" ? "badge-primary" : "badge-neutral"}`}>
+        <span className={`badge ${row.status === "active" ? "badge-primary" : "badge-danger"}`}>
           {row.status}
         </span>
       ),
