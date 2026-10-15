@@ -36,12 +36,16 @@ const createSupplier = asyncHandler(async (req, res) => {
 
 const getAllSupplier = asyncHandler(async (req, res) => {
     const { company_id } = req.params
-
-    const result = await pool.query("select * from suppliers where company_id=$1 ", [company_id])
+    const { search } = req.query
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 10));
+    const offset = (page - 1) * limit;
+    const searchPattern = search ? `%${search}%` : null
+    const result = await pool.query("select * from suppliers where company_id=$1 and ($2::text IS NULL OR name ILIKE $2) order by supplier_id ASC limit $3 offset $4", [company_id, searchPattern, limit, offset])
 
     return res
         .status(200)
-        .json(new ApiResponse(200, { suppliers: result.rows }, "Suppliers fetched successful"))
+        .json(new ApiResponse(200, { suppliers: result.rows, pagination: { page, limit } }, "suppliers fetched successfully"))
 })
 
 const getOneSupplier = asyncHandler(async (req, res) => {
@@ -89,4 +93,4 @@ const updateSupplier = asyncHandler(async (req, res) => {
         .status(200)
         .json(new ApiResponse(200, { supplierUpdated: result2.rows[0] }, "Supplier updated successfully"))
 })
-export {createSupplier,getAllSupplier,getOneSupplier,updateSupplier}
+export { createSupplier, getAllSupplier, getOneSupplier, updateSupplier }

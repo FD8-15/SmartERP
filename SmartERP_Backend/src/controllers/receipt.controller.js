@@ -144,17 +144,27 @@ const getOneVoucher = asyncHandler(async (req, res) => {
 const getAllReceiptsBySalesVoucher = asyncHandler(async (req, res) => {
     const { sales_id, company_id, customer_id } = req.params
 
+    const page = Math.max(1, Number(req.query.page) || 1)
+    const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 10))
+    const offset = (page - 1) * limit
 
-    const result = await pool.query("select * from receipt_vouchers where company_id=$1 and sales_id=$2 and customer_id=$3", [company_id, sales_id, customer_id])
-
-    if (result.rows.length === 0) {
-        throw new ApiError(404, "Vouchers not found")
-    }
+    const result = await pool.query(
+        "SELECT * FROM receipt_vouchers WHERE company_id=$1 AND sales_id=$2 AND customer_id=$3 ORDER BY receipt_id ASC LIMIT $4 OFFSET $5",
+        [company_id, sales_id, customer_id, limit, offset]
+    )
 
     return res
         .status(200)
-        .json(new ApiResponse(200, { receipt_voucher: result.rows }, "Success"))
-
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    receipt_voucher: result.rows,
+                    pagination: { page, limit }
+                },
+                "Success"
+            )
+        )
 })
 
 export { createReceipt, getAllReceiptsBySalesVoucher, getAllVouchers, getOneVoucher, update }

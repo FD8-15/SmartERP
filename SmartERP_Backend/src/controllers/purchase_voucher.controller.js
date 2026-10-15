@@ -78,21 +78,30 @@ const createVoucher = asyncHandler(async (req, res) => {
         .json(new ApiResponse(201, { voucher: result4.rows[0], items: voucherItems }, "Purchase voucher created successfully"))
 })
 
+
 const getAllVouchers = asyncHandler(async (req, res) => {
     const { company_id } = req.params
+    const { search } = req.query
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 10));
+    const offset = (page - 1) * limit;
+    const searchPattern = search ? `%${search}%` : null
 
-    const result = await pool.query("select * from purchase_voucher where company_id=$1", [company_id])
+   const result = await pool.query(
+    "SELECT * FROM purchase_voucher WHERE company_id=$1 AND ($2::text IS NULL OR supplier_id::text ILIKE $2) ORDER BY voucher_id ASC LIMIT $3 OFFSET $4",
+    [company_id, searchPattern, limit, offset]
+)
 
     return res
         .status(200)
-        .json(new ApiResponse(200, { AllVouchers: result.rows }, "Success"))
+        .json(new ApiResponse(200, { AllVouchers: result.rows, pagination: { page, limit } }, "Success"))
 })
 
 const getOneVoucher = asyncHandler(async (req, res) => {
     const { company_id, voucher_id } = req.params
 
     //Need to test this in pg admin for differnt endpoints
-   const result = await pool.query(`
+    const result = await pool.query(`
     select p.voucher_id, p.company_id, p.supplier_id, p.date, p.total_amt as voucher_total_amt,
            i.voucher_item_id, i.item_id, i.qty, i.total_amt as line_total_amt
     from purchase_voucher p

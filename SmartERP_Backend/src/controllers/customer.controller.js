@@ -29,15 +29,23 @@ const createCustomer = asyncHandler(async (req, res) => {
         .json(new ApiResponse(201, { Customer: result2.rows[0] }, "Customer created successfully"))
 })
 
+
 const getAllCustomers = asyncHandler(async (req, res) => {
     const { company_id } = req.params
+    const { search } = req.query
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 10));
+    const offset = (page - 1) * limit;
+    const searchPattern = search ? `%${search}%` : null
 
-    const result = await pool.query("select * from customers where company_id=$1 ", [company_id])
+    const result = await pool.query("select * from customers where company_id=$1 and ($2::text IS NULL OR name ILIKE $2) order by customer_id ASC limit $3 offset $4", [company_id, searchPattern, limit, offset])
 
     return res
         .status(200)
-        .json(new ApiResponse(200, { customers: result.rows }, "customers fetched successful"))
+        .json(new ApiResponse(200, { customers: result.rows, pagination: { page, limit } }, "customers fetched successfully"))
 })
+
+
 
 const getOneCustomer = asyncHandler(async (req, res) => {
     const { company_id, customer_id } = req.params
@@ -85,4 +93,4 @@ const update = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, { customerUpdated: result2.rows[0] }, "customer updated successfully"))
 
 })
-export {createCustomer,getAllCustomers,getOneCustomer,update}
+export { createCustomer, getAllCustomers, getOneCustomer, update }
