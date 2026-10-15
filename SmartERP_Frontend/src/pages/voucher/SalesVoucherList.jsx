@@ -24,7 +24,7 @@ export default function SalesVoucherList() {
 
   // View modal state
   const [viewModalOpen, setViewModalOpen] = useState(false);
-  const [selectedVoucherData, setSelectedVoucherData] = useState(null);
+  const [selectedVoucherData, setSelectedVoucherData] = useState(null); // array of rows (one per item)
   const [viewLoading, setViewLoading] = useState(false);
   const [viewError, setViewError] = useState("");
 
@@ -63,8 +63,9 @@ export default function SalesVoucherList() {
 
     try {
       const details = await getOneSalesVoucher(currentCompanyId, salesId);
-      // details is an object: { sales_id, company_id, customer_id, voucher_total_amt, date, sales_items_id, item_id, qty, line_total_amt }
-      setSelectedVoucherData(details);
+      // Backend returns { Vouchers: [...] }, one row per item. Normalize to an array.
+      const rows = Array.isArray(details) ? details : details?.Vouchers || [];
+      setSelectedVoucherData(rows);
     } catch (err) {
       setViewError(extractErrorMessage(err, "Failed to load sales voucher details"));
     } finally {
@@ -133,7 +134,9 @@ export default function SalesVoucherList() {
     },
   ];
 
-  const custDetails = selectedVoucherData ? customerMap[selectedVoucherData.customer_id] : null;
+  // First row holds the voucher-level fields (repeated on every row)
+  const voucherHeader = selectedVoucherData?.[0];
+  const custDetails = voucherHeader ? customerMap[voucherHeader.customer_id] : null;
 
   return (
     <div>
@@ -164,14 +167,14 @@ export default function SalesVoucherList() {
       <Modal
         isOpen={viewModalOpen}
         onClose={() => setViewModalOpen(false)}
-        title={selectedVoucherData ? `Sales Voucher SV-${selectedVoucherData.sales_id}` : "Sales Voucher Details"}
+        title={voucherHeader ? `Sales Voucher SV-${voucherHeader.sales_id}` : "Sales Voucher Details"}
         size="lg"
       >
         <ErrorMessage message={viewError} onDismiss={() => setViewError("")} />
 
         {viewLoading ? (
           <Loading message="Loading sales voucher..." />
-        ) : selectedVoucherData ? (
+        ) : voucherHeader ? (
           <div>
             <div style={{
               display: "grid",
@@ -184,12 +187,12 @@ export default function SalesVoucherList() {
             }}>
               <div>
                 <div style={{ fontSize: 11, color: "var(--text-muted)" }}>Voucher Date</div>
-                <div className="mono" style={{ fontWeight: 600 }}>{formatDate(selectedVoucherData.date)}</div>
+                <div className="mono" style={{ fontWeight: 600 }}>{formatDate(voucherHeader.date)}</div>
               </div>
 
               <div>
                 <div style={{ fontSize: 11, color: "var(--text-muted)" }}>Customer</div>
-                <div style={{ fontWeight: 600 }}>{custDetails ? custDetails.name : `#${selectedVoucherData.customer_id}`}</div>
+                <div style={{ fontWeight: 600 }}>{custDetails ? custDetails.name : `#${voucherHeader.customer_id}`}</div>
               </div>
 
               <div>
@@ -200,7 +203,7 @@ export default function SalesVoucherList() {
               <div>
                 <div style={{ fontSize: 11, color: "var(--text-muted)" }}>Invoice Total</div>
                 <div className="mono" style={{ fontWeight: 700, color: "var(--primary)", fontSize: 15 }}>
-                  {formatCurrency(selectedVoucherData.voucher_total_amt)}
+                  {formatCurrency(voucherHeader.voucher_total_amt)}
                 </div>
               </div>
             </div>
@@ -219,24 +222,29 @@ export default function SalesVoucherList() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>
-                      <div style={{ fontWeight: 600 }}>
-                        {itemMap[selectedVoucherData.item_id]?.item_name || `Item #${selectedVoucherData.item_id}`}
-                      </div>
-                      {itemMap[selectedVoucherData.item_id]?.sku && (
-                        <div className="mono" style={{ fontSize: 11, color: "var(--text-muted)" }}>
-                          SKU: {itemMap[selectedVoucherData.item_id].sku}
-                        </div>
-                      )}
-                    </td>
-                    <td className="text-center mono" style={{ fontWeight: 600 }}>
-                      {selectedVoucherData.qty}
-                    </td>
-                    <td className="text-right mono" style={{ fontWeight: 600 }}>
-                      {formatCurrency(selectedVoucherData.line_total_amt)}
-                    </td>
-                  </tr>
+                  {selectedVoucherData.map((item) => {
+                    const itemInfo = itemMap[item.item_id];
+                    return (
+                      <tr key={item.sales_items_id}>
+                        <td>
+                          <div style={{ fontWeight: 600 }}>
+                            {itemInfo?.item_name || `Item #${item.item_id}`}
+                          </div>
+                          {itemInfo?.sku && (
+                            <div className="mono" style={{ fontSize: 11, color: "var(--text-muted)" }}>
+                              SKU: {itemInfo.sku}
+                            </div>
+                          )}
+                        </td>
+                        <td className="text-center mono" style={{ fontWeight: 600 }}>
+                          {item.qty}
+                        </td>
+                        <td className="text-right mono" style={{ fontWeight: 600 }}>
+                          {formatCurrency(item.line_total_amt)}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -246,7 +254,7 @@ export default function SalesVoucherList() {
                 Close
               </Button>
               <Link
-                to={`/receipt-vouchers/new?sales_id=${selectedVoucherData.sales_id}&customer_id=${selectedVoucherData.customer_id}&contact_no=${custDetails?.contact_no || ""}`}
+                to={`/receipt-vouchers/new?sales_id=${voucherHeader.sales_id}&customer_id=${voucherHeader.customer_id}&contact_no=${custDetails?.contact_no || ""}`}
                 className="btn btn-primary"
               >
                 Receive Payment
