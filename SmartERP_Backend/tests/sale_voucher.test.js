@@ -532,6 +532,41 @@ describe("GET /api/v1/sales-voucher/:company_id/:sales_id", () => {
         console.log(response.body);
         console.log("Successfully rejected unauthenticated sales voucher request");
     });
+    it("should paginate sales vouchers using the database", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_pagination");
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const createdIds = [];
+
+        for (let i = 0; i < 3; i++) {
+            const result = await createSalesVoucher(owner.cookies, companyId);
+            expect(result.response.status).toBe(201);
+            createdIds.push(result.response.body.data.Voucher.sales_id);
+        }
+
+        const page1 = await request(app)
+            .get(`/api/v1/sales-voucher/${companyId}?page=1&limit=2`)
+            .set("Cookie", owner.cookies);
+
+        const page2 = await request(app)
+            .get(`/api/v1/sales-voucher/${companyId}?page=2&limit=2`)
+            .set("Cookie", owner.cookies);
+
+        expect(page1.status).toBe(200);
+        expect(page1.body.data.Vouchers).toHaveLength(2);
+        expect(page1.body.data.pagination).toEqual({ page: 1, limit: 2 });
+
+        expect(page2.status).toBe(200);
+        expect(page2.body.data.Vouchers).toHaveLength(1);
+        expect(page2.body.data.pagination).toEqual({ page: 2, limit: 2 });
+
+        expect(page1.body.data.Vouchers.map(v => v.sales_id))
+            .toEqual(createdIds.slice(0, 2));
+
+        expect(page2.body.data.Vouchers.map(v => v.sales_id))
+            .toEqual(createdIds.slice(2));
+    });
 
 });
 describe("PATCH /api/v1/sales-voucher/:company_id/:sales_id", () => {
