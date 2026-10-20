@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta
+    name="description"
+    content="SmartERP API documentation for billing, inventory and accounting."
+  >
+
+  <title>SmartERP | API Documentation</title>
+
+  {{{redocHead}}}
+
+  <style>
+    :root {
+      --primary: #0f766e;
+      --primary-dark: #115e59;
+      --navy: #102a43;
+      --text: #243447;
+      --muted: #62748a;
+      --background: #f5f8fc;
+      --border: #e2e8f0;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 24px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--white);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    /* Top navigation */
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 18px 7%;
+      border-bottom: 1px solid var(--border);
+      background: var(--white);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--navy);
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+    }
+
+    .brand-icon {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border-radius: 11px;
+      background: var(--primary);
+      color: var(--white);
+      font-size: 17px;
+      letter-spacing: 0;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .nav-links .nav-cta {
+      padding: 10px 16px;
+      border-radius: 9px;
+      background: var(--primary);
+      color: var(--white);
+    }
+
+    /* Hero section */
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 76px 7% 68px;
+      background:
+        radial-gradient(
+          circle at 90% 10%,
+          rgba(45, 212, 191, 0.17),
+          transparent 30%
+        ),
+        linear-gradient(125deg, #102a43 0%, #163f52 60%, #115e59 100%);
+      color: var(--white);
+    }
+
+    .hero-content {
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #ccfbf1;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #5eead4;
+    }
+
+    .hero h1 {
+      margin: 25px 0 18px;
+      font-size: clamp(38px, 5.5vw, 62px);
+      font-weight: 800;
+      letter-spacing: -2.5px;
+      line-height: 1.08;
+    }
+
+    .hero h1 span {
+      color: #5eead4;
+    }
+
+    .hero-description {
+      max-width: 660px;
+      margin: 0;
+      color: #d4e2ed;
+      font-size: 17px;
+      line-height: 1.85;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 12px 19px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      font-size: 14px;
+      font-weight: 700;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+    }
+
+    .button-primary {
+      background: #5eead4;
+      color: #102a43;
+    }
+
+    .button-primary:hover {
+      background: #99f6e4;
+    }
+
+    .button-secondary {
+      border-color: rgba(255, 255, 255, 0.28);
+      color: var(--white);
+    }
+
+    .button-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Overview cards */
+
+    .overview {
+      padding: 44px 7% 52px;
+      background: var(--background);
+    }
+
+    .overview-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .section-kicker {
+      margin: 0 0 8px;
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .overview h2 {
+      margin: 0;
+      color: var(--navy);
+      font-size: 27px;
+      letter-spacing: -0.8px;
+    }
+
+    .overview-intro {
+      max-width: 650px;
+      margin: 12px 0 27px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      padding: 23px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--white);
+      box-shadow: 0 5px 18px rgba(16, 42, 67, 0.035);
+    }
+
+    .card-icon {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      margin-bottom: 17px;
+      place-items: center;
+      border-radius: 11px;
+      background: #ccfbf1;
+      color: var(--primary-dark);
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .card h3 {
+      margin: 0 0 9px;
+      color: var(--navy);
+      font-size: 16px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .code-label {
+      display: inline-block;
+      padding: 5px 8px;
+      border-radius: 5px;
+      background: #f1f5f9;
+      color: var(--primary-dark);
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* API reference introduction */
+
+    .reference-heading {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 55px 7% 30px;
+    }
+
+    .reference-heading h2 {
+      margin: 0 0 11px;
+      color: var(--navy);
+      font-size: 32px;
+      letter-spacing: -1px;
+    }
+
+    .reference-heading p {
+      max-width: 700px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    /* Footer */
+
+    .footer {
+      padding: 27px 7%;
+      border-top: 1px solid var(--border);
+      background: var(--background);
+      color: var(--muted);
+      text-align: center;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    @media (max-width: 760px) {
+      .topbar {
+        padding: 15px 5%;
+      }
+
+      .nav-links {
+        gap: 12px;
+      }
+
+      .nav-links a:not(.nav-cta) {
+        display: none;
+      }
+
+      .hero {
+        padding: 56px 6% 50px;
+      }
+
+      .hero h1 {
+        letter-spacing: -1.5px;
+      }
+
+      .hero-description {
+        font-size: 15px;
+      }
+
+      .overview {
+        padding: 38px 6%;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .reference-heading {
+        padding: 43px 6% 25px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .button {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="SmartERP documentation home">
+      <span class="brand-icon">S</span>
+      <span>SmartERP</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="#overview">Overview</a>
+      <a href="#api-reference">API Reference</a>
+      <a class="nav-cta" href="#api-reference">Explore API &rarr;</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <div class="eyebrow">
+          <span class="status-dot"></span>
+          Developer Documentation
+        </div>
+
+        <h1>
+          Build with<br>
+          <span>SmartERP API.</span>
+        </h1>
+
+        <p class="hero-description">
+          Explore the API documentation for SmartERP, a billing,
+          inventory, and accounting ERP backend. Discover available
+          endpoints, understand request formats, and learn how the
+          documented operations work.
+        </p>
+
+        <div class="hero-actions">
+          <a class="button button-primary" href="#api-reference">
+            Explore API Reference &rarr;
+          </a>
+
+          <a
+            class="button button-secondary"
+            href="./openapi.json"
+            download="smarterp-openapi.json"
+          >
+            Download OpenAPI JSON
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="overview" id="overview">
+      <div class="overview-inner">
+        <p class="section-kicker">Get started</p>
+
+        <h2>Your guide to the SmartERP API</h2>
+
+        <p class="overview-intro">
+          Use this documentation to explore the endpoints currently
+          described in the API specification. Each operation includes
+          its available parameters, request details, and documented
+          responses.
+        </p>
+
+        <div class="cards">
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">&lt;/&gt;</div>
+
+            <h3>Explore endpoints</h3>
+
+            <p>
+              Browse the available API operations by resource.
+              Expand an operation to inspect its parameters,
+              request body, and response definitions.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">&#128274;</div>
+
+            <h3>Understand access</h3>
+
+            <p>
+              Review each operation's documented authentication
+              and access requirements before making a request.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">{ }</div>
+
+            <h3>Use the specification</h3>
+
+            <p>
+              Download the OpenAPI JSON description to inspect
+              the API contract or use it with compatible
+              development tools.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="api-reference">
+      <div class="reference-heading">
+        <p class="section-kicker">Technical reference</p>
+        <h2>API Reference</h2>
+
+        <p>
+          Browse the documented operations below. Open an endpoint
+          to review its HTTP method, parameters, request schema,
+          and available responses.
+        </p>
+      </div>
+
+      {{{redocHTML}}}
+    </section>
+  </main>
+
+  <footer class="footer">
+    <strong>SmartERP API</strong><br>
+    Billing &middot; Inventory &middot; Accounting<br>
+    API documentation generated from the OpenAPI specification.
+  </footer>
+</body>
+</html>

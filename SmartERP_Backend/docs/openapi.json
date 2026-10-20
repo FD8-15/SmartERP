@@ -1,0 +1,217 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "SmartERP API",
+    "version": "1.0.0",
+    "description": "\n## Overview\n\nSmartERP is a billing, inventory, and accounting ERP backend.\n\nThis API provides endpoints for managing the resources and\noperations supported by SmartERP.\n\n## API Versioning\n\nThe current API uses the `/api/v1` version prefix.\n\n## Using This Documentation\n\nExplore the available endpoints to understand their HTTP methods,\nparameters, request bodies, and responses.\n\nAs the API documentation expands, additional resource groups\nand detailed request and response examples will be included.\n  "
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/api/v1/unit/{company_id}": {
+      "post": {
+        "tags": [
+          "Units"
+        ],
+        "summary": "Create a measurement unit",
+        "operationId": "createUnit",
+        "description": "Creates a new measurement unit for a company in SmartERP.\n\n### Access requirements\n\n- **Authentication:** Required.\n- **Company access:** The user must have access to the specified company.\n- **Required role:** `owner` or `manager`.\n\n### When should I use this endpoint?\n\nUse this endpoint to create a measurement unit that can be used\nwhen managing inventory, such as Kilogram, Litre, or Piece.\n\n### Before sending the request\n\n1. Authenticate the user.\n2. Provide the company ID in the URL.\n3. Send the unit details as a JSON request body.\n",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "company_id",
+            "required": true,
+            "description": "Unique ID of the company in which the unit will be created.",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Details of the measurement unit to create.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Full name of the measurement unit.",
+                    "example": "Kilogram"
+                  },
+                  "short_name": {
+                    "type": "string",
+                    "description": "Short abbreviation used to identify the unit.",
+                    "example": "kg"
+                  }
+                }
+              },
+              "example": {
+                "name": "Kilogram",
+                "short_name": "kg"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "**Unit created successfully.**\n\nThe server accepted the request and created the new measurement unit.\n"
+          },
+          "400": {
+            "description": "**Invalid request data.**\n\nCheck that the submitted unit details satisfy the API's validation rules.\n"
+          },
+          "401": {
+            "description": "**Authentication required.**\n\nProvide valid authentication credentials before accessing this endpoint.\n"
+          },
+          "403": {
+            "description": "**Access denied.**\n\nThe authenticated user may not have access to this company\nor may not have the required `owner` or `manager` role.\n"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get all units for a company",
+        "description": "Retrieves units belonging to the specified company.",
+        "tags": [
+          "Units"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "company_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the company"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Units retrieved successfully"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Access to the company denied"
+          }
+        }
+      }
+    },
+    "/api/v1/unit/{company_id}/{unit_id}": {
+      "get": {
+        "summary": "Get a specific unit",
+        "description": "Retrieves one unit belonging to the specified company.",
+        "tags": [
+          "Units"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "company_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the company"
+          },
+          {
+            "in": "path",
+            "name": "unit_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the unit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Unit retrieved successfully"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Access to the company denied"
+          },
+          "404": {
+            "description": "Unit not found"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a unit",
+        "description": "Updates a unit belonging to a company. Requires owner or manager permissions.",
+        "tags": [
+          "Units"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "company_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the company"
+          },
+          {
+            "in": "path",
+            "name": "unit_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the unit"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Kilogram"
+                  },
+                  "short_name": {
+                    "type": "string",
+                    "example": "kg"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Unit updated successfully"
+          },
+          "400": {
+            "description": "Invalid request data"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Access denied or insufficient permissions"
+          },
+          "404": {
+            "description": "Unit not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {},
+  "tags": []
+}

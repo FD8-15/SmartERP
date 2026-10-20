@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="SmartERP API documentation — a clear reference for the billing, inventory, and accounting API.">
+  <title>SmartERP API Documentation</title>
+  <style>
+    :root {
+      --ink: #102a43;
+      --text: #243b53;
+      --muted: #627d98;
+      --teal: #0f766e;
+      --teal-dark: #115e59;
+      --mint: #ccfbf1;
+      --page: #f6f8fb;
+      --panel: #ffffff;
+      --line: #e3eaf2;
+      --soft: #f0f5f9;
+      --code: #0b1220;
+      --green: #15803d;
+      --amber: #b45309;
+      --red: #b91c1c;
+      --shadow: 0 12px 35px rgba(15, 42, 67, .055);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+    body { margin: 0; color: var(--text); background: var(--page); font: 14px/1.65 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    button, input { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    a { color: var(--teal); }
+    code, pre, .endpoint-path, .mono { font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
+    .topbar { min-height: 70px; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 0 clamp(18px, 4vw, 56px); background: rgba(255,255,255,.94); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 30; backdrop-filter: blur(14px); }
+    .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; color: var(--ink); min-width: 0; }
+    .brand-mark { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 11px; background: linear-gradient(145deg, #0f766e, #164e63); color: #fff; font-weight: 850; font-size: 18px; box-shadow: 0 5px 13px rgba(15,118,110,.19); }
+    .brand-name { font-size: 17px; font-weight: 800; letter-spacing: -.4px; }
+    .brand-sub { display: block; margin-top: -3px; color: var(--muted); font-size: 10px; font-weight: 650; letter-spacing: .11em; text-transform: uppercase; }
+    .top-actions { display: flex; align-items: center; gap: 9px; }
+    .version-chip { border: 1px solid var(--line); color: #486581; background: #f8fafc; padding: 5px 9px; border-radius: 999px; font-size: 11px; font-weight: 750; }
+    .top-link { color: var(--text); text-decoration: none; font-weight: 650; font-size: 12px; padding: 9px 12px; border-radius: 9px; }
+    .top-link:hover { background: var(--soft); }
+    .top-link.primary { color: #fff; background: var(--teal); }
+    .top-link.primary:hover { background: var(--teal-dark); }
+
+    .hero { color: #f8fafc; background: radial-gradient(ellipse at 88% 8%, rgba(45,212,191,.18), transparent 31%), linear-gradient(118deg, #0d253c 0%, #12394b 55%, #115e59 100%); padding: 47px clamp(18px, 5.5vw, 78px) 42px; position: relative; overflow: hidden; }
+    .hero:after { content: ""; position: absolute; right: -95px; bottom: -150px; width: 370px; height: 370px; border: 1px solid rgba(255,255,255,.1); border-radius: 50%; box-shadow: 0 0 0 38px rgba(255,255,255,.025), 0 0 0 78px rgba(255,255,255,.02); pointer-events: none; }
+    .hero-inner { max-width: 1300px; margin: 0 auto; position: relative; z-index: 1; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; padding: 5px 10px; border: 1px solid rgba(204,251,241,.28); border-radius: 999px; background: rgba(204,251,241,.08); color: #bff9ee; font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .eyebrow-dot { width: 7px; height: 7px; background: #5eead4; border-radius: 50%; box-shadow: 0 0 0 4px rgba(94,234,212,.12); }
+    .hero h1 { margin: 17px 0 9px; max-width: 850px; color: #fff; font-size: clamp(31px, 4.2vw, 49px); line-height: 1.1; letter-spacing: -1.75px; font-weight: 820; }
+    .hero h1 span { color: #5eead4; }
+    .hero-desc { max-width: 730px; margin: 0; color: #d8e5ee; font-size: 14px; line-height: 1.85; }
+    .hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-top: 21px; color: #c4d5e1; font-size: 11px; }
+    .hero-meta span { display: inline-flex; align-items: center; gap: 7px; }
+    .hero-meta b { color: #fff; font-weight: 700; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 23px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 38px; padding: 9px 14px; border: 1px solid transparent; border-radius: 9px; font-size: 12px; font-weight: 750; text-decoration: none; cursor: pointer; transition: background .16s ease, transform .16s ease; }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-light { background: #5eead4; color: #092e32; }
+    .btn-light:hover { background: #99f6e4; }
+    .btn-outline { color: #f8fafc; border-color: rgba(255,255,255,.26); background: rgba(255,255,255,.045); }
+    .btn-outline:hover { background: rgba(255,255,255,.1); }
+
+    .stat-strip { max-width: 1300px; margin: -1px auto 0; padding: 0 clamp(18px, 5.5vw, 78px); background: #fff; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); }
+    .stat { padding: 18px 21px; border-right: 1px solid var(--line); }
+    .stat:first-child { padding-left: 0; }
+    .stat:last-child { border-right: 0; }
+    .stat-label { color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+    .stat-value { margin-top: 2px; color: var(--ink); font-size: 22px; line-height: 1.35; font-weight: 820; letter-spacing: -.6px; }
+
+    .layout { display: grid; grid-template-columns: 248px minmax(0, 1fr); max-width: 1600px; margin: 0 auto; align-items: start; }
+    .sidebar { align-self: stretch; min-height: calc(100vh - 70px); position: sticky; top: 70px; max-height: calc(100vh - 70px); overflow: auto; padding: 24px 15px 30px 22px; border-right: 1px solid var(--line); background: #fbfcfe; }
+    .sidebar-kicker { margin: 0 8px 10px; color: #829ab1; font-size: 10px; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+    .search-wrap { position: relative; margin: 0 4px 21px; }
+    .search-icon { position: absolute; left: 11px; top: 10px; color: #829ab1; font-size: 13px; pointer-events: none; }
+    .search { width: 100%; min-height: 38px; padding: 8px 11px 8px 32px; border: 1px solid #dce5ee; border-radius: 9px; outline: none; background: #fff; color: var(--ink); font-size: 12px; }
+    .search:focus { border-color: #5eead4; box-shadow: 0 0 0 3px rgba(15,118,110,.10); }
+    .side-link { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 2px 0; padding: 8px 10px; border-radius: 8px; text-decoration: none; color: #52667a; font-size: 12px; font-weight: 650; }
+    .side-link:hover, .side-link.active { color: var(--teal-dark); background: #e8f8f5; }
+    .side-count { min-width: 21px; padding: 1px 5px; text-align: center; border-radius: 6px; background: #edf2f7; color: #627d98; font-size: 10px; font-weight: 800; }
+    .side-link.active .side-count { background: #c7f6ec; color: #115e59; }
+    .sidebar-note { margin: 26px 4px 0; padding: 13px; border: 1px solid #dfeeea; border-radius: 11px; background: #f0fdfa; color: #47746f; font-size: 11px; line-height: 1.7; }
+    .sidebar-note strong { display: block; margin-bottom: 3px; color: #115e59; font-size: 11px; }
+
+    .main { min-width: 0; padding: 30px clamp(17px, 3.4vw, 48px) 58px; }
+    .intro-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(240px, .8fr); gap: 17px; margin-bottom: 30px; }
+    .intro-card, .auth-card { border: 1px solid var(--line); border-radius: 14px; background: #fff; padding: 20px 22px; box-shadow: 0 4px 15px rgba(15,42,67,.025); }
+    .section-kicker { margin: 0 0 5px; color: var(--teal); font-size: 10px; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+    .intro-card h2, .auth-card h2 { margin: 0 0 8px; color: var(--ink); font-size: 19px; font-weight: 800; letter-spacing: -.5px; }
+    .intro-card p, .auth-card p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.85; }
+    .server-url { display: block; margin-top: 12px; padding: 10px 12px; overflow-wrap: anywhere; border: 1px solid var(--line); border-radius: 8px; background: #f8fafc; color: #234e52; font: 11px/1.6 ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .reference-top { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; margin: 0 0 17px; }
+    .reference-top h2 { margin: 0; color: var(--ink); font-size: 25px; line-height: 1.25; letter-spacing: -.85px; }
+    .reference-top p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
+    .ref-tools { display: flex; align-items: center; gap: 7px; }
+    .tool-btn { border: 1px solid var(--line); border-radius: 8px; background: #fff; color: #486581; padding: 7px 10px; font-size: 11px; font-weight: 750; cursor: pointer; }
+    .tool-btn:hover { border-color: #9ddfd4; color: var(--teal-dark); }
+    .results-line { display: flex; justify-content: space-between; gap: 10px; margin: 0 0 15px; color: #829ab1; font-size: 11px; }
+    .tag-group { margin-top: 30px; scroll-margin-top: 92px; }
+    .tag-head { display: flex; align-items: center; gap: 11px; padding: 0 0 11px; margin-bottom: 12px; border-bottom: 1px solid #dbe5ef; }
+    .tag-icon { flex: 0 0 34px; width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid #cdeee7; border-radius: 10px; background: #e7faf5; color: var(--teal-dark); font-weight: 850; font-size: 13px; }
+    .tag-title { margin: 0; color: var(--ink); font-size: 17px; letter-spacing: -.3px; font-weight: 820; }
+    .tag-description { margin: 1px 0 0; color: var(--muted); font-size: 11px; }
+    .tag-count { margin-left: auto; color: #829ab1; font-size: 10px; font-weight: 750; white-space: nowrap; }
+
+    .op-card { margin: 0 0 11px; border: 1px solid #dfe7ef; border-radius: 12px; overflow: clip; background: #fff; box-shadow: 0 3px 13px rgba(15,42,67,.025); scroll-margin-top: 90px; }
+    .op-card[open] { border-color: #badbd7; box-shadow: 0 8px 22px rgba(15,118,110,.055); }
+    .op-summary { display: grid; grid-template-columns: 58px minmax(0, 1fr) 24px; align-items: center; gap: 12px; min-height: 69px; padding: 12px 17px; cursor: pointer; list-style: none; }
+    .op-summary::-webkit-details-marker { display: none; }
+    .op-summary:hover { background: #fbfefd; }
+    .method { display: inline-flex; align-items: center; justify-content: center; min-width: 54px; padding: 6px 7px; border-radius: 7px; font: 850 10px/1.1 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .025em; }
+    .method-get { color: #166534; background: #dcfce7; }
+    .method-post { color: #1d4ed8; background: #dbeafe; }
+    .method-put { color: #92400e; background: #fef3c7; }
+    .method-patch { color: #7e22ce; background: #f3e8ff; }
+    .method-delete { color: #b91c1c; background: #fee2e2; }
+    .method-other { color: #475569; background: #e2e8f0; }
+    .op-main { min-width: 0; }
+    .op-title { color: var(--ink); font-weight: 800; font-size: 13px; line-height: 1.45; }
+    .endpoint-path { display: block; margin-top: 3px; overflow-wrap: anywhere; color: #627d98; font-size: 10.5px; line-height: 1.5; }
+    .op-chevron { color: #829ab1; font-size: 15px; text-align: center; transition: transform .18s ease; }
+    details[open] .op-chevron { transform: rotate(180deg); }
+    .op-body { border-top: 1px solid #e8eef4; padding: 20px; }
+    .op-description { margin: 0 0 14px; color: #52667a; font-size: 12px; line-height: 1.85; }
+    .access-row { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 19px; }
+    .access-chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 8px; border: 1px solid #dcece9; border-radius: 7px; background: #f2fbf9; color: #256d66; font-size: 10px; font-weight: 750; }
+    .detail-section { margin-top: 18px; }
+    .detail-section:first-child { margin-top: 0; }
+    .detail-section h4 { display: flex; align-items: center; gap: 8px; margin: 0 0 9px; color: var(--ink); font-size: 12px; font-weight: 850; }
+    .detail-section h4:before { content: ""; width: 3px; height: 14px; border-radius: 4px; background: var(--teal); }
+    .section-subtitle { margin: -4px 0 10px; color: var(--muted); font-size: 11px; }
+    .empty-note { padding: 10px 12px; border: 1px dashed #d7e2ec; border-radius: 8px; color: #829ab1; background: #fbfdff; font-size: 11px; }
+    .table-wrap { overflow-x: auto; border: 1px solid #e4ebf2; border-radius: 9px; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 11px; }
+    th { padding: 9px 11px; color: #52667a; background: #f6f9fc; font-size: 9px; letter-spacing: .06em; text-transform: uppercase; font-weight: 850; }
+    td { padding: 10px 11px; border-top: 1px solid #e9eff5; vertical-align: top; color: #52667a; line-height: 1.7; }
+    td:first-child { color: var(--ink); font-weight: 750; }
+    .inline-code { padding: 2px 5px; border: 1px solid #e3eaf2; border-radius: 5px; background: #f4f7fa; color: #2c5364; font: 10px ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .required { display: inline-block; margin-left: 5px; color: #b91c1c; font-size: 9px; font-weight: 850; }
+    .type-label { display: inline-block; padding: 2px 5px; border-radius: 4px; background: #eef4f8; color: #52667a; font: 9.5px ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .schema-list { display: grid; gap: 6px; }
+    .schema-row { display: grid; grid-template-columns: minmax(105px, .8fr) minmax(0, 1.8fr); gap: 12px; padding: 9px 11px; border: 1px solid #e8eef4; border-radius: 8px; background: #fff; }
+    .schema-name { color: var(--ink); font: 11px ui-monospace, SFMono-Regular, Consolas, monospace; overflow-wrap: anywhere; }
+    .schema-type { display: block; margin-top: 4px; color: #829ab1; font-size: 10px; }
+    .schema-desc { color: #627d98; font-size: 11px; line-height: 1.7; overflow-wrap: anywhere; }
+    .example-wrap { overflow: hidden; border: 1px solid #1f2d41; border-radius: 10px; background: var(--code); }
+    .example-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 11px; border-bottom: 1px solid rgba(255,255,255,.09); background: #121d2e; color: #9fb3c8; font-size: 9px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+    .copy-btn { border: 1px solid rgba(255,255,255,.15); border-radius: 6px; padding: 4px 7px; background: rgba(255,255,255,.04); color: #c7d5e4; font-size: 9px; font-weight: 700; cursor: pointer; }
+    .copy-btn:hover { background: rgba(255,255,255,.1); }
+    pre { margin: 0; padding: 14px; overflow: auto; max-height: 420px; color: #dce7f3; font-size: 11px; line-height: 1.75; tab-size: 2; }
+    .responses { display: grid; gap: 12px; }
+    .response-card { border: 1px solid #e2eaf2; border-radius: 9px; overflow: hidden; }
+    .response-head { display: flex; align-items: center; gap: 9px; padding: 10px 12px; background: #fbfcfe; border-bottom: 1px solid #e8eef4; }
+    .status { min-width: 40px; text-align: center; padding: 4px 6px; border-radius: 6px; font: 850 10px ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .status-2xx { background: #dcfce7; color: #166534; }
+    .status-3xx { background: #e0f2fe; color: #075985; }
+    .status-4xx { background: #fef3c7; color: #92400e; }
+    .status-5xx { background: #fee2e2; color: #991b1b; }
+    .status-default { background: #e2e8f0; color: #475569; }
+    .response-title { color: var(--ink); font-size: 11px; font-weight: 750; }
+    .response-desc { padding: 11px 12px; color: #627d98; font-size: 11px; line-height: 1.75; }
+    .response-desc .example-wrap { margin-top: 10px; }
+    .security-note { padding: 10px 12px; border-left: 3px solid #0f766e; border-radius: 0 8px 8px 0; background: #f0fdfa; color: #426b67; font-size: 11px; line-height: 1.7; }
+    .no-results { display: none; margin-top: 25px; padding: 36px 20px; border: 1px dashed #d7e2ec; border-radius: 12px; text-align: center; color: var(--muted); background: #fff; }
+    .no-results strong { display: block; margin-bottom: 5px; color: var(--ink); font-size: 15px; }
+    .footer { border-top: 1px solid var(--line); padding: 22px clamp(18px, 4vw, 56px); background: #fff; color: #829ab1; font-size: 10px; }
+    .footer-inner { max-width: 1500px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .footer strong { color: #486581; }
+    .toast { position: fixed; left: 50%; bottom: 22px; z-index: 99; transform: translate(-50%, 12px); opacity: 0; pointer-events: none; padding: 9px 14px; border-radius: 9px; background: #102a43; color: #fff; box-shadow: var(--shadow); font-size: 12px; transition: .18s; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    @media (min-width: 1450px) { .main { padding-left: 52px; padding-right: 52px; } }
+    @media (max-width: 980px) { .layout { grid-template-columns: 210px minmax(0,1fr); } .sidebar { padding-left: 12px; padding-right: 10px; } .main { padding-left: 18px; padding-right: 18px; } .intro-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 700px) {
+      html { scroll-padding-top: 80px; }
+      .topbar { min-height: 61px; padding: 0 14px; }
+      .brand-mark { width: 32px; height: 32px; }
+      .brand-name { font-size: 15px; }
+      .brand-sub { display: none; }
+      .top-link:not(.primary) { display: none; }
+      .hero { padding: 33px 18px 30px; }
+      .hero h1 { font-size: 34px; letter-spacing: -1.3px; }
+      .hero-desc { font-size: 12px; }
+      .stat-strip { padding: 0 8px; }
+      .stat { padding: 13px 9px; }
+      .stat:first-child { padding-left: 9px; }
+      .stat-value { font-size: 18px; }
+      .stat-label { font-size: 8px; letter-spacing: .06em; }
+      .layout { display: block; }
+      .sidebar { position: static; min-height: 0; max-height: none; padding: 15px 15px 12px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .sidebar-kicker { display: none; }
+      .search-wrap { margin: 0 0 10px; }
+      .side-nav { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 4px; }
+      .side-link { flex: 0 0 auto; white-space: nowrap; margin: 0; padding: 7px 9px; border: 1px solid #e5ecf3; background: #fff; }
+      .sidebar-note { display: none; }
+      .main { padding: 18px 13px 40px; }
+      .intro-card, .auth-card { padding: 16px; }
+      .reference-top { align-items: start; }
+      .reference-top h2 { font-size: 22px; }
+      .ref-tools { width: 100%; }
+      .op-summary { grid-template-columns: 51px minmax(0,1fr) 16px; gap: 8px; padding: 11px 10px; }
+      .method { min-width: 48px; font-size: 9px; }
+      .op-body { padding: 14px 11px; }
+      .schema-row { grid-template-columns: 1fr; gap: 5px; }
+      .tag-count { display: none; }
+      .footer-inner { align-items: start; flex-direction: column; gap: 4px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *:before, *:after { scroll-behavior: auto !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="SmartERP API documentation home">
+      <span class="brand-mark">S</span>
+      <span><span class="brand-name">SmartERP</span><span class="brand-sub">Developer portal</span></span>
+    </a>
+    <div class="top-actions">
+      <span class="version-chip" id="header-version">API v1.0.0</span>
+      <a class="top-link" href="#quick-start">Quick start</a>
+      <a class="top-link primary" href="#api-reference">Explore API <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+
+  <section class="hero" id="top">
+    <div class="hero-inner">
+      <span class="eyebrow"><span class="eyebrow-dot"></span> API documentation</span>
+      <h1 id="hero-title">Build with <span>SmartERP API.</span></h1>
+      <p class="hero-desc" id="hero-description">A clear reference for SmartERP billing, inventory, and accounting services.</p>
+      <div class="hero-meta">
+        <span><span aria-hidden="true">◈</span> <b id="hero-version">Version 1.0.0</b></span>
+        <span><span aria-hidden="true">⌁</span> OpenAPI specification</span>
+        <span><span aria-hidden="true">▦</span> Searchable API reference</span>
+      </div>
+      <div class="hero-actions">
+        <a class="btn btn-light" href="#api-reference">Explore endpoints <span aria-hidden="true">→</span></a>
+        <button class="btn btn-outline" id="download-spec" type="button">Download OpenAPI JSON ↓</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="stat-strip" aria-label="API summary">
+    <div class="stat"><div class="stat-label">Documented operations</div><div class="stat-value" id="stat-operations">—</div></div>
+    <div class="stat"><div class="stat-label">Resource groups</div><div class="stat-value" id="stat-groups">—</div></div>
+    <div class="stat"><div class="stat-label">API servers</div><div class="stat-value" id="stat-servers">—</div></div>
+  </div>
+
+  <div class="layout" id="quick-start">
+    <aside class="sidebar" aria-label="API navigation">
+      <p class="sidebar-kicker">Explore documentation</p>
+      <div class="search-wrap"><span class="search-icon" aria-hidden="true">⌕</span><input id="api-search" class="search" type="search" placeholder="Search endpoints…" autocomplete="off" aria-label="Search endpoints"></div>
+      <nav class="side-nav" id="side-nav"></nav>
+      <div class="sidebar-note"><strong>How to use this reference</strong>Choose a resource group, open an operation, then review its parameters, request example, response codes, and schemas. Details shown here come from the OpenAPI specification.</div>
+    </aside>
+
+    <main class="main">
+      <div class="intro-grid">
+        <section class="intro-card">
+          <p class="section-kicker">Start here</p>
+          <h2 id="overview-title">Understand the SmartERP API</h2>
+          <p id="overview-description">Browse the documented operations below. Each endpoint explains the method and path, input parameters, request body, and responses declared in the API specification.</p>
+          <div id="base-url-area"></div>
+        </section>
+        <section class="auth-card" id="authentication-card">
+          <p class="section-kicker">Before you call an endpoint</p>
+          <h2>Authentication & access</h2>
+          <p id="authentication-summary">Check each operation's security requirements and endpoint description before making a request. Authentication behavior is documented only when declared in the API specification.</p>
+          <div id="security-schemes"></div>
+        </section>
+      </div>
+
+      <div id="api-reference">
+        <div class="reference-top">
+          <div><p class="section-kicker">Technical reference</p><h2>API reference</h2><p>Search, open an operation, and inspect its request and response details.</p></div>
+          <div class="ref-tools"><button class="tool-btn" type="button" id="expand-all">Expand all</button><button class="tool-btn" type="button" id="collapse-all">Collapse all</button></div>
+        </div>
+        <div class="results-line"><span id="results-count">Loading endpoints…</span><span>Generated from OpenAPI</span></div>
+        <div id="api-content"></div>
+        <div class="no-results" id="no-results"><strong>No matching endpoints</strong>Try another search term, HTTP method, path, or resource name.</div>
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer"><div class="footer-inner"><span><strong>SmartERP API</strong> · Billing, inventory & accounting</span><span id="footer-meta">Generated from the project's OpenAPI specification.</span></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const SPEC = {"openapi":"3.0.3","info":{"title":"SmartERP API","version":"1.0.0","description":"\n## Overview\n\nSmartERP is a billing, inventory, and accounting ERP backend.\n\nThis API provides endpoints for managing the resources and\noperations supported by SmartERP.\n\n## API Versioning\n\nThe current API uses the `/api/v1` version prefix.\n\n## Using This Documentation\n\nExplore the available endpoints to understand their HTTP methods,\nparameters, request bodies, and responses.\n\nAs the API documentation expands, additional resource groups\nand detailed request and response examples will be included.\n  "},"servers":[{"url":"http://localhost:3000","description":"Local development server"}],"paths":{"/api/v1/unit/{company_id}":{"post":{"tags":["Units"],"summary":"Create a measurement unit","operationId":"createUnit","description":"Creates a new measurement unit for a company in SmartERP.\n\n### Access requirements\n\n- **Authentication:** Required.\n- **Company access:** The user must have access to the specified company.\n- **Required role:** `owner` or `manager`.\n\n### When should I use this endpoint?\n\nUse this endpoint to create a measurement unit that can be used\nwhen managing inventory, such as Kilogram, Litre, or Piece.\n\n### Before sending the request\n\n1. Authenticate the user.\n2. Provide the company ID in the URL.\n3. Send the unit details as a JSON request body.\n","parameters":[{"in":"path","name":"company_id","required":true,"description":"Unique ID of the company in which the unit will be created.","schema":{"type":"integer"},"example":1}],"requestBody":{"required":true,"description":"Details of the measurement unit to create.","content":{"application/json":{"schema":{"type":"object","properties":{"name":{"type":"string","description":"Full name of the measurement unit.","example":"Kilogram"},"short_name":{"type":"string","description":"Short abbreviation used to identify the unit.","example":"kg"}}},"example":{"name":"Kilogram","short_name":"kg"}}}},"responses":{"201":{"description":"**Unit created successfully.**\n\nThe server accepted the request and created the new measurement unit.\n"},"400":{"description":"**Invalid request data.**\n\nCheck that the submitted unit details satisfy the API's validation rules.\n"},"401":{"description":"**Authentication required.**\n\nProvide valid authentication credentials before accessing this endpoint.\n"},"403":{"description":"**Access denied.**\n\nThe authenticated user may not have access to this company\nor may not have the required `owner` or `manager` role.\n"}}},"get":{"summary":"Get all units for a company","description":"Retrieves units belonging to the specified company.","tags":["Units"],"parameters":[{"in":"path","name":"company_id","required":true,"schema":{"type":"integer"},"description":"ID of the company"}],"responses":{"200":{"description":"Units retrieved successfully"},"401":{"description":"Authentication required"},"403":{"description":"Access to the company denied"}}}},"/api/v1/unit/{company_id}/{unit_id}":{"get":{"summary":"Get a specific unit","description":"Retrieves one unit belonging to the specified company.","tags":["Units"],"parameters":[{"in":"path","name":"company_id","required":true,"schema":{"type":"integer"},"description":"ID of the company"},{"in":"path","name":"unit_id","required":true,"schema":{"type":"integer"},"description":"ID of the unit"}],"responses":{"200":{"description":"Unit retrieved successfully"},"401":{"description":"Authentication required"},"403":{"description":"Access to the company denied"},"404":{"description":"Unit not found"}}},"patch":{"summary":"Update a unit","description":"Updates a unit belonging to a company. Requires owner or manager permissions.","tags":["Units"],"parameters":[{"in":"path","name":"company_id","required":true,"schema":{"type":"integer"},"description":"ID of the company"},{"in":"path","name":"unit_id","required":true,"schema":{"type":"integer"},"description":"ID of the unit"}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","properties":{"name":{"type":"string","example":"Kilogram"},"short_name":{"type":"string","example":"kg"}}}}}},"responses":{"200":{"description":"Unit updated successfully"},"400":{"description":"Invalid request data"},"401":{"description":"Authentication required"},"403":{"description":"Access denied or insufficient permissions"},"404":{"description":"Unit not found"}}}}},"components":{},"tags":[]};
+    const $ = (selector, root = document) => root.querySelector(selector);
+    const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+    const esc = (value) => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    const methods = ['get','post','put','patch','delete','options','head','trace'];
+    let operations = [];
+    let toastTimer;
+
+    function resolveRef(ref, root = SPEC) {
+      if (!ref || typeof ref !== 'string' || !ref.startsWith('#/')) return null;
+      return ref.slice(2).split('/').reduce((obj, key) => obj?.[key.replace(/~1/g, '/').replace(/~0/g, '~')], root) ?? null;
+    }
+    function deref(obj, depth = 0) {
+      if (!obj || depth > 5) return obj || {};
+      if (obj.$ref) return deref(resolveRef(obj.$ref) || obj, depth + 1);
+      return obj;
+    }
+    function operationList() {
+      const result = [];
+      Object.entries(SPEC.paths || {}).forEach(([path, pathItem]) => {
+        methods.forEach(method => {
+          const op = pathItem?.[method];
+          if (!op || typeof op !== 'object') return;
+          const tags = op.tags?.length ? op.tags : ['General'];
+          result.push({ path, method, op, pathItem, tags, id: op.operationId || `${method}-${path}` });
+        });
+      });
+      return result;
+    }
+    function niceName(tag) { return String(tag || 'General').replace(/[_-]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase()); }
+    function tinyIcon(tag) { return esc((niceName(tag).trim()[0] || 'A').toUpperCase()); }
+    function humanType(schema) {
+      schema = deref(schema || {});
+      if (schema.oneOf) return 'one of several schemas';
+      if (schema.anyOf) return 'one or more schemas';
+      if (schema.allOf) return 'combined schema';
+      let type = schema.type || (schema.properties ? 'object' : schema.enum ? 'string' : 'any');
+      if (type === 'array') return `array of ${humanType(schema.items || {})}`;
+      if (schema.format) type += ` (${schema.format})`;
+      if (schema.enum) type += ' · enum';
+      return type;
+    }
+    function makeExample(schema, depth = 0, seen = new Set()) {
+      if (!schema || depth > 5) return null;
+      if (schema.$ref) {
+        if (seen.has(schema.$ref)) return {};
+        seen.add(schema.$ref);
+        return makeExample(resolveRef(schema.$ref) || {}, depth + 1, seen);
+      }
+      if (schema.example !== undefined) return schema.example;
+      if (schema.default !== undefined) return schema.default;
+      if (schema.enum?.length) return schema.enum[0];
+      if (schema.const !== undefined) return schema.const;
+      if (schema.oneOf?.length) return makeExample(schema.oneOf[0], depth + 1, seen);
+      if (schema.anyOf?.length) return makeExample(schema.anyOf[0], depth + 1, seen);
+      if (schema.allOf?.length) return Object.assign({}, ...schema.allOf.map(s => makeExample(s, depth + 1, new Set(seen)) || {}));
+      if (schema.type === 'array') return [makeExample(schema.items || {type:'string'}, depth + 1, seen)];
+      if (schema.type === 'object' || schema.properties) {
+        const out = {};
+        Object.entries(schema.properties || {}).forEach(([key, value]) => {
+          const v = makeExample(value, depth + 1, new Set(seen));
+          if (v !== null && v !== undefined) out[key] = v;
+        });
+        return out;
+      }
+      if (schema.type === 'integer') return 1;
+      if (schema.type === 'number') return 12.5;
+      if (schema.type === 'boolean') return true;
+      if (schema.type === 'string') {
+        if (schema.format === 'date-time') return '2026-01-15T10:30:00Z';
+        if (schema.format === 'date') return '2026-01-15';
+        if (schema.format === 'email') return 'user@example.com';
+        if (schema.format === 'uuid') return '00000000-0000-4000-8000-000000000001';
+        return schema.example || 'string';
+      }
+      return null;
+    }
+    function mediaExample(media, spec) {
+      if (!media) return null;
+      if (media.example !== undefined) return media.example;
+      if (media.examples) {
+        const first = Object.values(media.examples)[0];
+        if (first?.value !== undefined) return first.value;
+        if (first?.externalValue) return `Example is available externally: ${first.externalValue}`;
+      }
+      return makeExample(deref(media.schema || {}, 0));
+    }
+    function schemaRows(schema, depth = 0) {
+      schema = deref(schema || {});
+      if (depth > 3 || !schema.properties) return '';
+      const required = new Set(schema.required || []);
+      const rows = Object.entries(schema.properties).map(([name, property]) => {
+        const p = deref(property);
+        const desc = p.description || (p.deprecated ? 'Deprecated field.' : '');
+        const enumText = p.enum?.length ? `<br><span class="schema-type">Allowed: ${esc(p.enum.join(', '))}</span>` : '';
+        return `<div class="schema-row"><div><div class="schema-name">${esc(name)}${required.has(name) ? '<span class="required">REQUIRED</span>' : ''}</div><span class="schema-type">${esc(humanType(p))}${p.nullable ? ' · nullable' : ''}</span></div><div class="schema-desc">${desc ? markdown(desc) : '<span style="color:#9fb3c8">No field description provided.</span>'}${enumText}</div></div>`;
+      }).join('');
+      return rows ? `<div class="schema-list">${rows}</div>` : '';
+    }
+    function markdown(text) {
+      let s = esc(text);
+      s = s.replace(/^###\s+(.+)$/gm, '<strong>$1</strong>');
+      s = s.replace(/^##\s+(.+)$/gm, '<strong>$1</strong>');
+      s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      s = s.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
+      s = s.replace(/\n-\s+/g, '<br>• ');
+      s = s.replace(/\n\d+\.\s+/g, '<br>');
+      s = s.replace(/\n{2,}/g, '<br><br>').replace(/\n/g, '<br>');
+      return s;
+    }
+    function exampleBlock(value, label = 'JSON example') {
+      if (value === null || value === undefined) return '';
+      let content;
+      if (typeof value === 'string' && value.startsWith('Example is available externally:')) content = value;
+      else content = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+      const id = 'code-' + Math.random().toString(36).slice(2, 10);
+      return `<div class="example-wrap"><div class="example-head"><span>${esc(label)}</span><button type="button" class="copy-btn" data-copy-target="${id}">Copy</button></div><pre id="${id}"><code>${esc(content)}</code></pre></div>`;
+    }
+    function schemaSection(title, schema, example, intro = '') {
+      schema = deref(schema || {});
+      const rows = schemaRows(schema);
+      const autoExample = example !== undefined && example !== null ? example : makeExample(schema);
+      const desc = intro ? `<p class="section-subtitle">${markdown(intro)}</p>` : '';
+      return `<section class="detail-section"><h4>${esc(title)}</h4>${desc}${rows ? `<div style="margin-bottom:11px">${rows}</div>` : `<div class="empty-note" style="margin-bottom:11px">${schema.description ? markdown(schema.description) : `Schema type: ${esc(humanType(schema))}.`}</div>`}${autoExample !== null && autoExample !== undefined ? exampleBlock(autoExample) : ''}</section>`;
+    }
+    function paramsMarkup(item) {
+      const op = item.op;
+      const all = [...(item.pathItem.parameters || []), ...(op.parameters || [])].map(p => deref(p));
+      const unique = new Map();
+      all.forEach(p => unique.set(`${p.in}:${p.name}`, p));
+      const params = [...unique.values()];
+      if (!params.length) return `<section class="detail-section"><h4>Parameters</h4><div class="empty-note">This operation does not declare path, query, or header parameters in the OpenAPI specification.</div></section>`;
+      const rows = params.map(p => `<tr><td><code class="inline-code">${esc(p.name)}</code>${p.required ? '<span class="required">REQUIRED</span>' : ''}<br><span class="schema-type">${esc(p.in || 'parameter')}</span></td><td><span class="type-label">${esc(humanType(p.schema || {}))}</span></td><td>${p.description ? markdown(p.description) : '<span style="color:#9fb3c8">No description provided.</span>'}${p.example !== undefined ? `<br><span class="schema-type">Example: ${esc(p.example)}</span>` : ''}</td></tr>`).join('');
+      return `<section class="detail-section"><h4>Parameters</h4><div class="table-wrap"><table><thead><tr><th>Name / location</th><th>Type</th><th>Description</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
+    }
+    function requestMarkup(item) {
+      let body = deref(item.op.requestBody || {});
+      if (!item.op.requestBody) return `<section class="detail-section"><h4>Request body</h4><div class="empty-note">No request body is declared for this operation.</div></section>`;
+      const content = body.content || {};
+      const [mediaType, media] = Object.entries(content)[0] || ['application/json', {}];
+      const example = mediaExample(media, SPEC);
+      const rows = schemaRows(deref(media.schema || {}));
+      return `<section class="detail-section"><h4>Request body ${body.required ? '<span class="required">REQUIRED</span>' : ''}</h4><p class="section-subtitle">Content type: <code class="inline-code">${esc(mediaType)}</code>${body.description ? ` · ${markdown(body.description)}` : ''}</p>${rows ? `<div style="margin-bottom:11px">${rows}</div>` : ''}${example !== null && example !== undefined ? exampleBlock(example, 'Example request body') : '<div class="empty-note">A request body is declared, but no fields or example could be derived from the specification.</div>'}</section>`;
+    }
+    function responsesMarkup(item) {
+      const entries = Object.entries(item.op.responses || {});
+      if (!entries.length) return `<section class="detail-section"><h4>Responses</h4><div class="empty-note">No responses are documented for this operation yet.</div></section>`;
+      const html = entries.map(([code, raw]) => {
+        const response = deref(raw);
+        const cls = /^2/.test(code) ? 'status-2xx' : /^3/.test(code) ? 'status-3xx' : /^4/.test(code) ? 'status-4xx' : /^5/.test(code) ? 'status-5xx' : 'status-default';
+        const [mediaType, media] = Object.entries(response.content || {})[0] || ['', null];
+        const example = media ? mediaExample(media, SPEC) : null;
+        let body = response.description ? markdown(response.description) : 'No response description provided.';
+        if (mediaType) body += `<br><br><span class="type-label">${esc(mediaType)}</span>`;
+        if (media?.schema) {
+          const schema = deref(media.schema);
+          const rows = schemaRows(schema);
+          if (rows) body += `<div style="margin-top:10px"><div class="schema-type" style="margin-bottom:6px">Response fields</div>${rows}</div>`;
+        }
+        if (example !== null && example !== undefined) body += exampleBlock(example, 'Example response');
+        return `<div class="response-card"><div class="response-head"><span class="status ${cls}">${esc(code)}</span><span class="response-title">${esc(response.summary || response.description?.split(/[.\n]/)[0] || (code === 'default' ? 'Default response' : 'Response'))}</span></div><div class="response-desc">${body}</div></div>`;
+      }).join('');
+      return `<section class="detail-section"><h4>Responses</h4><div class="responses">${html}</div></section>`;
+    }
+    function getSecurity(item) {
+      if (Object.hasOwn(item.op, 'security')) return item.op.security;
+      return SPEC.security || [];
+    }
+    function accessMarkup(item) {
+      const sec = getSecurity(item);
+      const chips = [];
+      if (sec?.length) {
+        const names = [...new Set(sec.flatMap(s => Object.keys(s)))];
+        names.forEach(n => {
+          const scheme = SPEC.components?.securitySchemes?.[n] || {};
+          chips.push(`<span class="access-chip">⌑ ${esc(scheme.description || n)}${scheme.type ? ` · ${esc(scheme.type)}` : ''}</span>`);
+        });
+      } else {
+        chips.push('<span class="access-chip" style="background:#f8fafc;border-color:#e3eaf2;color:#627d98">Security scheme not declared in OpenAPI</span>');
+      }
+      const desc = item.op.description ? `<div class="security-note" style="margin-bottom:12px">${markdown(item.op.description)}</div>` : '';
+      return `${desc}<div class="access-row">${chips.join('')}</div>`;
+    }
+    function renderOperation(item, first) {
+      const op = item.op;
+      const methodClass = ['get','post','put','patch','delete'].includes(item.method) ? `method-${item.method}` : 'method-other';
+      const summary = op.summary || op.operationId || `${item.method.toUpperCase()} ${item.path}`;
+      const searchText = [item.path, item.method, summary, op.description, ...(item.tags || [])].join(' ').toLowerCase();
+      return `<details class="op-card" id="${esc(item.id)}" data-search="${esc(searchText)}" ${first ? 'open' : ''}><summary class="op-summary"><span class="method ${methodClass}">${esc(item.method.toUpperCase())}</span><span class="op-main"><span class="op-title">${esc(summary)}</span><span class="endpoint-path">${esc(item.path)}</span></span><span class="op-chevron" aria-hidden="true">⌄</span></summary><div class="op-body">${accessMarkup(item)}${paramsMarkup(item)}${requestMarkup(item)}${responsesMarkup(item)}</div></details>`;
+    }
+    function groupOperations(list) {
+      const groups = new Map();
+      list.forEach(item => item.tags.forEach(tag => {
+        if (!groups.has(tag)) groups.set(tag, []);
+        groups.get(tag).push(item);
+      }));
+      const declared = (SPEC.tags || []).map(t => t.name);
+      return [...groups.entries()].sort((a,b) => {
+        const ai = declared.indexOf(a[0]); const bi = declared.indexOf(b[0]);
+        if (ai < 0 && bi < 0) return a[0].localeCompare(b[0]);
+        if (ai < 0) return 1; if (bi < 0) return -1; return ai - bi;
+      });
+    }
+    function renderDocs() {
+      operations = operationList();
+      const info = SPEC.info || {};
+      document.title = `${info.title || 'SmartERP API'} · Documentation`;
+      $('#header-version').textContent = `API v${info.version || '1.0.0'}`;
+      $('#hero-version').textContent = `Version ${info.version || '1.0.0'}`;
+      $('#hero-title').innerHTML = `${esc(info.title || 'SmartERP API').replace(/\s+API$/i,'')} <span>API reference.</span>`;
+      $('#hero-description').textContent = info.description?.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim() || 'Explore the endpoints, request formats, and responses defined by the SmartERP API.';
+      $('#overview-title').textContent = `Understand the ${info.title || 'SmartERP API'}`;
+      $('#overview-description').textContent = 'Use this reference to explore documented operations. Open an endpoint to review its inputs, example payloads, response codes, and response schemas. The details shown below come from the OpenAPI specification generated by the project.';
+      $('#footer-meta').textContent = `OpenAPI ${SPEC.openapi || 'specification'} · Documentation version ${info.version || '1.0.0'}`;
+      $('#stat-operations').textContent = operations.length;
+      const groups = groupOperations(operations);
+      $('#stat-groups').textContent = groups.length;
+      const servers = SPEC.servers || [];
+      $('#stat-servers').textContent = servers.length || 'Not set';
+      $('#base-url-area').innerHTML = servers.length ? `<div class="server-url" title="API base URL">Base URL · ${esc(servers[0].url)}${servers[0].description ? `<br><span style="color:#829ab1">${esc(servers[0].description)}</span>` : ''}</div>` : '<div class="server-url">Base URL is not declared in the OpenAPI specification.</div>';
+      const schemes = SPEC.components?.securitySchemes || {};
+      const schemeEntries = Object.entries(schemes);
+      $('#security-schemes').innerHTML = schemeEntries.length ? schemeEntries.map(([name,s]) => `<div style="margin-top:10px;padding-top:10px;border-top:1px solid #e8eef4"><strong style="display:block;color:#243b53;font-size:11px">${esc(s.description || name)}</strong><span style="color:#829ab1;font-size:10px">${esc(s.type || 'security')} · ${esc(s.scheme || s.in || s.name || '')}</span></div>`).join('') : '<div class="security-note" style="margin-top:12px">No reusable security scheme is declared in this OpenAPI specification. Endpoint descriptions and response codes may contain additional access details; verify them against the implementation.</div>';
+      const side = [`<a class="side-link" href="#quick-start"><span>Overview & quick start</span></a>`, ...groups.map(([tag, items], idx) => `<a class="side-link" href="#group-${idx}" data-side-tag="${esc(tag)}"><span>${esc(niceName(tag))}</span><span class="side-count">${items.length}</span></a>`)].join('');
+      $('#side-nav').innerHTML = side;
+      let globalFirst = true;
+      $('#api-content').innerHTML = groups.map(([tag, items], groupIdx) => {
+        const tagDesc = (SPEC.tags || []).find(t => t.name === tag)?.description || '';
+        const groupOps = items.map(item => {
+          const html = renderOperation(item, globalFirst);
+          globalFirst = false;
+          return html;
+        }).join('');
+        return `<section class="tag-group" id="group-${groupIdx}" data-group="${esc(tag)}"><div class="tag-head"><span class="tag-icon" aria-hidden="true">${tinyIcon(tag)}</span><div><h3 class="tag-title">${esc(niceName(tag))}</h3>${tagDesc ? `<p class="tag-description">${markdown(tagDesc)}</p>` : '<p class="tag-description">Operations for this resource.</p>'}</div><span class="tag-count">${items.length} ${items.length === 1 ? 'operation' : 'operations'}</span></div>${groupOps}</section>`;
+      }).join('');
+      if (!operations.length) $('#api-content').innerHTML = '<div class="empty-note">No endpoints are present in the OpenAPI specification. Add Swagger annotations to the registered route files and rebuild the specification.</div>';
+      $('#results-count').textContent = `${operations.length} documented ${operations.length === 1 ? 'operation' : 'operations'} across ${groups.length} ${groups.length === 1 ? 'resource group' : 'resource groups'}`;
+      setupInteractions();
+    }
+    function showToast(msg) {
+      const toast = $('#toast'); toast.textContent = msg; toast.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+    }
+    function setupInteractions() {
+      $('#api-search').addEventListener('input', () => {
+        const query = $('#api-search').value.trim().toLowerCase();
+        let visible = 0;
+        $$('.op-card').forEach(card => {
+          const show = !query || (card.dataset.search || '').includes(query) || card.textContent.toLowerCase().includes(query);
+          card.hidden = !show;
+          if (show) visible++;
+        });
+        $$('.tag-group').forEach(group => { group.hidden = !$$('.op-card:not([hidden])', group).length; });
+        $('#no-results').style.display = visible ? 'none' : 'block';
+        $('#results-count').textContent = `${visible} matching ${visible === 1 ? 'operation' : 'operations'}${query ? ` for “${query}”` : ''}`;
+      });
+      $('#expand-all').addEventListener('click', () => $$('.op-card').forEach(card => { if (!card.hidden) card.open = true; }));
+      $('#collapse-all').addEventListener('click', () => $$('.op-card').forEach(card => card.open = false));
+      $('#download-spec').addEventListener('click', () => {
+        const blob = new Blob([JSON.stringify(SPEC, null, 2)], {type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a'); link.href = url; link.download = 'smarterp-openapi.json'; link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      });
+      document.addEventListener('click', async event => {
+        const btn = event.target.closest('[data-copy-target]');
+        if (!btn) return;
+        const el = document.getElementById(btn.dataset.copyTarget);
+        const value = el?.innerText || '';
+        try { await navigator.clipboard.writeText(value); btn.textContent = 'Copied'; showToast('Example copied to clipboard'); }
+        catch { const range = document.createRange(); range.selectNodeContents(el); const selection = window.getSelection(); selection.removeAllRanges(); selection.addRange(range); showToast('Select and copy the highlighted example'); }
+        setTimeout(() => { btn.textContent = 'Copy'; }, 1300);
+      });
+      $$('.side-link[data-side-tag]').forEach(link => link.addEventListener('click', () => {
+        $$('.side-link').forEach(item => item.classList.remove('active'));
+        link.classList.add('active');
+      }));
+    }
+    renderDocs();
+  </script>
+</body>
+</html>

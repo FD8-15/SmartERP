@@ -1,0 +1,28 @@
+openapi:
+  layout: stacked
+  theme:
+    colors:
+      primary:
+        main: "#0F766E"
+
+    sidebar:
+      width: "280px"
+      backgroundColor: "#F8FAFC"
+      textColor: "#334155"
+      activeTextColor: "#0F766E"
+
+    rightPanel:
+      backgroundColor: "#0F172A"
+      textColor: "#F8FAFC"
+
+    typography:
+      fontSize: "14px"
+      lineHeight: "1.6em"
+      fontFamily: "Arial, sans-serif"
+
+      headings:
+        fontFamily: "Arial, sans-serif"
+        fontWeight: "600"
+
+      links:
+        color: "#0F766E"

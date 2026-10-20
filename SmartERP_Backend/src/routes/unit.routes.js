@@ -13,28 +13,44 @@ const router = Router();
 
 /**
  * @swagger
- * tags:
- *   name: Units
- *   description: Unit management APIs
- */
-
-/**
- * @swagger
  * /api/v1/unit/{company_id}:
  *   post:
- *     summary: Create a unit
- *     description: Creates a new unit for a company. Requires owner or manager permissions.
  *     tags:
  *       - Units
+ *     summary: Create a measurement unit
+ *     operationId: createUnit
+ *     description: |
+ *       Creates a new measurement unit for a company in SmartERP.
+ *
+ *       ### Access requirements
+ *
+ *       - **Authentication:** Required.
+ *       - **Company access:** The user must have access to the specified company.
+ *       - **Required role:** `owner` or `manager`.
+ *
+ *       ### When should I use this endpoint?
+ *
+ *       Use this endpoint to create a measurement unit that can be used
+ *       when managing inventory, such as Kilogram, Litre, or Piece.
+ *
+ *       ### Before sending the request
+ *
+ *       1. Authenticate the user.
+ *       2. Provide the company ID in the URL.
+ *       3. Send the unit details as a JSON request body.
+ *
  *     parameters:
  *       - in: path
  *         name: company_id
  *         required: true
+ *         description: Unique ID of the company in which the unit will be created.
  *         schema:
  *           type: integer
- *         description: ID of the company
+ *         example: 1
+ *
  *     requestBody:
  *       required: true
+ *       description: Details of the measurement unit to create.
  *       content:
  *         application/json:
  *           schema:
@@ -42,19 +58,41 @@ const router = Router();
  *             properties:
  *               name:
  *                 type: string
+ *                 description: Full name of the measurement unit.
  *                 example: Kilogram
  *               short_name:
  *                 type: string
+ *                 description: Short abbreviation used to identify the unit.
  *                 example: kg
+ *           example:
+ *             name: Kilogram
+ *             short_name: kg
+ *
  *     responses:
  *       201:
- *         description: Unit created successfully
+ *         description: |
+ *           **Unit created successfully.**
+ *
+ *           The server accepted the request and created the new measurement unit.
+ *
  *       400:
- *         description: Invalid request data
+ *         description: |
+ *           **Invalid request data.**
+ *
+ *           Check that the submitted unit details satisfy the API's validation rules.
+ *
  *       401:
- *         description: Authentication required
+ *         description: |
+ *           **Authentication required.**
+ *
+ *           Provide valid authentication credentials before accessing this endpoint.
+ *
  *       403:
- *         description: Access denied or insufficient permissions
+ *         description: |
+ *           **Access denied.**
+ *
+ *           The authenticated user may not have access to this company
+ *           or may not have the required `owner` or `manager` role.
  */
 router.post(
   "/:company_id",
