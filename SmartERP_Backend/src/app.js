@@ -1,3 +1,5 @@
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "../config/swagger.js";
 import "dotenv/config";
 import cookieParser from "cookie-parser";
 import express from "express";
@@ -14,7 +16,7 @@ import customerRouter from "./routes/customer.routes.js";
 import salesVoucherRouter from "./routes/sale_voucher.routes.js";
 import receiptVoucherRouter from "./routes/receipt_voucher.routes.js";
 const app = express();
-
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(express.json());
 app.use(cookieParser());
 
