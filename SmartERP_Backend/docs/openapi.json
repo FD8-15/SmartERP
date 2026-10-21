@@ -210,8 +210,253 @@
           }
         }
       }
+    },
+    "/api/v1/category/{company_id}": {
+      "post": {
+        "summary": "Create a category",
+        "description": "Creates a category for a company. Category names must be unique within the company.",
+        "tags": [
+          "Categories"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "company_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the company"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "category_name"
+                ],
+                "properties": {
+                  "category_name": {
+                    "type": "string",
+                    "example": "Electronics",
+                    "description": "Name of the category"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Category created successfully"
+          },
+          "400": {
+            "description": "Category name is required"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Company access denied or insufficient permissions"
+          },
+          "409": {
+            "description": "A category with this name already exists"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get all categories",
+        "description": "Retrieves categories belonging to a company, ordered alphabetically by category name.",
+        "tags": [
+          "Categories"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "company_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the company"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categories retrieved successfully"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Company access denied"
+          },
+          "404": {
+            "description": "No categories found for this company"
+          }
+        }
+      }
+    },
+    "/api/v1/category/{company_id}/{category_id}": {
+      "get": {
+        "summary": "Get a category by ID",
+        "description": "Retrieves a specific category belonging to the specified company.",
+        "tags": [
+          "Categories"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "company_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the company"
+          },
+          {
+            "in": "path",
+            "name": "category_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the category"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category retrieved successfully"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Company access denied"
+          },
+          "404": {
+            "description": "Category not found"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a category",
+        "description": "Updates the name of an existing category. Only owners and managers can update categories.",
+        "tags": [
+          "Categories"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "company_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the company"
+          },
+          {
+            "in": "path",
+            "name": "category_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the category"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "category_name"
+                ],
+                "properties": {
+                  "category_name": {
+                    "type": "string",
+                    "example": "Home Appliances",
+                    "description": "New name for the category"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category updated successfully"
+          },
+          "400": {
+            "description": "Category name is required"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Company access denied or insufficient permissions"
+          },
+          "404": {
+            "description": "Category not found"
+          },
+          "409": {
+            "description": "Another category with this name already exists"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a category",
+        "description": "Deletes a category belonging to the specified company. Only owners and managers can delete categories.",
+        "tags": [
+          "Categories"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "company_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the company"
+          },
+          {
+            "in": "path",
+            "name": "category_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the category"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category deleted successfully"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Company access denied or insufficient permissions"
+          },
+          "404": {
+            "description": "Category not found"
+          }
+        }
+      }
     }
   },
   "components": {},
-  "tags": []
+  "tags": [
+    {
+      "name": "Categories",
+      "description": "Category management APIs"
+    }
+  ]
 }

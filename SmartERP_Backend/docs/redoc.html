@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf8" />
+  <title>SmartERP API</title>
+  <!-- needed for adaptive design -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta
-    name="description"
-    content="SmartERP API documentation for billing, inventory and accounting."
-  >
-
-  <title>SmartERP | API Documentation</title>
-
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+  </style>
   <script src="https://cdn.redocly.com/redoc/v2.5.4/bundles/redoc.standalone.js" integrity="sha384-w447zOpYfw/1Tv/5AK9NfHTlQIqE3RVR6KY62jCyy9zNDgO64cMwGGP1Fj0zJVf5" crossorigin="anonymous"></script><style data-styled="true" data-styled-version="6.4.2">.kktglN{width:calc(100% - 40%);padding:0 40px;}/*!sc*/
 @media print,screen and (max-width: 75rem){.kktglN{width:100%;padding:40px 40px;}}/*!sc*/
 .kmAAAV{width:calc(100% - 40%);padding:0 40px;}/*!sc*/
@@ -304,7 +306,8 @@ data-styled.g114[id="sc-jWMFtl"]{content:"rfdIH,"}/*!sc*/
 .ilzlyI{font-size:0.929em;line-height:20px;background-color:#186FAF;color:#ffffff;padding:3px 10px;text-transform:uppercase;font-family:Arial,sans-serif;margin:0;}/*!sc*/
 .AohHS{font-size:0.929em;line-height:20px;background-color:#2F8132;color:#ffffff;padding:3px 10px;text-transform:uppercase;font-family:Arial,sans-serif;margin:0;}/*!sc*/
 .gLsdHS{font-size:0.929em;line-height:20px;background-color:#bf581d;color:#ffffff;padding:3px 10px;text-transform:uppercase;font-family:Arial,sans-serif;margin:0;}/*!sc*/
-data-styled.g115[id="sc-eEFuoE"]{content:"ilzlyI,AohHS,gLsdHS,"}/*!sc*/
+.ddVTbO{font-size:0.929em;line-height:20px;background-color:#cc3333;color:#ffffff;padding:3px 10px;text-transform:uppercase;font-family:Arial,sans-serif;margin:0;}/*!sc*/
+data-styled.g115[id="sc-eEFuoE"]{content:"ilzlyI,AohHS,gLsdHS,ddVTbO,"}/*!sc*/
 .tUxhh{position:absolute;width:100%;z-index:100;background:#fafafa;color:#263238;box-sizing:border-box;box-shadow:0 0 6px rgba(0, 0, 0, 0.33);overflow:hidden;border-bottom-left-radius:4px;border-bottom-right-radius:4px;transition:all 0.25s ease;visibility:hidden;transform:translateY(-50%) scaleY(0);}/*!sc*/
 data-styled.g116[id="sc-fmtEmb"]{content:"tUxhh,"}/*!sc*/
 .bAnPPh{padding:10px;}/*!sc*/
@@ -357,491 +360,12 @@ data-styled.g138[id="sc-cLhBAz"]{content:"knQgmb,"}/*!sc*/
 .tABMP path{fill:#334155;}/*!sc*/
 data-styled.g139[id="sc-iIvZUO"]{content:"tABMP,"}/*!sc*/
 </style>
-
-  <style>
-    :root {
-      --primary: #0f766e;
-      --primary-dark: #115e59;
-      --navy: #102a43;
-      --text: #243447;
-      --muted: #62748a;
-      --background: #f5f8fc;
-      --border: #e2e8f0;
-      --white: #ffffff;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      scroll-padding-top: 24px;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      background: var(--white);
-      color: var(--text);
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", sans-serif;
-    }
-
-    a {
-      text-decoration: none;
-    }
-
-    /* Top navigation */
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-      padding: 18px 7%;
-      border-bottom: 1px solid var(--border);
-      background: var(--white);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: var(--navy);
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: -0.6px;
-    }
-
-    .brand-icon {
-      display: grid;
-      width: 38px;
-      height: 38px;
-      place-items: center;
-      border-radius: 11px;
-      background: var(--primary);
-      color: var(--white);
-      font-size: 17px;
-      letter-spacing: 0;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 26px;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .nav-links a {
-      color: var(--muted);
-    }
-
-    .nav-links a:hover {
-      color: var(--primary);
-    }
-
-    .nav-links .nav-cta {
-      padding: 10px 16px;
-      border-radius: 9px;
-      background: var(--primary);
-      color: var(--white);
-    }
-
-    /* Hero section */
-
-    .hero {
-      position: relative;
-      overflow: hidden;
-      padding: 76px 7% 68px;
-      background:
-        radial-gradient(
-          circle at 90% 10%,
-          rgba(45, 212, 191, 0.17),
-          transparent 30%
-        ),
-        linear-gradient(125deg, #102a43 0%, #163f52 60%, #115e59 100%);
-      color: var(--white);
-    }
-
-    .hero-content {
-      max-width: 850px;
-      margin: 0 auto;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 12px;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      border-radius: 30px;
-      background: rgba(255, 255, 255, 0.08);
-      color: #ccfbf1;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #5eead4;
-    }
-
-    .hero h1 {
-      margin: 25px 0 18px;
-      font-size: clamp(38px, 5.5vw, 62px);
-      font-weight: 800;
-      letter-spacing: -2.5px;
-      line-height: 1.08;
-    }
-
-    .hero h1 span {
-      color: #5eead4;
-    }
-
-    .hero-description {
-      max-width: 660px;
-      margin: 0;
-      color: #d4e2ed;
-      font-size: 17px;
-      line-height: 1.85;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 30px;
-    }
-
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 46px;
-      padding: 12px 19px;
-      border: 1px solid transparent;
-      border-radius: 9px;
-      font-size: 14px;
-      font-weight: 700;
-      transition: transform 0.2s ease, background 0.2s ease;
-    }
-
-    .button:hover {
-      transform: translateY(-2px);
-    }
-
-    .button-primary {
-      background: #5eead4;
-      color: #102a43;
-    }
-
-    .button-primary:hover {
-      background: #99f6e4;
-    }
-
-    .button-secondary {
-      border-color: rgba(255, 255, 255, 0.28);
-      color: var(--white);
-    }
-
-    .button-secondary:hover {
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    /* Overview cards */
-
-    .overview {
-      padding: 44px 7% 52px;
-      background: var(--background);
-    }
-
-    .overview-inner {
-      max-width: 1120px;
-      margin: 0 auto;
-    }
-
-    .section-kicker {
-      margin: 0 0 8px;
-      color: var(--primary);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-    }
-
-    .overview h2 {
-      margin: 0;
-      color: var(--navy);
-      font-size: 27px;
-      letter-spacing: -0.8px;
-    }
-
-    .overview-intro {
-      max-width: 650px;
-      margin: 12px 0 27px;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.8;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
-    }
-
-    .card {
-      padding: 23px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: var(--white);
-      box-shadow: 0 5px 18px rgba(16, 42, 67, 0.035);
-    }
-
-    .card-icon {
-      display: grid;
-      width: 42px;
-      height: 42px;
-      margin-bottom: 17px;
-      place-items: center;
-      border-radius: 11px;
-      background: #ccfbf1;
-      color: var(--primary-dark);
-      font-size: 18px;
-      font-weight: 800;
-    }
-
-    .card h3 {
-      margin: 0 0 9px;
-      color: var(--navy);
-      font-size: 16px;
-    }
-
-    .card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.8;
-    }
-
-    .code-label {
-      display: inline-block;
-      padding: 5px 8px;
-      border-radius: 5px;
-      background: #f1f5f9;
-      color: var(--primary-dark);
-      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    /* API reference introduction */
-
-    .reference-heading {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 55px 7% 30px;
-    }
-
-    .reference-heading h2 {
-      margin: 0 0 11px;
-      color: var(--navy);
-      font-size: 32px;
-      letter-spacing: -1px;
-    }
-
-    .reference-heading p {
-      max-width: 700px;
-      margin: 0;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.8;
-    }
-
-    /* Footer */
-
-    .footer {
-      padding: 27px 7%;
-      border-top: 1px solid var(--border);
-      background: var(--background);
-      color: var(--muted);
-      text-align: center;
-      font-size: 12px;
-      line-height: 1.8;
-    }
-
-    @media (max-width: 760px) {
-      .topbar {
-        padding: 15px 5%;
-      }
-
-      .nav-links {
-        gap: 12px;
-      }
-
-      .nav-links a:not(.nav-cta) {
-        display: none;
-      }
-
-      .hero {
-        padding: 56px 6% 50px;
-      }
-
-      .hero h1 {
-        letter-spacing: -1.5px;
-      }
-
-      .hero-description {
-        font-size: 15px;
-      }
-
-      .overview {
-        padding: 38px 6%;
-      }
-
-      .cards {
-        grid-template-columns: 1fr;
-      }
-
-      .reference-heading {
-        padding: 43px 6% 25px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html {
-        scroll-behavior: auto;
-      }
-
-      .button {
-        transition: none;
-      }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
 </head>
 
 <body>
-  <header class="topbar">
-    <a class="brand" href="#" aria-label="SmartERP documentation home">
-      <span class="brand-icon">S</span>
-      <span>SmartERP</span>
-    </a>
-
-    <nav class="nav-links" aria-label="Main navigation">
-      <a href="#overview">Overview</a>
-      <a href="#api-reference">API Reference</a>
-      <a class="nav-cta" href="#api-reference">Explore API &rarr;</a>
-    </nav>
-  </header>
-
-  <main>
-    <section class="hero">
-      <div class="hero-content">
-        <div class="eyebrow">
-          <span class="status-dot"></span>
-          Developer Documentation
-        </div>
-
-        <h1>
-          Build with<br>
-          <span>SmartERP API.</span>
-        </h1>
-
-        <p class="hero-description">
-          Explore the API documentation for SmartERP, a billing,
-          inventory, and accounting ERP backend. Discover available
-          endpoints, understand request formats, and learn how the
-          documented operations work.
-        </p>
-
-        <div class="hero-actions">
-          <a class="button button-primary" href="#api-reference">
-            Explore API Reference &rarr;
-          </a>
-
-          <a
-            class="button button-secondary"
-            href="./openapi.json"
-            download="smarterp-openapi.json"
-          >
-            Download OpenAPI JSON
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section class="overview" id="overview">
-      <div class="overview-inner">
-        <p class="section-kicker">Get started</p>
-
-        <h2>Your guide to the SmartERP API</h2>
-
-        <p class="overview-intro">
-          Use this documentation to explore the endpoints currently
-          described in the API specification. Each operation includes
-          its available parameters, request details, and documented
-          responses.
-        </p>
-
-        <div class="cards">
-          <article class="card">
-            <div class="card-icon" aria-hidden="true">&lt;/&gt;</div>
-
-            <h3>Explore endpoints</h3>
-
-            <p>
-              Browse the available API operations by resource.
-              Expand an operation to inspect its parameters,
-              request body, and response definitions.
-            </p>
-          </article>
-
-          <article class="card">
-            <div class="card-icon" aria-hidden="true">&#128274;</div>
-
-            <h3>Understand access</h3>
-
-            <p>
-              Review each operation's documented authentication
-              and access requirements before making a request.
-            </p>
-          </article>
-
-          <article class="card">
-            <div class="card-icon" aria-hidden="true">{ }</div>
-
-            <h3>Use the specification</h3>
-
-            <p>
-              Download the OpenAPI JSON description to inspect
-              the API contract or use it with compatible
-              development tools.
-            </p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="api-reference">
-      <div class="reference-heading">
-        <p class="section-kicker">Technical reference</p>
-        <h2>API Reference</h2>
-
-        <p>
-          Browse the documented operations below. Open an endpoint
-          to review its HTTP method, parameters, request schema,
-          and available responses.
-        </p>
-      </div>
-
-      
-      <div id="redoc"><div class="sc-dwkskT dDMuhZ redoc-wrap"><div class="sc-eVYbGh dMvRrc menu-content" style="top:0px;height:calc(100vh - 0px)"><div role="search" class="sc-kijJqc uMSfb"><svg class="sc-iIvZUO tABMP search-icon" version="1.1" viewBox="0 0 1000 1000" x="0px" xmlns="http://www.w3.org/2000/svg" y="0px"><path d="M968.2,849.4L667.3,549c83.9-136.5,66.7-317.4-51.7-435.6C477.1-25,252.5-25,113.9,113.4c-138.5,138.3-138.5,362.6,0,501C219.2,730.1,413.2,743,547.6,666.5l301.9,301.4c43.6,43.6,76.9,14.9,104.2-12.4C981,928.3,1011.8,893,968.2,849.4z M524.5,522c-88.9,88.7-233,88.7-321.8,0c-88.9-88.7-88.9-232.6,0-321.3c88.9-88.7,233-88.7,321.8,0C613.4,289.4,613.4,433.3,524.5,522z"></path></svg><input placeholder="Search..." aria-label="Search" type="text" class="sc-cLhBAz knQgmb search-input" value=""/></div><div class="sc-kLEbxe iOXjCz scrollbar-container undefined"><ul role="menu" class="sc-ilnrqe dqIuaF"><li tabindex="0" depth="1" data-item-id="section/Overview" role="menuitem" aria-label="Overview" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY cByqUn -depth1"><span width="calc(100% - 38px)" title="Overview" class="sc-eHoOIp ehBKwY">Overview</span></label></li><li tabindex="0" depth="1" data-item-id="section/API-Versioning" role="menuitem" aria-label="API Versioning" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY cByqUn -depth1"><span width="calc(100% - 38px)" title="API Versioning" class="sc-eHoOIp ehBKwY">API Versioning</span></label></li><li tabindex="0" depth="1" data-item-id="section/Using-This-Documentation" role="menuitem" aria-label="Using This Documentation" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY cByqUn -depth1"><span width="calc(100% - 38px)" title="Using This Documentation" class="sc-eHoOIp ehBKwY">Using This Documentation</span></label></li><li tabindex="0" depth="1" data-item-id="tag/Units" role="menuitem" aria-label="Units" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY cByqUn -depth1"><span width="calc(100% - 38px)" title="Units" class="sc-eHoOIp ehBKwY">Units</span><svg class="sc-dYjPD kdgFPv" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg></label><ul role="menu" class="sc-ilnrqe gTfiRs"><li tabindex="0" depth="2" data-item-id="tag/Units/operation/createUnit" role="menuitem" aria-label="Create a measurement unit" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY bgMWmY -depth2"><span type="post" class="sc-XpSrr bOSHRJ operation-type post">post</span><span tabindex="0" width="calc(100% - 38px)" class="sc-eHoOIp ehBKwY">Create a measurement unit</span></label></li><li tabindex="0" depth="2" data-item-id="tag/Units/paths/~1api~1v1~1unit~1{company_id}/get" role="menuitem" aria-label="Get all units for a company" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY bgMWmY -depth2"><span type="get" class="sc-XpSrr bOSHRJ operation-type get">get</span><span tabindex="0" width="calc(100% - 38px)" class="sc-eHoOIp ehBKwY">Get all units for a company</span></label></li><li tabindex="0" depth="2" data-item-id="tag/Units/paths/~1api~1v1~1unit~1{company_id}~1{unit_id}/get" role="menuitem" aria-label="Get a specific unit" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY bgMWmY -depth2"><span type="get" class="sc-XpSrr bOSHRJ operation-type get">get</span><span tabindex="0" width="calc(100% - 38px)" class="sc-eHoOIp ehBKwY">Get a specific unit</span></label></li><li tabindex="0" depth="2" data-item-id="tag/Units/paths/~1api~1v1~1unit~1{company_id}~1{unit_id}/patch" role="menuitem" aria-label="Update a unit" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY bgMWmY -depth2"><span type="patch" class="sc-XpSrr bOSHRJ operation-type patch">patch</span><span tabindex="0" width="calc(100% - 38px)" class="sc-eHoOIp ehBKwY">Update a unit</span></label></li></ul></li></ul><div class="sc-hAkAFK jvDQAV"><a target="_blank" rel="noopener noreferrer" href="https://redocly.com/redoc/">API docs by Redocly</a></div></div></div><div class="sc-kTmAaw dEtXCf"><div class="sc-iruNHB klJiBX"><svg class="" style="transform:translate(2px, -4px) rotate(180deg);transition:transform 0.2s ease" viewBox="0 0 926.23699 573.74994" version="1.1" x="0px" y="0px" width="15" height="15"><g transform="translate(904.92214,-879.1482)"><path d="
+  
+      <div id="redoc"><div class="sc-dwkskT dDMuhZ redoc-wrap"><div class="sc-eVYbGh dMvRrc menu-content" style="top:0px;height:calc(100vh - 0px)"><div role="search" class="sc-kijJqc uMSfb"><svg class="sc-iIvZUO tABMP search-icon" version="1.1" viewBox="0 0 1000 1000" x="0px" xmlns="http://www.w3.org/2000/svg" y="0px"><path d="M968.2,849.4L667.3,549c83.9-136.5,66.7-317.4-51.7-435.6C477.1-25,252.5-25,113.9,113.4c-138.5,138.3-138.5,362.6,0,501C219.2,730.1,413.2,743,547.6,666.5l301.9,301.4c43.6,43.6,76.9,14.9,104.2-12.4C981,928.3,1011.8,893,968.2,849.4z M524.5,522c-88.9,88.7-233,88.7-321.8,0c-88.9-88.7-88.9-232.6,0-321.3c88.9-88.7,233-88.7,321.8,0C613.4,289.4,613.4,433.3,524.5,522z"></path></svg><input placeholder="Search..." aria-label="Search" type="text" class="sc-cLhBAz knQgmb search-input" value=""/></div><div class="sc-kLEbxe iOXjCz scrollbar-container undefined"><ul role="menu" class="sc-ilnrqe dqIuaF"><li tabindex="0" depth="1" data-item-id="section/Overview" role="menuitem" aria-label="Overview" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY cByqUn -depth1"><span width="calc(100% - 38px)" title="Overview" class="sc-eHoOIp ehBKwY">Overview</span></label></li><li tabindex="0" depth="1" data-item-id="section/API-Versioning" role="menuitem" aria-label="API Versioning" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY cByqUn -depth1"><span width="calc(100% - 38px)" title="API Versioning" class="sc-eHoOIp ehBKwY">API Versioning</span></label></li><li tabindex="0" depth="1" data-item-id="section/Using-This-Documentation" role="menuitem" aria-label="Using This Documentation" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY cByqUn -depth1"><span width="calc(100% - 38px)" title="Using This Documentation" class="sc-eHoOIp ehBKwY">Using This Documentation</span></label></li><li tabindex="0" depth="1" data-item-id="tag/Categories" role="menuitem" aria-label="Categories" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY cByqUn -depth1"><span width="calc(100% - 38px)" title="Categories" class="sc-eHoOIp ehBKwY">Categories</span><svg class="sc-dYjPD kdgFPv" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg></label><ul role="menu" class="sc-ilnrqe gTfiRs"><li tabindex="0" depth="2" data-item-id="tag/Categories/paths/~1api~1v1~1category~1{company_id}/post" role="menuitem" aria-label="Create a category" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY bgMWmY -depth2"><span type="post" class="sc-XpSrr bOSHRJ operation-type post">post</span><span tabindex="0" width="calc(100% - 38px)" class="sc-eHoOIp ehBKwY">Create a category</span></label></li><li tabindex="0" depth="2" data-item-id="tag/Categories/paths/~1api~1v1~1category~1{company_id}/get" role="menuitem" aria-label="Get all categories" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY bgMWmY -depth2"><span type="get" class="sc-XpSrr bOSHRJ operation-type get">get</span><span tabindex="0" width="calc(100% - 38px)" class="sc-eHoOIp ehBKwY">Get all categories</span></label></li><li tabindex="0" depth="2" data-item-id="tag/Categories/paths/~1api~1v1~1category~1{company_id}~1{category_id}/get" role="menuitem" aria-label="Get a category by ID" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY bgMWmY -depth2"><span type="get" class="sc-XpSrr bOSHRJ operation-type get">get</span><span tabindex="0" width="calc(100% - 38px)" class="sc-eHoOIp ehBKwY">Get a category by ID</span></label></li><li tabindex="0" depth="2" data-item-id="tag/Categories/paths/~1api~1v1~1category~1{company_id}~1{category_id}/patch" role="menuitem" aria-label="Update a category" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY bgMWmY -depth2"><span type="patch" class="sc-XpSrr bOSHRJ operation-type patch">patch</span><span tabindex="0" width="calc(100% - 38px)" class="sc-eHoOIp ehBKwY">Update a category</span></label></li><li tabindex="0" depth="2" data-item-id="tag/Categories/paths/~1api~1v1~1category~1{company_id}~1{category_id}/delete" role="menuitem" aria-label="Delete a category" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY bgMWmY -depth2"><span type="delete" class="sc-XpSrr bOSHRJ operation-type delete">del</span><span tabindex="0" width="calc(100% - 38px)" class="sc-eHoOIp ehBKwY">Delete a category</span></label></li></ul></li><li tabindex="0" depth="1" data-item-id="tag/Units" role="menuitem" aria-label="Units" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY cByqUn -depth1"><span width="calc(100% - 38px)" title="Units" class="sc-eHoOIp ehBKwY">Units</span><svg class="sc-dYjPD kdgFPv" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg></label><ul role="menu" class="sc-ilnrqe gTfiRs"><li tabindex="0" depth="2" data-item-id="tag/Units/operation/createUnit" role="menuitem" aria-label="Create a measurement unit" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY bgMWmY -depth2"><span type="post" class="sc-XpSrr bOSHRJ operation-type post">post</span><span tabindex="0" width="calc(100% - 38px)" class="sc-eHoOIp ehBKwY">Create a measurement unit</span></label></li><li tabindex="0" depth="2" data-item-id="tag/Units/paths/~1api~1v1~1unit~1{company_id}/get" role="menuitem" aria-label="Get all units for a company" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY bgMWmY -depth2"><span type="get" class="sc-XpSrr bOSHRJ operation-type get">get</span><span tabindex="0" width="calc(100% - 38px)" class="sc-eHoOIp ehBKwY">Get all units for a company</span></label></li><li tabindex="0" depth="2" data-item-id="tag/Units/paths/~1api~1v1~1unit~1{company_id}~1{unit_id}/get" role="menuitem" aria-label="Get a specific unit" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY bgMWmY -depth2"><span type="get" class="sc-XpSrr bOSHRJ operation-type get">get</span><span tabindex="0" width="calc(100% - 38px)" class="sc-eHoOIp ehBKwY">Get a specific unit</span></label></li><li tabindex="0" depth="2" data-item-id="tag/Units/paths/~1api~1v1~1unit~1{company_id}~1{unit_id}/patch" role="menuitem" aria-label="Update a unit" aria-expanded="false" class="sc-uMZhz cQETmj"><label class="sc-bitxrY bgMWmY -depth2"><span type="patch" class="sc-XpSrr bOSHRJ operation-type patch">patch</span><span tabindex="0" width="calc(100% - 38px)" class="sc-eHoOIp ehBKwY">Update a unit</span></label></li></ul></li></ul><div class="sc-hAkAFK jvDQAV"><a target="_blank" rel="noopener noreferrer" href="https://redocly.com/redoc/">API docs by Redocly</a></div></div></div><div class="sc-kTmAaw dEtXCf"><div class="sc-iruNHB klJiBX"><svg class="" style="transform:translate(2px, -4px) rotate(180deg);transition:transform 0.2s ease" viewBox="0 0 926.23699 573.74994" version="1.1" x="0px" y="0px" width="15" height="15"><g transform="translate(904.92214,-879.1482)"><path d="
           m -673.67664,1221.6502 -231.2455,-231.24803 55.6165,
           -55.627 c 30.5891,-30.59485 56.1806,-55.627 56.8701,-55.627 0.6894,
           0 79.8637,78.60862 175.9427,174.68583 l 174.6892,174.6858 174.6892,
@@ -875,7 +399,95 @@ and detailed request and response examples will be included.&lt;/p&gt;
 parameters, request bodies, and responses.</p>
 <p>As the API documentation expands, additional resource groups
 and detailed request and response examples will be included.</p>
-</div></div></div><div id="tag/Units" data-section-id="tag/Units" class="sc-eCQgVK jleRXN"><div class="sc-iCECmn lhRBUS"><div class="sc-hKVpXn kktglN"><h2 class="sc-qdQOe fgzjxv"><a class="sc-crPgjm jmoZom" href="#tag/Units" aria-label="tag/Units"></a>Units</h2></div></div></div><div id="tag/Units/operation/createUnit" data-section-id="tag/Units/operation/createUnit" class="sc-eCQgVK grDwca"><div data-section-id="operation/createUnit" id="operation/createUnit" class="sc-iCECmn lhRBUS"><div class="sc-hKVpXn kktglN"><h2 class="sc-qdQOe fgzjxv"><a class="sc-crPgjm jmoZom" href="#tag/Units/operation/createUnit" aria-label="tag/Units/operation/createUnit"></a>Create a measurement unit<!-- --> </h2><div class="sc-iFUzrA ktZmcf"><div html="&lt;p&gt;Creates a new measurement unit for a company in SmartERP.&lt;/p&gt;
+</div></div></div><div id="tag/Categories" data-section-id="tag/Categories" class="sc-eCQgVK jleRXN"><div class="sc-iCECmn lhRBUS"><div class="sc-hKVpXn kktglN"><h2 class="sc-qdQOe fgzjxv"><a class="sc-crPgjm jmoZom" href="#tag/Categories" aria-label="tag/Categories"></a>Categories</h2></div></div><div class="sc-hKVpXn kmAAAV"><div class="sc-iJSMbW sc-cBEgGa fiNpIH bZsZJV redoc-markdown " html="&lt;p&gt;Category management APIs&lt;/p&gt;
+"><p>Category management APIs</p>
+</div></div></div><div id="tag/Categories/paths/~1api~1v1~1category~1{company_id}/post" data-section-id="tag/Categories/paths/~1api~1v1~1category~1{company_id}/post" class="sc-eCQgVK grDwca"><div class="sc-iCECmn lhRBUS"><div class="sc-hKVpXn kktglN"><h2 class="sc-qdQOe fgzjxv"><a class="sc-crPgjm jmoZom" href="#tag/Categories/paths/~1api~1v1~1category~1{company_id}/post" aria-label="tag/Categories/paths/~1api~1v1~1category~1{company_id}/post"></a>Create a category<!-- --> </h2><div class="sc-iFUzrA ktZmcf"><div html="&lt;p&gt;Creates a category for a company. Category names must be unique within the company.&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa fiNpIH bZsZJV"><p>Creates a category for a company. Category names must be unique within the company.</p>
+</div></div><div><h5 class="sc-iqkkDd jprlAr">path<!-- --> Parameters</h5><table class="sc-hHopjF bsjUmE"><tbody><tr class="last "><td kind="field" title="company_id" class="sc-hCcPtG sc-fFCZOx jVnqEz lcdEEX"><span class="sc-ieCSdj iVdZAm"></span><span class="property-name">company_id</span><div class="sc-gSILEF sc-eIYgEQ jMRTsl dHYagA">required</div></td><td class="sc-bjLslk eXdbGS"><div><div><span class="sc-gSILEF sc-lbpDNm jMRTsl NncTE"></span><span class="sc-gSILEF sc-iNyHtD jMRTsl kUjPnZ">integer</span></div> <div><div html="&lt;p&gt;ID of the company&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa fiNpIH ktgwBP"><p>ID of the company</p>
+</div></div></div></td></tr></tbody></table></div><h5 class="sc-iqkkDd jprlAr">Request Body schema: <span class="sc-gXvOjn kxMqOs">application/json</span><div class="sc-gSILEF sc-eIYgEQ sc-dTCDEk jMRTsl dHYagA bxWqzP">required</div></h5><div html="" class="sc-iJSMbW sc-cBEgGa fiNpIH bZsZJV"></div><table class="sc-hHopjF bsjUmE"><tbody><tr class="last "><td kind="field" title="category_name" class="sc-hCcPtG sc-fFCZOx jVnqEz lcdEEX"><span class="sc-ieCSdj iVdZAm"></span><span class="property-name">category_name</span><div class="sc-gSILEF sc-eIYgEQ jMRTsl dHYagA">required</div></td><td class="sc-bjLslk eXdbGS"><div><div><span class="sc-gSILEF sc-lbpDNm jMRTsl NncTE"></span><span class="sc-gSILEF sc-iNyHtD jMRTsl kUjPnZ">string</span></div> <div><div html="&lt;p&gt;Name of the category&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa fiNpIH ktgwBP"><p>Name of the category</p>
+</div></div></div></td></tr></tbody></table><div><h3 class="sc-fINhYD hgNHCh">Responses</h3><div><button class="sc-cbuLjy fHVaEy" disabled=""><strong class="sc-fXmTIC cqDULz">201<!-- --> </strong><div html="&lt;p&gt;Category created successfully&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Category created successfully</p>
+</div></button></div><div><button class="sc-cbuLjy fRVDqI" disabled=""><strong class="sc-fXmTIC cqDULz">400<!-- --> </strong><div html="&lt;p&gt;Category name is required&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Category name is required</p>
+</div></button></div><div><button class="sc-cbuLjy fRVDqI" disabled=""><strong class="sc-fXmTIC cqDULz">401<!-- --> </strong><div html="&lt;p&gt;Authentication required&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Authentication required</p>
+</div></button></div><div><button class="sc-cbuLjy fRVDqI" disabled=""><strong class="sc-fXmTIC cqDULz">403<!-- --> </strong><div html="&lt;p&gt;Company access denied or insufficient permissions&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Company access denied or insufficient permissions</p>
+</div></button></div><div><button class="sc-cbuLjy fRVDqI" disabled=""><strong class="sc-fXmTIC cqDULz">409<!-- --> </strong><div html="&lt;p&gt;A category with this name already exists&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>A category with this name already exists</p>
+</div></button></div></div></div><div class="sc-jSppWd sc-gKkgUA kkBoyt kcALaZ"><div class="sc-fXwuWv fYxpnv"><button class="sc-jWMFtl rfdIH"><span type="post" class="sc-eEFuoE ilzlyI http-verb post">post</span><span class="sc-FpjRO dsIRaZ">/api/v1/category/{company_id}</span><svg class="sc-dYjPD bQKUih" style="margin-right:-25px" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg></button><div aria-hidden="true" class="sc-fmtEmb tUxhh"><div class="sc-ljIcGq bAnPPh"><div html="&lt;p&gt;Local development server&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa fiNpIH ktgwBP"><p>Local development server</p>
+</div><div tabindex="0" role="button"><div class="sc-jlJOIR fmCAYI"><span>http://localhost:3000</span>/api/v1/category/{company_id}</div></div></div></div></div><div><h3 class="sc-kEbgWM iLtoMj"> <!-- -->Request samples<!-- --> </h3><div class="sc-cxxQMU dTyeLO" data-rttabs="true"><ul class="react-tabs__tab-list" role="tablist"><li class="react-tabs__tab react-tabs__tab--selected" role="tab" id="tab_R_154qa_0" aria-selected="true" aria-disabled="false" aria-controls="panel_R_154qa_0" tabindex="0" data-rttab="true">Payload</li></ul><div class="react-tabs__tab-panel react-tabs__tab-panel--selected" role="tabpanel" id="panel_R_154qa_0" aria-labelledby="tab_R_154qa_0"><div><div class="sc-cNSlRw bMFMGt"><span class="sc-bBzIOb geYogn">Content type</span><div class="sc-dPqFhK dCnqZy">application/json</div></div><div class="sc-hUheUT jUCYlq"><div class="sc-cTZdpT hHzuQA"><div class="sc-giQkEn iRHdwm"><button><div class="sc-jcgtOs feYhXE">Copy</div></button></div><div tabindex="0" class="sc-iJSMbW fiNpIH sc-jNDflC jgTAJz"><div class="redoc-json"><code><button class="collapser" aria-label="collapse"></button><span class="token punctuation">{</span><span class="ellipsis"></span><ul class="obj collapsible"><li><div class="hoverable "><span class="property token string">"category_name"</span>: <span class="token string">&quot;Electronics&quot;</span></div></li></ul><span class="token punctuation">}</span></code></div></div></div></div></div></div></div></div></div></div></div><div id="tag/Categories/paths/~1api~1v1~1category~1{company_id}/get" data-section-id="tag/Categories/paths/~1api~1v1~1category~1{company_id}/get" class="sc-eCQgVK grDwca"><div class="sc-iCECmn lhRBUS"><div class="sc-hKVpXn kktglN"><h2 class="sc-qdQOe fgzjxv"><a class="sc-crPgjm jmoZom" href="#tag/Categories/paths/~1api~1v1~1category~1{company_id}/get" aria-label="tag/Categories/paths/~1api~1v1~1category~1{company_id}/get"></a>Get all categories<!-- --> </h2><div class="sc-iFUzrA ktZmcf"><div html="&lt;p&gt;Retrieves categories belonging to a company, ordered alphabetically by category name.&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa fiNpIH bZsZJV"><p>Retrieves categories belonging to a company, ordered alphabetically by category name.</p>
+</div></div><div><h5 class="sc-iqkkDd jprlAr">path<!-- --> Parameters</h5><table class="sc-hHopjF bsjUmE"><tbody><tr class="last "><td kind="field" title="company_id" class="sc-hCcPtG sc-fFCZOx jVnqEz lcdEEX"><span class="sc-ieCSdj iVdZAm"></span><span class="property-name">company_id</span><div class="sc-gSILEF sc-eIYgEQ jMRTsl dHYagA">required</div></td><td class="sc-bjLslk eXdbGS"><div><div><span class="sc-gSILEF sc-lbpDNm jMRTsl NncTE"></span><span class="sc-gSILEF sc-iNyHtD jMRTsl kUjPnZ">integer</span></div> <div><div html="&lt;p&gt;ID of the company&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa fiNpIH ktgwBP"><p>ID of the company</p>
+</div></div></div></td></tr></tbody></table></div><div><h3 class="sc-fINhYD hgNHCh">Responses</h3><div><button class="sc-cbuLjy fHVaEy" disabled=""><strong class="sc-fXmTIC cqDULz">200<!-- --> </strong><div html="&lt;p&gt;Categories retrieved successfully&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Categories retrieved successfully</p>
+</div></button></div><div><button class="sc-cbuLjy fRVDqI" disabled=""><strong class="sc-fXmTIC cqDULz">401<!-- --> </strong><div html="&lt;p&gt;Authentication required&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Authentication required</p>
+</div></button></div><div><button class="sc-cbuLjy fRVDqI" disabled=""><strong class="sc-fXmTIC cqDULz">403<!-- --> </strong><div html="&lt;p&gt;Company access denied&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Company access denied</p>
+</div></button></div><div><button class="sc-cbuLjy fRVDqI" disabled=""><strong class="sc-fXmTIC cqDULz">404<!-- --> </strong><div html="&lt;p&gt;No categories found for this company&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>No categories found for this company</p>
+</div></button></div></div></div><div class="sc-jSppWd sc-gKkgUA kkBoyt kcALaZ"><div class="sc-fXwuWv fYxpnv"><button class="sc-jWMFtl rfdIH"><span type="get" class="sc-eEFuoE AohHS http-verb get">get</span><span class="sc-FpjRO dsIRaZ">/api/v1/category/{company_id}</span><svg class="sc-dYjPD bQKUih" style="margin-right:-25px" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg></button><div aria-hidden="true" class="sc-fmtEmb tUxhh"><div class="sc-ljIcGq bAnPPh"><div html="&lt;p&gt;Local development server&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa fiNpIH ktgwBP"><p>Local development server</p>
+</div><div tabindex="0" role="button"><div class="sc-jlJOIR fmCAYI"><span>http://localhost:3000</span>/api/v1/category/{company_id}</div></div></div></div></div></div></div></div><div id="tag/Categories/paths/~1api~1v1~1category~1{company_id}~1{category_id}/get" data-section-id="tag/Categories/paths/~1api~1v1~1category~1{company_id}~1{category_id}/get" class="sc-eCQgVK grDwca"><div class="sc-iCECmn lhRBUS"><div class="sc-hKVpXn kktglN"><h2 class="sc-qdQOe fgzjxv"><a class="sc-crPgjm jmoZom" href="#tag/Categories/paths/~1api~1v1~1category~1{company_id}~1{category_id}/get" aria-label="tag/Categories/paths/~1api~1v1~1category~1{company_id}~1{category_id}/get"></a>Get a category by ID<!-- --> </h2><div class="sc-iFUzrA ktZmcf"><div html="&lt;p&gt;Retrieves a specific category belonging to the specified company.&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa fiNpIH bZsZJV"><p>Retrieves a specific category belonging to the specified company.</p>
+</div></div><div><h5 class="sc-iqkkDd jprlAr">path<!-- --> Parameters</h5><table class="sc-hHopjF bsjUmE"><tbody><tr class=""><td kind="field" title="company_id" class="sc-hCcPtG sc-fFCZOx jVnqEz lcdEEX"><span class="sc-ieCSdj iVdZAm"></span><span class="property-name">company_id</span><div class="sc-gSILEF sc-eIYgEQ jMRTsl dHYagA">required</div></td><td class="sc-bjLslk eXdbGS"><div><div><span class="sc-gSILEF sc-lbpDNm jMRTsl NncTE"></span><span class="sc-gSILEF sc-iNyHtD jMRTsl kUjPnZ">integer</span></div> <div><div html="&lt;p&gt;ID of the company&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa fiNpIH ktgwBP"><p>ID of the company</p>
+</div></div></div></td></tr><tr class="last "><td kind="field" title="category_id" class="sc-hCcPtG sc-fFCZOx jVnqEz lcdEEX"><span class="sc-ieCSdj iVdZAm"></span><span class="property-name">category_id</span><div class="sc-gSILEF sc-eIYgEQ jMRTsl dHYagA">required</div></td><td class="sc-bjLslk eXdbGS"><div><div><span class="sc-gSILEF sc-lbpDNm jMRTsl NncTE"></span><span class="sc-gSILEF sc-iNyHtD jMRTsl kUjPnZ">integer</span></div> <div><div html="&lt;p&gt;ID of the category&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa fiNpIH ktgwBP"><p>ID of the category</p>
+</div></div></div></td></tr></tbody></table></div><div><h3 class="sc-fINhYD hgNHCh">Responses</h3><div><button class="sc-cbuLjy fHVaEy" disabled=""><strong class="sc-fXmTIC cqDULz">200<!-- --> </strong><div html="&lt;p&gt;Category retrieved successfully&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Category retrieved successfully</p>
+</div></button></div><div><button class="sc-cbuLjy fRVDqI" disabled=""><strong class="sc-fXmTIC cqDULz">401<!-- --> </strong><div html="&lt;p&gt;Authentication required&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Authentication required</p>
+</div></button></div><div><button class="sc-cbuLjy fRVDqI" disabled=""><strong class="sc-fXmTIC cqDULz">403<!-- --> </strong><div html="&lt;p&gt;Company access denied&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Company access denied</p>
+</div></button></div><div><button class="sc-cbuLjy fRVDqI" disabled=""><strong class="sc-fXmTIC cqDULz">404<!-- --> </strong><div html="&lt;p&gt;Category not found&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Category not found</p>
+</div></button></div></div></div><div class="sc-jSppWd sc-gKkgUA kkBoyt kcALaZ"><div class="sc-fXwuWv fYxpnv"><button class="sc-jWMFtl rfdIH"><span type="get" class="sc-eEFuoE AohHS http-verb get">get</span><span class="sc-FpjRO dsIRaZ">/api/v1/category/{company_id}/{category_id}</span><svg class="sc-dYjPD bQKUih" style="margin-right:-25px" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg></button><div aria-hidden="true" class="sc-fmtEmb tUxhh"><div class="sc-ljIcGq bAnPPh"><div html="&lt;p&gt;Local development server&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa fiNpIH ktgwBP"><p>Local development server</p>
+</div><div tabindex="0" role="button"><div class="sc-jlJOIR fmCAYI"><span>http://localhost:3000</span>/api/v1/category/{company_id}/{category_id}</div></div></div></div></div></div></div></div><div id="tag/Categories/paths/~1api~1v1~1category~1{company_id}~1{category_id}/patch" data-section-id="tag/Categories/paths/~1api~1v1~1category~1{company_id}~1{category_id}/patch" class="sc-eCQgVK grDwca"><div class="sc-iCECmn lhRBUS"><div class="sc-hKVpXn kktglN"><h2 class="sc-qdQOe fgzjxv"><a class="sc-crPgjm jmoZom" href="#tag/Categories/paths/~1api~1v1~1category~1{company_id}~1{category_id}/patch" aria-label="tag/Categories/paths/~1api~1v1~1category~1{company_id}~1{category_id}/patch"></a>Update a category<!-- --> </h2><div class="sc-iFUzrA ktZmcf"><div html="&lt;p&gt;Updates the name of an existing category. Only owners and managers can update categories.&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa fiNpIH bZsZJV"><p>Updates the name of an existing category. Only owners and managers can update categories.</p>
+</div></div><div><h5 class="sc-iqkkDd jprlAr">path<!-- --> Parameters</h5><table class="sc-hHopjF bsjUmE"><tbody><tr class=""><td kind="field" title="company_id" class="sc-hCcPtG sc-fFCZOx jVnqEz lcdEEX"><span class="sc-ieCSdj iVdZAm"></span><span class="property-name">company_id</span><div class="sc-gSILEF sc-eIYgEQ jMRTsl dHYagA">required</div></td><td class="sc-bjLslk eXdbGS"><div><div><span class="sc-gSILEF sc-lbpDNm jMRTsl NncTE"></span><span class="sc-gSILEF sc-iNyHtD jMRTsl kUjPnZ">integer</span></div> <div><div html="&lt;p&gt;ID of the company&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa fiNpIH ktgwBP"><p>ID of the company</p>
+</div></div></div></td></tr><tr class="last "><td kind="field" title="category_id" class="sc-hCcPtG sc-fFCZOx jVnqEz lcdEEX"><span class="sc-ieCSdj iVdZAm"></span><span class="property-name">category_id</span><div class="sc-gSILEF sc-eIYgEQ jMRTsl dHYagA">required</div></td><td class="sc-bjLslk eXdbGS"><div><div><span class="sc-gSILEF sc-lbpDNm jMRTsl NncTE"></span><span class="sc-gSILEF sc-iNyHtD jMRTsl kUjPnZ">integer</span></div> <div><div html="&lt;p&gt;ID of the category&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa fiNpIH ktgwBP"><p>ID of the category</p>
+</div></div></div></td></tr></tbody></table></div><h5 class="sc-iqkkDd jprlAr">Request Body schema: <span class="sc-gXvOjn kxMqOs">application/json</span><div class="sc-gSILEF sc-eIYgEQ sc-dTCDEk jMRTsl dHYagA bxWqzP">required</div></h5><div html="" class="sc-iJSMbW sc-cBEgGa fiNpIH bZsZJV"></div><table class="sc-hHopjF bsjUmE"><tbody><tr class="last "><td kind="field" title="category_name" class="sc-hCcPtG sc-fFCZOx jVnqEz lcdEEX"><span class="sc-ieCSdj iVdZAm"></span><span class="property-name">category_name</span><div class="sc-gSILEF sc-eIYgEQ jMRTsl dHYagA">required</div></td><td class="sc-bjLslk eXdbGS"><div><div><span class="sc-gSILEF sc-lbpDNm jMRTsl NncTE"></span><span class="sc-gSILEF sc-iNyHtD jMRTsl kUjPnZ">string</span></div> <div><div html="&lt;p&gt;New name for the category&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa fiNpIH ktgwBP"><p>New name for the category</p>
+</div></div></div></td></tr></tbody></table><div><h3 class="sc-fINhYD hgNHCh">Responses</h3><div><button class="sc-cbuLjy fHVaEy" disabled=""><strong class="sc-fXmTIC cqDULz">200<!-- --> </strong><div html="&lt;p&gt;Category updated successfully&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Category updated successfully</p>
+</div></button></div><div><button class="sc-cbuLjy fRVDqI" disabled=""><strong class="sc-fXmTIC cqDULz">400<!-- --> </strong><div html="&lt;p&gt;Category name is required&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Category name is required</p>
+</div></button></div><div><button class="sc-cbuLjy fRVDqI" disabled=""><strong class="sc-fXmTIC cqDULz">401<!-- --> </strong><div html="&lt;p&gt;Authentication required&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Authentication required</p>
+</div></button></div><div><button class="sc-cbuLjy fRVDqI" disabled=""><strong class="sc-fXmTIC cqDULz">403<!-- --> </strong><div html="&lt;p&gt;Company access denied or insufficient permissions&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Company access denied or insufficient permissions</p>
+</div></button></div><div><button class="sc-cbuLjy fRVDqI" disabled=""><strong class="sc-fXmTIC cqDULz">404<!-- --> </strong><div html="&lt;p&gt;Category not found&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Category not found</p>
+</div></button></div><div><button class="sc-cbuLjy fRVDqI" disabled=""><strong class="sc-fXmTIC cqDULz">409<!-- --> </strong><div html="&lt;p&gt;Another category with this name already exists&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Another category with this name already exists</p>
+</div></button></div></div></div><div class="sc-jSppWd sc-gKkgUA kkBoyt kcALaZ"><div class="sc-fXwuWv fYxpnv"><button class="sc-jWMFtl rfdIH"><span type="patch" class="sc-eEFuoE gLsdHS http-verb patch">patch</span><span class="sc-FpjRO dsIRaZ">/api/v1/category/{company_id}/{category_id}</span><svg class="sc-dYjPD bQKUih" style="margin-right:-25px" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg></button><div aria-hidden="true" class="sc-fmtEmb tUxhh"><div class="sc-ljIcGq bAnPPh"><div html="&lt;p&gt;Local development server&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa fiNpIH ktgwBP"><p>Local development server</p>
+</div><div tabindex="0" role="button"><div class="sc-jlJOIR fmCAYI"><span>http://localhost:3000</span>/api/v1/category/{company_id}/{category_id}</div></div></div></div></div><div><h3 class="sc-kEbgWM iLtoMj"> <!-- -->Request samples<!-- --> </h3><div class="sc-cxxQMU dTyeLO" data-rttabs="true"><ul class="react-tabs__tab-list" role="tablist"><li class="react-tabs__tab react-tabs__tab--selected" role="tab" id="tab_R_156aa_0" aria-selected="true" aria-disabled="false" aria-controls="panel_R_156aa_0" tabindex="0" data-rttab="true">Payload</li></ul><div class="react-tabs__tab-panel react-tabs__tab-panel--selected" role="tabpanel" id="panel_R_156aa_0" aria-labelledby="tab_R_156aa_0"><div><div class="sc-cNSlRw bMFMGt"><span class="sc-bBzIOb geYogn">Content type</span><div class="sc-dPqFhK dCnqZy">application/json</div></div><div class="sc-hUheUT jUCYlq"><div class="sc-cTZdpT hHzuQA"><div class="sc-giQkEn iRHdwm"><button><div class="sc-jcgtOs feYhXE">Copy</div></button></div><div tabindex="0" class="sc-iJSMbW fiNpIH sc-jNDflC jgTAJz"><div class="redoc-json"><code><button class="collapser" aria-label="collapse"></button><span class="token punctuation">{</span><span class="ellipsis"></span><ul class="obj collapsible"><li><div class="hoverable "><span class="property token string">"category_name"</span>: <span class="token string">&quot;Home Appliances&quot;</span></div></li></ul><span class="token punctuation">}</span></code></div></div></div></div></div></div></div></div></div></div></div><div id="tag/Categories/paths/~1api~1v1~1category~1{company_id}~1{category_id}/delete" data-section-id="tag/Categories/paths/~1api~1v1~1category~1{company_id}~1{category_id}/delete" class="sc-eCQgVK grDwca"><div class="sc-iCECmn lhRBUS"><div class="sc-hKVpXn kktglN"><h2 class="sc-qdQOe fgzjxv"><a class="sc-crPgjm jmoZom" href="#tag/Categories/paths/~1api~1v1~1category~1{company_id}~1{category_id}/delete" aria-label="tag/Categories/paths/~1api~1v1~1category~1{company_id}~1{category_id}/delete"></a>Delete a category<!-- --> </h2><div class="sc-iFUzrA ktZmcf"><div html="&lt;p&gt;Deletes a category belonging to the specified company. Only owners and managers can delete categories.&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa fiNpIH bZsZJV"><p>Deletes a category belonging to the specified company. Only owners and managers can delete categories.</p>
+</div></div><div><h5 class="sc-iqkkDd jprlAr">path<!-- --> Parameters</h5><table class="sc-hHopjF bsjUmE"><tbody><tr class=""><td kind="field" title="company_id" class="sc-hCcPtG sc-fFCZOx jVnqEz lcdEEX"><span class="sc-ieCSdj iVdZAm"></span><span class="property-name">company_id</span><div class="sc-gSILEF sc-eIYgEQ jMRTsl dHYagA">required</div></td><td class="sc-bjLslk eXdbGS"><div><div><span class="sc-gSILEF sc-lbpDNm jMRTsl NncTE"></span><span class="sc-gSILEF sc-iNyHtD jMRTsl kUjPnZ">integer</span></div> <div><div html="&lt;p&gt;ID of the company&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa fiNpIH ktgwBP"><p>ID of the company</p>
+</div></div></div></td></tr><tr class="last "><td kind="field" title="category_id" class="sc-hCcPtG sc-fFCZOx jVnqEz lcdEEX"><span class="sc-ieCSdj iVdZAm"></span><span class="property-name">category_id</span><div class="sc-gSILEF sc-eIYgEQ jMRTsl dHYagA">required</div></td><td class="sc-bjLslk eXdbGS"><div><div><span class="sc-gSILEF sc-lbpDNm jMRTsl NncTE"></span><span class="sc-gSILEF sc-iNyHtD jMRTsl kUjPnZ">integer</span></div> <div><div html="&lt;p&gt;ID of the category&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa fiNpIH ktgwBP"><p>ID of the category</p>
+</div></div></div></td></tr></tbody></table></div><div><h3 class="sc-fINhYD hgNHCh">Responses</h3><div><button class="sc-cbuLjy fHVaEy" disabled=""><strong class="sc-fXmTIC cqDULz">200<!-- --> </strong><div html="&lt;p&gt;Category deleted successfully&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Category deleted successfully</p>
+</div></button></div><div><button class="sc-cbuLjy fRVDqI" disabled=""><strong class="sc-fXmTIC cqDULz">401<!-- --> </strong><div html="&lt;p&gt;Authentication required&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Authentication required</p>
+</div></button></div><div><button class="sc-cbuLjy fRVDqI" disabled=""><strong class="sc-fXmTIC cqDULz">403<!-- --> </strong><div html="&lt;p&gt;Company access denied or insufficient permissions&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Company access denied or insufficient permissions</p>
+</div></button></div><div><button class="sc-cbuLjy fRVDqI" disabled=""><strong class="sc-fXmTIC cqDULz">404<!-- --> </strong><div html="&lt;p&gt;Category not found&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Category not found</p>
+</div></button></div></div></div><div class="sc-jSppWd sc-gKkgUA kkBoyt kcALaZ"><div class="sc-fXwuWv fYxpnv"><button class="sc-jWMFtl rfdIH"><span type="delete" class="sc-eEFuoE ddVTbO http-verb delete">delete</span><span class="sc-FpjRO dsIRaZ">/api/v1/category/{company_id}/{category_id}</span><svg class="sc-dYjPD bQKUih" style="margin-right:-25px" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg></button><div aria-hidden="true" class="sc-fmtEmb tUxhh"><div class="sc-ljIcGq bAnPPh"><div html="&lt;p&gt;Local development server&lt;/p&gt;
+" class="sc-iJSMbW sc-cBEgGa fiNpIH ktgwBP"><p>Local development server</p>
+</div><div tabindex="0" role="button"><div class="sc-jlJOIR fmCAYI"><span>http://localhost:3000</span>/api/v1/category/{company_id}/{category_id}</div></div></div></div></div></div></div></div><div id="tag/Units" data-section-id="tag/Units" class="sc-eCQgVK jleRXN"><div class="sc-iCECmn lhRBUS"><div class="sc-hKVpXn kktglN"><h2 class="sc-qdQOe fgzjxv"><a class="sc-crPgjm jmoZom" href="#tag/Units" aria-label="tag/Units"></a>Units</h2></div></div></div><div id="tag/Units/operation/createUnit" data-section-id="tag/Units/operation/createUnit" class="sc-eCQgVK grDwca"><div data-section-id="operation/createUnit" id="operation/createUnit" class="sc-iCECmn lhRBUS"><div class="sc-hKVpXn kktglN"><h2 class="sc-qdQOe fgzjxv"><a class="sc-crPgjm jmoZom" href="#tag/Units/operation/createUnit" aria-label="tag/Units/operation/createUnit"></a>Create a measurement unit<!-- --> </h2><div class="sc-iFUzrA ktZmcf"><div html="&lt;p&gt;Creates a new measurement unit for a company in SmartERP.&lt;/p&gt;
 &lt;h3 id=&quot;access-requirements&quot;&gt;Access requirements&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Authentication:&lt;/strong&gt; Required.&lt;/li&gt;
@@ -935,7 +547,7 @@ or may not have the required &lt;code&gt;owner&lt;/code&gt; or &lt;code&gt;manag
 or may not have the required <code>owner</code> or <code>manager</code> role.</p>
 </div></button></div></div></div><div class="sc-jSppWd sc-gKkgUA kkBoyt kcALaZ"><div class="sc-fXwuWv fYxpnv"><button class="sc-jWMFtl rfdIH"><span type="post" class="sc-eEFuoE ilzlyI http-verb post">post</span><span class="sc-FpjRO dsIRaZ">/api/v1/unit/{company_id}</span><svg class="sc-dYjPD bQKUih" style="margin-right:-25px" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg></button><div aria-hidden="true" class="sc-fmtEmb tUxhh"><div class="sc-ljIcGq bAnPPh"><div html="&lt;p&gt;Local development server&lt;/p&gt;
 " class="sc-iJSMbW sc-cBEgGa fiNpIH ktgwBP"><p>Local development server</p>
-</div><div tabindex="0" role="button"><div class="sc-jlJOIR fmCAYI"><span>http://localhost:3000</span>/api/v1/unit/{company_id}</div></div></div></div></div><div><h3 class="sc-kEbgWM iLtoMj"> <!-- -->Request samples<!-- --> </h3><div class="sc-cxxQMU dTyeLO" data-rttabs="true"><ul class="react-tabs__tab-list" role="tablist"><li class="react-tabs__tab react-tabs__tab--selected" role="tab" id="tab_R_154qa_0" aria-selected="true" aria-disabled="false" aria-controls="panel_R_154qa_0" tabindex="0" data-rttab="true">Payload</li></ul><div class="react-tabs__tab-panel react-tabs__tab-panel--selected" role="tabpanel" id="panel_R_154qa_0" aria-labelledby="tab_R_154qa_0"><div><div class="sc-cNSlRw bMFMGt"><span class="sc-bBzIOb geYogn">Content type</span><div class="sc-dPqFhK dCnqZy">application/json</div></div><div class="sc-hUheUT jUCYlq"><div class="sc-cTZdpT hHzuQA"><div class="sc-giQkEn iRHdwm"><button><div class="sc-jcgtOs feYhXE">Copy</div></button></div><div tabindex="0" class="sc-iJSMbW fiNpIH sc-jNDflC jgTAJz"><div class="redoc-json"><code><button class="collapser" aria-label="collapse"></button><span class="token punctuation">{</span><span class="ellipsis"></span><ul class="obj collapsible"><li><div class="hoverable "><span class="property token string">"name"</span>: <span class="token string">&quot;Kilogram&quot;</span><span class="token punctuation">,</span></div></li><li><div class="hoverable "><span class="property token string">"short_name"</span>: <span class="token string">&quot;kg&quot;</span></div></li></ul><span class="token punctuation">}</span></code></div></div></div></div></div></div></div></div></div></div></div><div id="tag/Units/paths/~1api~1v1~1unit~1{company_id}/get" data-section-id="tag/Units/paths/~1api~1v1~1unit~1{company_id}/get" class="sc-eCQgVK grDwca"><div class="sc-iCECmn lhRBUS"><div class="sc-hKVpXn kktglN"><h2 class="sc-qdQOe fgzjxv"><a class="sc-crPgjm jmoZom" href="#tag/Units/paths/~1api~1v1~1unit~1{company_id}/get" aria-label="tag/Units/paths/~1api~1v1~1unit~1{company_id}/get"></a>Get all units for a company<!-- --> </h2><div class="sc-iFUzrA ktZmcf"><div html="&lt;p&gt;Retrieves units belonging to the specified company.&lt;/p&gt;
+</div><div tabindex="0" role="button"><div class="sc-jlJOIR fmCAYI"><span>http://localhost:3000</span>/api/v1/unit/{company_id}</div></div></div></div></div><div><h3 class="sc-kEbgWM iLtoMj"> <!-- -->Request samples<!-- --> </h3><div class="sc-cxxQMU dTyeLO" data-rttabs="true"><ul class="react-tabs__tab-list" role="tablist"><li class="react-tabs__tab react-tabs__tab--selected" role="tab" id="tab_R_154qq_0" aria-selected="true" aria-disabled="false" aria-controls="panel_R_154qq_0" tabindex="0" data-rttab="true">Payload</li></ul><div class="react-tabs__tab-panel react-tabs__tab-panel--selected" role="tabpanel" id="panel_R_154qq_0" aria-labelledby="tab_R_154qq_0"><div><div class="sc-cNSlRw bMFMGt"><span class="sc-bBzIOb geYogn">Content type</span><div class="sc-dPqFhK dCnqZy">application/json</div></div><div class="sc-hUheUT jUCYlq"><div class="sc-cTZdpT hHzuQA"><div class="sc-giQkEn iRHdwm"><button><div class="sc-jcgtOs feYhXE">Copy</div></button></div><div tabindex="0" class="sc-iJSMbW fiNpIH sc-jNDflC jgTAJz"><div class="redoc-json"><code><button class="collapser" aria-label="collapse"></button><span class="token punctuation">{</span><span class="ellipsis"></span><ul class="obj collapsible"><li><div class="hoverable "><span class="property token string">"name"</span>: <span class="token string">&quot;Kilogram&quot;</span><span class="token punctuation">,</span></div></li><li><div class="hoverable "><span class="property token string">"short_name"</span>: <span class="token string">&quot;kg&quot;</span></div></li></ul><span class="token punctuation">}</span></code></div></div></div></div></div></div></div></div></div></div></div><div id="tag/Units/paths/~1api~1v1~1unit~1{company_id}/get" data-section-id="tag/Units/paths/~1api~1v1~1unit~1{company_id}/get" class="sc-eCQgVK grDwca"><div class="sc-iCECmn lhRBUS"><div class="sc-hKVpXn kktglN"><h2 class="sc-qdQOe fgzjxv"><a class="sc-crPgjm jmoZom" href="#tag/Units/paths/~1api~1v1~1unit~1{company_id}/get" aria-label="tag/Units/paths/~1api~1v1~1unit~1{company_id}/get"></a>Get all units for a company<!-- --> </h2><div class="sc-iFUzrA ktZmcf"><div html="&lt;p&gt;Retrieves units belonging to the specified company.&lt;/p&gt;
 " class="sc-iJSMbW sc-cBEgGa fiNpIH bZsZJV"><p>Retrieves units belonging to the specified company.</p>
 </div></div><div><h5 class="sc-iqkkDd jprlAr">path<!-- --> Parameters</h5><table class="sc-hHopjF bsjUmE"><tbody><tr class="last "><td kind="field" title="company_id" class="sc-hCcPtG sc-fFCZOx jVnqEz lcdEEX"><span class="sc-ieCSdj iVdZAm"></span><span class="property-name">company_id</span><div class="sc-gSILEF sc-eIYgEQ jMRTsl dHYagA">required</div></td><td class="sc-bjLslk eXdbGS"><div><div><span class="sc-gSILEF sc-lbpDNm jMRTsl NncTE"></span><span class="sc-gSILEF sc-iNyHtD jMRTsl kUjPnZ">integer</span></div> <div><div html="&lt;p&gt;ID of the company&lt;/p&gt;
 " class="sc-iJSMbW sc-cBEgGa fiNpIH ktgwBP"><p>ID of the company</p>
@@ -981,21 +593,14 @@ or may not have the required <code>owner</code> or <code>manager</code> role.</p
 " class="sc-iJSMbW sc-cBEgGa sc-ciCrSJ fiNpIH chZWaL dDDioG"><p>Unit not found</p>
 </div></button></div></div></div><div class="sc-jSppWd sc-gKkgUA kkBoyt kcALaZ"><div class="sc-fXwuWv fYxpnv"><button class="sc-jWMFtl rfdIH"><span type="patch" class="sc-eEFuoE gLsdHS http-verb patch">patch</span><span class="sc-FpjRO dsIRaZ">/api/v1/unit/{company_id}/{unit_id}</span><svg class="sc-dYjPD bQKUih" style="margin-right:-25px" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg></button><div aria-hidden="true" class="sc-fmtEmb tUxhh"><div class="sc-ljIcGq bAnPPh"><div html="&lt;p&gt;Local development server&lt;/p&gt;
 " class="sc-iJSMbW sc-cBEgGa fiNpIH ktgwBP"><p>Local development server</p>
-</div><div tabindex="0" role="button"><div class="sc-jlJOIR fmCAYI"><span>http://localhost:3000</span>/api/v1/unit/{company_id}/{unit_id}</div></div></div></div></div><div><h3 class="sc-kEbgWM iLtoMj"> <!-- -->Request samples<!-- --> </h3><div class="sc-cxxQMU dTyeLO" data-rttabs="true"><ul class="react-tabs__tab-list" role="tablist"><li class="react-tabs__tab react-tabs__tab--selected" role="tab" id="tab_R_156aa_0" aria-selected="true" aria-disabled="false" aria-controls="panel_R_156aa_0" tabindex="0" data-rttab="true">Payload</li></ul><div class="react-tabs__tab-panel react-tabs__tab-panel--selected" role="tabpanel" id="panel_R_156aa_0" aria-labelledby="tab_R_156aa_0"><div><div class="sc-cNSlRw bMFMGt"><span class="sc-bBzIOb geYogn">Content type</span><div class="sc-dPqFhK dCnqZy">application/json</div></div><div class="sc-hUheUT jUCYlq"><div class="sc-cTZdpT hHzuQA"><div class="sc-giQkEn iRHdwm"><button><div class="sc-jcgtOs feYhXE">Copy</div></button></div><div tabindex="0" class="sc-iJSMbW fiNpIH sc-jNDflC jgTAJz"><div class="redoc-json"><code><button class="collapser" aria-label="collapse"></button><span class="token punctuation">{</span><span class="ellipsis"></span><ul class="obj collapsible"><li><div class="hoverable "><span class="property token string">"name"</span>: <span class="token string">&quot;Kilogram&quot;</span><span class="token punctuation">,</span></div></li><li><div class="hoverable "><span class="property token string">"short_name"</span>: <span class="token string">&quot;kg&quot;</span></div></li></ul><span class="token punctuation">}</span></code></div></div></div></div></div></div></div></div></div></div></div></div><div class="sc-ekVkVN zsnbE"></div></div></div>
+</div><div tabindex="0" role="button"><div class="sc-jlJOIR fmCAYI"><span>http://localhost:3000</span>/api/v1/unit/{company_id}/{unit_id}</div></div></div></div></div><div><h3 class="sc-kEbgWM iLtoMj"> <!-- -->Request samples<!-- --> </h3><div class="sc-cxxQMU dTyeLO" data-rttabs="true"><ul class="react-tabs__tab-list" role="tablist"><li class="react-tabs__tab react-tabs__tab--selected" role="tab" id="tab_R_156aq_0" aria-selected="true" aria-disabled="false" aria-controls="panel_R_156aq_0" tabindex="0" data-rttab="true">Payload</li></ul><div class="react-tabs__tab-panel react-tabs__tab-panel--selected" role="tabpanel" id="panel_R_156aq_0" aria-labelledby="tab_R_156aq_0"><div><div class="sc-cNSlRw bMFMGt"><span class="sc-bBzIOb geYogn">Content type</span><div class="sc-dPqFhK dCnqZy">application/json</div></div><div class="sc-hUheUT jUCYlq"><div class="sc-cTZdpT hHzuQA"><div class="sc-giQkEn iRHdwm"><button><div class="sc-jcgtOs feYhXE">Copy</div></button></div><div tabindex="0" class="sc-iJSMbW fiNpIH sc-jNDflC jgTAJz"><div class="redoc-json"><code><button class="collapser" aria-label="collapse"></button><span class="token punctuation">{</span><span class="ellipsis"></span><ul class="obj collapsible"><li><div class="hoverable "><span class="property token string">"name"</span>: <span class="token string">&quot;Kilogram&quot;</span><span class="token punctuation">,</span></div></li><li><div class="hoverable "><span class="property token string">"short_name"</span>: <span class="token string">&quot;kg&quot;</span></div></li></ul><span class="token punctuation">}</span></code></div></div></div></div></div></div></div></div></div></div></div></div><div class="sc-ekVkVN zsnbE"></div></div></div>
       <script>
-      const __redoc_state = {"menu":{"activeItemIdx":-1},"spec":{"data":{"openapi":"3.0.3","info":{"title":"SmartERP API","version":"1.0.0","description":"\n## Overview\n\nSmartERP is a billing, inventory, and accounting ERP backend.\n\nThis API provides endpoints for managing the resources and\noperations supported by SmartERP.\n\n## API Versioning\n\nThe current API uses the `/api/v1` version prefix.\n\n## Using This Documentation\n\nExplore the available endpoints to understand their HTTP methods,\nparameters, request bodies, and responses.\n\nAs the API documentation expands, additional resource groups\nand detailed request and response examples will be included.\n  "},"servers":[{"url":"http://localhost:3000","description":"Local development server"}],"paths":{"/api/v1/unit/{company_id}":{"post":{"tags":["Units"],"summary":"Create a measurement unit","operationId":"createUnit","description":"Creates a new measurement unit for a company in SmartERP.\n\n### Access requirements\n\n- **Authentication:** Required.\n- **Company access:** The user must have access to the specified company.\n- **Required role:** `owner` or `manager`.\n\n### When should I use this endpoint?\n\nUse this endpoint to create a measurement unit that can be used\nwhen managing inventory, such as Kilogram, Litre, or Piece.\n\n### Before sending the request\n\n1. Authenticate the user.\n2. Provide the company ID in the URL.\n3. Send the unit details as a JSON request body.\n","parameters":[{"in":"path","name":"company_id","required":true,"description":"Unique ID of the company in which the unit will be created.","schema":{"type":"integer"},"example":1}],"requestBody":{"required":true,"description":"Details of the measurement unit to create.","content":{"application/json":{"schema":{"type":"object","properties":{"name":{"type":"string","description":"Full name of the measurement unit.","example":"Kilogram"},"short_name":{"type":"string","description":"Short abbreviation used to identify the unit.","example":"kg"}}},"example":{"name":"Kilogram","short_name":"kg"}}}},"responses":{"201":{"description":"**Unit created successfully.**\n\nThe server accepted the request and created the new measurement unit.\n"},"400":{"description":"**Invalid request data.**\n\nCheck that the submitted unit details satisfy the API's validation rules.\n"},"401":{"description":"**Authentication required.**\n\nProvide valid authentication credentials before accessing this endpoint.\n"},"403":{"description":"**Access denied.**\n\nThe authenticated user may not have access to this company\nor may not have the required `owner` or `manager` role.\n"}}},"get":{"summary":"Get all units for a company","description":"Retrieves units belonging to the specified company.","tags":["Units"],"parameters":[{"in":"path","name":"company_id","required":true,"schema":{"type":"integer"},"description":"ID of the company"}],"responses":{"200":{"description":"Units retrieved successfully"},"401":{"description":"Authentication required"},"403":{"description":"Access to the company denied"}}}},"/api/v1/unit/{company_id}/{unit_id}":{"get":{"summary":"Get a specific unit","description":"Retrieves one unit belonging to the specified company.","tags":["Units"],"parameters":[{"in":"path","name":"company_id","required":true,"schema":{"type":"integer"},"description":"ID of the company"},{"in":"path","name":"unit_id","required":true,"schema":{"type":"integer"},"description":"ID of the unit"}],"responses":{"200":{"description":"Unit retrieved successfully"},"401":{"description":"Authentication required"},"403":{"description":"Access to the company denied"},"404":{"description":"Unit not found"}}},"patch":{"summary":"Update a unit","description":"Updates a unit belonging to a company. Requires owner or manager permissions.","tags":["Units"],"parameters":[{"in":"path","name":"company_id","required":true,"schema":{"type":"integer"},"description":"ID of the company"},{"in":"path","name":"unit_id","required":true,"schema":{"type":"integer"},"description":"ID of the unit"}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","properties":{"name":{"type":"string","example":"Kilogram"},"short_name":{"type":"string","example":"kg"}}}}}},"responses":{"200":{"description":"Unit updated successfully"},"400":{"description":"Invalid request data"},"401":{"description":"Authentication required"},"403":{"description":"Access denied or insufficient permissions"},"404":{"description":"Unit not found"}}}}},"components":{},"tags":[]}},"searchIndex":{"store":["section/Overview","section/API-Versioning","section/Using-This-Documentation","tag/Units","tag/Units/operation/createUnit","tag/Units/paths/~1api~1v1~1unit~1{company_id}/get","tag/Units/paths/~1api~1v1~1unit~1{company_id}~1{unit_id}/get","tag/Units/paths/~1api~1v1~1unit~1{company_id}~1{unit_id}/patch"],"index":{"version":"2.3.9","fields":["title","description"],"fieldVectors":[["title/0",[0,2.215]],["description/0",[1,1.803,2,1.854,3,1.325,4,1.854,5,1.854,6,1.854,7,0.717,8,1.325,9,0.977,10,0.977,11,1.325,12,1.854,13,1.854]],["title/1",[7,0.675,14,1.247]],["description/1",[7,0.922,14,1.704,15,2.383,16,1.256,17,2.383,18,2.383]],["title/2",[16,0.919,19,1.247]],["description/2",[7,0.601,9,0.818,11,1.11,19,1.11,20,1.552,21,1.552,22,1.552,23,1.552,24,1.552,25,1.552,26,1.592,27,1.11,28,2.227,29,1.552,30,1.552,31,1.552,32,1.11,33,1.552,34,1.552]],["title/3",[35,0.063]],["description/3",[]],["title/4",[35,0.041,36,1.028,37,1.028]],["description/4",[1,0.589,3,0.589,8,0.589,9,0.719,10,0.719,16,0.919,26,0.975,27,0.589,32,0.589,35,0.05,36,0.975,37,0.975,38,0.824,39,0.557,40,2.418,41,1.744,42,1.247,43,1.364,44,1.364,45,0.435,46,0.824,47,0.589,48,0.824,49,0.824,50,0.824,51,0.824,52,0.824,53,1.364,54,0.824,55,0.824,56,0.824,57,0.824,58,0.824,59,0.824,60,0.589]],["title/5",[35,0.05,39,0.479]],["description/5",[35,0.068,39,0.655,45,1.256,60,1.704,61,1.704,62,1.256]],["title/6",[35,0.05,63,1.744]],["description/6",[35,0.066,39,0.632,45,1.213,61,1.645,62,1.213,64,2.301,65,1.645]],["title/7",[35,0.05,66,1.247]],["description/7",[10,1.135,35,0.062,39,0.592,42,1.539,47,1.539,62,1.135,65,1.539,66,1.539,67,2.153]]],"invertedIndex":[["",{"_index":40,"title":{},"description":{"4":{}}}],["1",{"_index":54,"title":{},"description":{"4":{}}}],["2",{"_index":55,"title":{},"description":{"4":{}}}],["3",{"_index":58,"title":{},"description":{"4":{}}}],["access",{"_index":41,"title":{},"description":{"4":{}}}],["account",{"_index":4,"title":{},"description":{"0":{}}}],["addit",{"_index":30,"title":{},"description":{"2":{}}}],["api",{"_index":7,"title":{"1":{}},"description":{"0":{},"1":{},"2":{}}}],["api/v1",{"_index":17,"title":{},"description":{"1":{}}}],["api/v1/unit/{company_id",{"_index":60,"title":{},"description":{"4":{},"5":{}}}],["api/v1/unit/{company_id}/{unit_id",{"_index":65,"title":{},"description":{"6":{},"7":{}}}],["authent",{"_index":43,"title":{},"description":{"4":{}}}],["avail",{"_index":21,"title":{},"description":{"2":{}}}],["backend",{"_index":6,"title":{},"description":{"0":{}}}],["befor",{"_index":52,"title":{},"description":{"4":{}}}],["belong",{"_index":62,"title":{},"description":{"5":{},"6":{},"7":{}}}],["bill",{"_index":2,"title":{},"description":{"0":{}}}],["bodi",{"_index":27,"title":{},"description":{"2":{},"4":{}}}],["compani",{"_index":39,"title":{"5":{}},"description":{"4":{},"5":{},"6":{},"7":{}}}],["creat",{"_index":36,"title":{"4":{}},"description":{"4":{}}}],["current",{"_index":15,"title":{},"description":{"1":{}}}],["detail",{"_index":32,"title":{},"description":{"2":{},"4":{}}}],["document",{"_index":19,"title":{"2":{}},"description":{"2":{}}}],["endpoint",{"_index":9,"title":{},"description":{"0":{},"2":{},"4":{}}}],["erp",{"_index":5,"title":{},"description":{"0":{}}}],["exampl",{"_index":33,"title":{},"description":{"2":{}}}],["expand",{"_index":29,"title":{},"description":{"2":{}}}],["explor",{"_index":20,"title":{},"description":{"2":{}}}],["group",{"_index":31,"title":{},"description":{"2":{}}}],["http",{"_index":23,"title":{},"description":{"2":{}}}],["id",{"_index":56,"title":{},"description":{"4":{}}}],["includ",{"_index":34,"title":{},"description":{"2":{}}}],["inventori",{"_index":3,"title":{},"description":{"0":{},"4":{}}}],["json",{"_index":59,"title":{},"description":{"4":{}}}],["kilogram",{"_index":49,"title":{},"description":{"4":{}}}],["litr",{"_index":50,"title":{},"description":{"4":{}}}],["manag",{"_index":10,"title":{},"description":{"0":{},"4":{},"7":{}}}],["measur",{"_index":37,"title":{"4":{}},"description":{"4":{}}}],["method",{"_index":24,"title":{},"description":{"2":{}}}],["new",{"_index":38,"title":{},"description":{"4":{}}}],["on",{"_index":64,"title":{},"description":{"6":{}}}],["oper",{"_index":12,"title":{},"description":{"0":{}}}],["overview",{"_index":0,"title":{"0":{}},"description":{}}],["owner",{"_index":47,"title":{},"description":{"4":{},"7":{}}}],["paramet",{"_index":25,"title":{},"description":{"2":{}}}],["permiss",{"_index":67,"title":{},"description":{"7":{}}}],["piec",{"_index":51,"title":{},"description":{"4":{}}}],["prefix",{"_index":18,"title":{},"description":{"1":{}}}],["provid",{"_index":8,"title":{},"description":{"0":{},"4":{}}}],["request",{"_index":26,"title":{},"description":{"2":{},"4":{}}}],["requir",{"_index":42,"title":{},"description":{"4":{},"7":{}}}],["resourc",{"_index":11,"title":{},"description":{"0":{},"2":{}}}],["respons",{"_index":28,"title":{},"description":{"2":{}}}],["retriev",{"_index":61,"title":{},"description":{"5":{},"6":{}}}],["role",{"_index":46,"title":{},"description":{"4":{}}}],["send",{"_index":53,"title":{},"description":{"4":{}}}],["smarterp",{"_index":1,"title":{},"description":{"0":{},"4":{}}}],["specif",{"_index":63,"title":{"6":{}},"description":{}}],["specifi",{"_index":45,"title":{},"description":{"4":{},"5":{},"6":{}}}],["such",{"_index":48,"title":{},"description":{"4":{}}}],["support",{"_index":13,"title":{},"description":{"0":{}}}],["understand",{"_index":22,"title":{},"description":{"2":{}}}],["unit",{"_index":35,"title":{"3":{},"4":{},"5":{},"6":{},"7":{}},"description":{"4":{},"5":{},"6":{},"7":{}}}],["updat",{"_index":66,"title":{"7":{}},"description":{"7":{}}}],["url",{"_index":57,"title":{},"description":{"4":{}}}],["us",{"_index":16,"title":{"2":{}},"description":{"1":{},"4":{}}}],["user",{"_index":44,"title":{},"description":{"4":{}}}],["version",{"_index":14,"title":{"1":{}},"description":{"1":{}}}]],"pipeline":[]}},"options":{"layout":"stacked","theme":{"colors":{"primary":{"main":"#0F766E"}},"sidebar":{"width":"280px","backgroundColor":"#F8FAFC","textColor":"#334155","activeTextColor":"#0F766E"},"rightPanel":{"backgroundColor":"#0F172A","textColor":"#F8FAFC"},"typography":{"fontSize":"14px","lineHeight":"1.6em","fontFamily":"Arial, sans-serif","headings":{"fontFamily":"Arial, sans-serif","fontWeight":"600"},"links":{"color":"#0F766E"}}}}};
+      const __redoc_state = {"menu":{"activeItemIdx":-1},"spec":{"data":{"openapi":"3.0.3","info":{"title":"SmartERP API","version":"1.0.0","description":"\n## Overview\n\nSmartERP is a billing, inventory, and accounting ERP backend.\n\nThis API provides endpoints for managing the resources and\noperations supported by SmartERP.\n\n## API Versioning\n\nThe current API uses the `/api/v1` version prefix.\n\n## Using This Documentation\n\nExplore the available endpoints to understand their HTTP methods,\nparameters, request bodies, and responses.\n\nAs the API documentation expands, additional resource groups\nand detailed request and response examples will be included.\n  "},"servers":[{"url":"http://localhost:3000","description":"Local development server"}],"paths":{"/api/v1/unit/{company_id}":{"post":{"tags":["Units"],"summary":"Create a measurement unit","operationId":"createUnit","description":"Creates a new measurement unit for a company in SmartERP.\n\n### Access requirements\n\n- **Authentication:** Required.\n- **Company access:** The user must have access to the specified company.\n- **Required role:** `owner` or `manager`.\n\n### When should I use this endpoint?\n\nUse this endpoint to create a measurement unit that can be used\nwhen managing inventory, such as Kilogram, Litre, or Piece.\n\n### Before sending the request\n\n1. Authenticate the user.\n2. Provide the company ID in the URL.\n3. Send the unit details as a JSON request body.\n","parameters":[{"in":"path","name":"company_id","required":true,"description":"Unique ID of the company in which the unit will be created.","schema":{"type":"integer"},"example":1}],"requestBody":{"required":true,"description":"Details of the measurement unit to create.","content":{"application/json":{"schema":{"type":"object","properties":{"name":{"type":"string","description":"Full name of the measurement unit.","example":"Kilogram"},"short_name":{"type":"string","description":"Short abbreviation used to identify the unit.","example":"kg"}}},"example":{"name":"Kilogram","short_name":"kg"}}}},"responses":{"201":{"description":"**Unit created successfully.**\n\nThe server accepted the request and created the new measurement unit.\n"},"400":{"description":"**Invalid request data.**\n\nCheck that the submitted unit details satisfy the API's validation rules.\n"},"401":{"description":"**Authentication required.**\n\nProvide valid authentication credentials before accessing this endpoint.\n"},"403":{"description":"**Access denied.**\n\nThe authenticated user may not have access to this company\nor may not have the required `owner` or `manager` role.\n"}}},"get":{"summary":"Get all units for a company","description":"Retrieves units belonging to the specified company.","tags":["Units"],"parameters":[{"in":"path","name":"company_id","required":true,"schema":{"type":"integer"},"description":"ID of the company"}],"responses":{"200":{"description":"Units retrieved successfully"},"401":{"description":"Authentication required"},"403":{"description":"Access to the company denied"}}}},"/api/v1/unit/{company_id}/{unit_id}":{"get":{"summary":"Get a specific unit","description":"Retrieves one unit belonging to the specified company.","tags":["Units"],"parameters":[{"in":"path","name":"company_id","required":true,"schema":{"type":"integer"},"description":"ID of the company"},{"in":"path","name":"unit_id","required":true,"schema":{"type":"integer"},"description":"ID of the unit"}],"responses":{"200":{"description":"Unit retrieved successfully"},"401":{"description":"Authentication required"},"403":{"description":"Access to the company denied"},"404":{"description":"Unit not found"}}},"patch":{"summary":"Update a unit","description":"Updates a unit belonging to a company. Requires owner or manager permissions.","tags":["Units"],"parameters":[{"in":"path","name":"company_id","required":true,"schema":{"type":"integer"},"description":"ID of the company"},{"in":"path","name":"unit_id","required":true,"schema":{"type":"integer"},"description":"ID of the unit"}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","properties":{"name":{"type":"string","example":"Kilogram"},"short_name":{"type":"string","example":"kg"}}}}}},"responses":{"200":{"description":"Unit updated successfully"},"400":{"description":"Invalid request data"},"401":{"description":"Authentication required"},"403":{"description":"Access denied or insufficient permissions"},"404":{"description":"Unit not found"}}}},"/api/v1/category/{company_id}":{"post":{"summary":"Create a category","description":"Creates a category for a company. Category names must be unique within the company.","tags":["Categories"],"parameters":[{"in":"path","name":"company_id","required":true,"schema":{"type":"integer"},"description":"ID of the company"}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","required":["category_name"],"properties":{"category_name":{"type":"string","example":"Electronics","description":"Name of the category"}}}}}},"responses":{"201":{"description":"Category created successfully"},"400":{"description":"Category name is required"},"401":{"description":"Authentication required"},"403":{"description":"Company access denied or insufficient permissions"},"409":{"description":"A category with this name already exists"}}},"get":{"summary":"Get all categories","description":"Retrieves categories belonging to a company, ordered alphabetically by category name.","tags":["Categories"],"parameters":[{"in":"path","name":"company_id","required":true,"schema":{"type":"integer"},"description":"ID of the company"}],"responses":{"200":{"description":"Categories retrieved successfully"},"401":{"description":"Authentication required"},"403":{"description":"Company access denied"},"404":{"description":"No categories found for this company"}}}},"/api/v1/category/{company_id}/{category_id}":{"get":{"summary":"Get a category by ID","description":"Retrieves a specific category belonging to the specified company.","tags":["Categories"],"parameters":[{"in":"path","name":"company_id","required":true,"schema":{"type":"integer"},"description":"ID of the company"},{"in":"path","name":"category_id","required":true,"schema":{"type":"integer"},"description":"ID of the category"}],"responses":{"200":{"description":"Category retrieved successfully"},"401":{"description":"Authentication required"},"403":{"description":"Company access denied"},"404":{"description":"Category not found"}}},"patch":{"summary":"Update a category","description":"Updates the name of an existing category. Only owners and managers can update categories.","tags":["Categories"],"parameters":[{"in":"path","name":"company_id","required":true,"schema":{"type":"integer"},"description":"ID of the company"},{"in":"path","name":"category_id","required":true,"schema":{"type":"integer"},"description":"ID of the category"}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","required":["category_name"],"properties":{"category_name":{"type":"string","example":"Home Appliances","description":"New name for the category"}}}}}},"responses":{"200":{"description":"Category updated successfully"},"400":{"description":"Category name is required"},"401":{"description":"Authentication required"},"403":{"description":"Company access denied or insufficient permissions"},"404":{"description":"Category not found"},"409":{"description":"Another category with this name already exists"}}},"delete":{"summary":"Delete a category","description":"Deletes a category belonging to the specified company. Only owners and managers can delete categories.","tags":["Categories"],"parameters":[{"in":"path","name":"company_id","required":true,"schema":{"type":"integer"},"description":"ID of the company"},{"in":"path","name":"category_id","required":true,"schema":{"type":"integer"},"description":"ID of the category"}],"responses":{"200":{"description":"Category deleted successfully"},"401":{"description":"Authentication required"},"403":{"description":"Company access denied or insufficient permissions"},"404":{"description":"Category not found"}}}}},"components":{},"tags":[{"name":"Categories","description":"Category management APIs"}]}},"searchIndex":{"store":["section/Overview","section/API-Versioning","section/Using-This-Documentation","tag/Categories","tag/Categories/paths/~1api~1v1~1category~1{company_id}/post","tag/Categories/paths/~1api~1v1~1category~1{company_id}/get","tag/Categories/paths/~1api~1v1~1category~1{company_id}~1{category_id}/get","tag/Categories/paths/~1api~1v1~1category~1{company_id}~1{category_id}/patch","tag/Categories/paths/~1api~1v1~1category~1{company_id}~1{category_id}/delete","tag/Units","tag/Units/operation/createUnit","tag/Units/paths/~1api~1v1~1unit~1{company_id}/get","tag/Units/paths/~1api~1v1~1unit~1{company_id}~1{unit_id}/get","tag/Units/paths/~1api~1v1~1unit~1{company_id}~1{unit_id}/patch"],"index":{"version":"2.3.9","fields":["title","description"],"fieldVectors":[["title/0",[0,2.808]],["description/0",[1,2.358,2,2.161,3,1.682,4,2.161,5,2.161,6,2.161,7,0.942,8,1.682,9,1.366,10,0.785,11,1.682,12,2.161,13,2.161]],["title/1",[7,0.956,14,1.708]],["description/1",[7,1.263,14,2.256,15,2.899,16,1.832,17,2.899,18,2.899]],["title/2",[16,1.387,19,1.708]],["description/2",[7,0.77,9,1.117,11,1.376,19,1.376,20,1.768,21,1.768,22,1.768,23,1.768,24,1.768,25,1.768,26,2.039,27,1.376,28,2.621,29,1.768,30,1.768,31,1.768,32,1.376,33,1.768,34,1.768]],["title/3",[35,0.222]],["description/3",[7,1.449,10,1.207,35,0.263]],["title/4",[35,0.174,36,1.148]],["description/4",[35,0.27,36,1.344,37,0.676,38,1.624,39,2.57,40,2.57,41,2]],["title/5",[35,0.222]],["description/5",[35,0.27,37,0.51,38,1.624,41,2,42,1.344,43,0.933,44,2.57,45,2.57]],["title/6",[35,0.174,46,1.708]],["description/6",[35,0.22,37,0.552,42,1.454,43,1.01,47,2.164,48,1.212,49,1.757]],["title/7",[35,0.174,50,1.148]],["description/7",[10,0.933,35,0.27,38,1.624,49,1.624,50,1.783,51,2.57,52,1.344]],["title/8",[35,0.174,53,1.708]],["description/8",[10,0.899,35,0.263,37,0.491,43,0.899,48,1.079,49,1.565,52,1.295,53,2.589]],["title/9",[54,0.557]],["description/9",[]],["title/10",[36,0.942,54,0.357,55,1.402]],["description/10",[1,0.692,3,0.692,8,0.692,9,0.956,10,0.549,16,1.248,26,1.177,27,0.692,32,0.692,36,0.791,37,0.462,46,0.692,48,0.387,52,0.465,54,0.392,55,1.177,56,0.889,57,2.841,58,1.974,59,1.536,60,1.512,61,1.512,62,0.889,63,0.889,64,0.889,65,0.889,66,0.889,67,0.889,68,1.512,69,0.889,70,0.889,71,0.889,72,0.889,73,0.889,74,0.692]],["title/11",[37,0.435,54,0.435]],["description/11",[37,0.575,42,1.516,43,1.053,48,1.263,54,0.575,74,2.256]],["title/12",[47,1.708,54,0.435]],["description/12",[37,0.552,42,1.454,43,1.01,48,1.212,54,0.552,75,2.78,76,2.164]],["title/13",[50,1.148,54,0.435]],["description/13",[10,0.933,37,0.51,43,0.933,50,1.344,52,1.344,54,0.51,59,2,76,2,77,2.57]]],"invertedIndex":[["",{"_index":57,"title":{},"description":{"10":{}}}],["1",{"_index":69,"title":{},"description":{"10":{}}}],["2",{"_index":70,"title":{},"description":{"10":{}}}],["3",{"_index":72,"title":{},"description":{"10":{}}}],["access",{"_index":58,"title":{},"description":{"10":{}}}],["account",{"_index":4,"title":{},"description":{"0":{}}}],["addit",{"_index":30,"title":{},"description":{"2":{}}}],["alphabet",{"_index":45,"title":{},"description":{"5":{}}}],["api",{"_index":7,"title":{"1":{}},"description":{"0":{},"1":{},"2":{},"3":{}}}],["api/v1",{"_index":17,"title":{},"description":{"1":{}}}],["api/v1/category/{company_id",{"_index":41,"title":{},"description":{"4":{},"5":{}}}],["api/v1/category/{company_id}/{category_id",{"_index":49,"title":{},"description":{"6":{},"7":{},"8":{}}}],["api/v1/unit/{company_id",{"_index":74,"title":{},"description":{"10":{},"11":{}}}],["api/v1/unit/{company_id}/{unit_id",{"_index":76,"title":{},"description":{"12":{},"13":{}}}],["authent",{"_index":60,"title":{},"description":{"10":{}}}],["avail",{"_index":21,"title":{},"description":{"2":{}}}],["backend",{"_index":6,"title":{},"description":{"0":{}}}],["befor",{"_index":67,"title":{},"description":{"10":{}}}],["belong",{"_index":43,"title":{},"description":{"5":{},"6":{},"8":{},"11":{},"12":{},"13":{}}}],["bill",{"_index":2,"title":{},"description":{"0":{}}}],["bodi",{"_index":27,"title":{},"description":{"2":{},"10":{}}}],["categori",{"_index":35,"title":{"3":{},"4":{},"5":{},"6":{},"7":{},"8":{}},"description":{"3":{},"4":{},"5":{},"6":{},"7":{},"8":{}}}],["compani",{"_index":37,"title":{"11":{}},"description":{"4":{},"5":{},"6":{},"8":{},"10":{},"11":{},"12":{},"13":{}}}],["creat",{"_index":36,"title":{"4":{},"10":{}},"description":{"4":{},"10":{}}}],["current",{"_index":15,"title":{},"description":{"1":{}}}],["delet",{"_index":53,"title":{"8":{}},"description":{"8":{}}}],["detail",{"_index":32,"title":{},"description":{"2":{},"10":{}}}],["document",{"_index":19,"title":{"2":{}},"description":{"2":{}}}],["endpoint",{"_index":9,"title":{},"description":{"0":{},"2":{},"10":{}}}],["erp",{"_index":5,"title":{},"description":{"0":{}}}],["exampl",{"_index":33,"title":{},"description":{"2":{}}}],["exist",{"_index":51,"title":{},"description":{"7":{}}}],["expand",{"_index":29,"title":{},"description":{"2":{}}}],["explor",{"_index":20,"title":{},"description":{"2":{}}}],["group",{"_index":31,"title":{},"description":{"2":{}}}],["http",{"_index":23,"title":{},"description":{"2":{}}}],["id",{"_index":46,"title":{"6":{}},"description":{"10":{}}}],["includ",{"_index":34,"title":{},"description":{"2":{}}}],["inventori",{"_index":3,"title":{},"description":{"0":{},"10":{}}}],["json",{"_index":73,"title":{},"description":{"10":{}}}],["kilogram",{"_index":64,"title":{},"description":{"10":{}}}],["litr",{"_index":65,"title":{},"description":{"10":{}}}],["manag",{"_index":10,"title":{},"description":{"0":{},"3":{},"7":{},"8":{},"10":{},"13":{}}}],["measur",{"_index":55,"title":{"10":{}},"description":{"10":{}}}],["method",{"_index":24,"title":{},"description":{"2":{}}}],["name",{"_index":38,"title":{},"description":{"4":{},"5":{},"7":{}}}],["new",{"_index":56,"title":{},"description":{"10":{}}}],["on",{"_index":75,"title":{},"description":{"12":{}}}],["oper",{"_index":12,"title":{},"description":{"0":{}}}],["order",{"_index":44,"title":{},"description":{"5":{}}}],["overview",{"_index":0,"title":{"0":{}},"description":{}}],["owner",{"_index":52,"title":{},"description":{"7":{},"8":{},"10":{},"13":{}}}],["paramet",{"_index":25,"title":{},"description":{"2":{}}}],["permiss",{"_index":77,"title":{},"description":{"13":{}}}],["piec",{"_index":66,"title":{},"description":{"10":{}}}],["prefix",{"_index":18,"title":{},"description":{"1":{}}}],["provid",{"_index":8,"title":{},"description":{"0":{},"10":{}}}],["request",{"_index":26,"title":{},"description":{"2":{},"10":{}}}],["requir",{"_index":59,"title":{},"description":{"10":{},"13":{}}}],["resourc",{"_index":11,"title":{},"description":{"0":{},"2":{}}}],["respons",{"_index":28,"title":{},"description":{"2":{}}}],["retriev",{"_index":42,"title":{},"description":{"5":{},"6":{},"11":{},"12":{}}}],["role",{"_index":62,"title":{},"description":{"10":{}}}],["send",{"_index":68,"title":{},"description":{"10":{}}}],["smarterp",{"_index":1,"title":{},"description":{"0":{},"10":{}}}],["specif",{"_index":47,"title":{"12":{}},"description":{"6":{}}}],["specifi",{"_index":48,"title":{},"description":{"6":{},"8":{},"10":{},"11":{},"12":{}}}],["such",{"_index":63,"title":{},"description":{"10":{}}}],["support",{"_index":13,"title":{},"description":{"0":{}}}],["understand",{"_index":22,"title":{},"description":{"2":{}}}],["uniqu",{"_index":39,"title":{},"description":{"4":{}}}],["unit",{"_index":54,"title":{"9":{},"10":{},"11":{},"12":{},"13":{}},"description":{"10":{},"11":{},"12":{},"13":{}}}],["updat",{"_index":50,"title":{"7":{},"13":{}},"description":{"7":{},"13":{}}}],["url",{"_index":71,"title":{},"description":{"10":{}}}],["us",{"_index":16,"title":{"2":{}},"description":{"1":{},"10":{}}}],["user",{"_index":61,"title":{},"description":{"10":{}}}],["version",{"_index":14,"title":{"1":{}},"description":{"1":{}}}],["within",{"_index":40,"title":{},"description":{"4":{}}}]],"pipeline":[]}},"options":{"layout":"stacked","theme":{"colors":{"primary":{"main":"#0F766E"}},"sidebar":{"width":"280px","backgroundColor":"#F8FAFC","textColor":"#334155","activeTextColor":"#0F766E"},"rightPanel":{"backgroundColor":"#0F172A","textColor":"#F8FAFC"},"typography":{"fontSize":"14px","lineHeight":"1.6em","fontFamily":"Arial, sans-serif","headings":{"fontFamily":"Arial, sans-serif","fontWeight":"600"},"links":{"color":"#0F766E"}}}}};
 
       var container = document.getElementById('redoc');
       Redoc.hydrate(__redoc_state, container);
 
       </script>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <strong>SmartERP API</strong><br>
-    Billing &middot; Inventory &middot; Accounting<br>
-    API documentation generated from the OpenAPI specification.
-  </footer>
 </body>
+
 </html>
