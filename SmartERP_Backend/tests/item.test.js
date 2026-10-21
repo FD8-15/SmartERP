@@ -640,6 +640,79 @@ describe("POST /api/v1/item/:company_id", () => {
         console.log(response2.body)
         console.log("Successfully tested GET one item from a different company")
     })
+
+    it("should paginate items using the database", async () => {
+        const owner = await createUserAndLogin();
+
+        const companyResponse = await createCompany(
+            owner.cookies,
+            "company_item_pagination"
+        );
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const unitResponse = await createUnit(owner.cookies, companyId, "KG");
+        const categoryResponse = await createCategory(
+            owner.cookies,
+            companyId,
+            "Electronics"
+        );
+        const createdIds = [];
+
+        for (let i = 1; i <= 3; i++) {
+            const response = await request(app)
+                .post(`/api/v1/item/${companyId}`)
+                .set("Cookie", owner.cookies)
+                .send({
+                    item_name: `Pagination Item ${i}`,
+                    sku: `PAGINATION-SKU-${Date.now()}-${i}`,
+                    brand: "HP",
+                    category_id: categoryResponse.body.data.category_id,
+                    unit_id: unitResponse.body.data.unit_id,
+                    gst_percentage: 18,
+                    default_purchase_price: 1000,
+                    default_selling_price: 1500,
+                    current_quantity: 10,
+                    status: "active"
+                });
+
+            expect(response.status).toBe(201);
+
+            createdIds.push(response.body.data.result3.item_id);
+        }
+
+
+        const page1 = await request(app)
+            .get(`/api/v1/item/${companyId}?page=1&limit=2`)
+            .set("Cookie", owner.cookies);
+
+
+        const page2 = await request(app)
+            .get(`/api/v1/item/${companyId}?page=2&limit=2`)
+            .set("Cookie", owner.cookies);
+
+        expect(page1.status).toBe(200);
+        expect(page1.body.data.items).toHaveLength(2);
+        expect(page1.body.data.pagination).toEqual({
+            page: 1,
+            limit: 2
+        });
+
+        expect(page2.status).toBe(200);
+        expect(page2.body.data.items).toHaveLength(1);
+        expect(page2.body.data.pagination).toEqual({
+            page: 2,
+            limit: 2
+        });
+
+        expect(page1.body.data.items.map(item => item.item_id))
+            .toEqual(createdIds.slice(0, 2));
+
+        expect(page2.body.data.items.map(item => item.item_id))
+            .toEqual(createdIds.slice(2));
+    });
+
+
+
 })
 describe("PATCH /api/v1/item/:company_id/:item_id", () => {
     it("should update the item", async () => {
@@ -1118,7 +1191,7 @@ describe("PATCH /api/v1/item/:company_id/:item_id", () => {
         console.log(response2.body)
         console.log("Successfully tested reject negative selling_price in update item")
     })
-     it("should reject whitespace field during update", async () => {
+    it("should reject whitespace field during update", async () => {
         const sku = `TEST-SKU-${Date.now()}`;
         const owner = await createUserAndLogin();
         const companyResponse = await createCompany(owner.cookies, "company10");
