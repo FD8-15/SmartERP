@@ -13,7 +13,7 @@ export const validate = (schema) => {
                 field: issue.path.join("."),
                 message: issue.message
             }));
-
+            console.log("ZOD VALIDATION ERRORS:", errors);
             return next(
                 new ApiError(400, "Validation failed", errors)
             );
