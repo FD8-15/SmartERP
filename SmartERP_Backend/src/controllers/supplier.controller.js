@@ -86,7 +86,7 @@ const updateSupplier = asyncHandler(async (req, res) => {
     const result2 = await pool.query("update suppliers set name=$1,contact_no=$2,email=$3,address=$4,gst_no=$5 where company_id=$6 and supplier_id=$7 returning *", [name, contact_no, email, address, gst_no, company_id, supplier_id])
 
     if (result2.rows.length === 0) {
-        throw new ApiError(404, "Customer not found")
+        throw new ApiError(404, "Supplier not found")
     }
 
     return res
