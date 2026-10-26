@@ -6,11 +6,22 @@ import { createCompany } from "./helpers/company.js";
 import { createUnit } from "./helpers/unit.js";
 import { createCategory } from "./helpers/category.js";
 
+
+let gstCounter = 0;
+function createTestGST() {
+    gstCounter++;
+
+    const uniquePart = String(gstCounter).padStart(4, "0");
+
+    return `30ABCDE${uniquePart}F1Z5`;
+}
+
 describe("POST /api/v1/supplier/:company_id", () => {
     it("should create a supplier", async () => {
         const owner = await createUserAndLogin();
         const companyResponse = await createCompany(owner.cookies, "company10");
         const companyId = companyResponse.body.data.resp.company_id;
+
         const response = await request(app)
             .post(`/api/v1/supplier/${companyId}`)
             .set("Cookie", owner.cookies)
@@ -19,18 +30,18 @@ describe("POST /api/v1/supplier/:company_id", () => {
                 contact_no: "9876543210",
                 email: `supplier_${Date.now()}@example.com`,
                 address: "123 Test Street",
-                gst_no: `30ABCDE${Date.now()}`
-            })
-            expect(response.status).toBe(201)
-            console.log(response.body)
-            console.log("Successfully tested create supplier")
-    })
-})
+                gst_no: createTestGST()
+            });
+
+        expect(response.status).toBe(201);
+        console.log(response.body);
+        console.log("Successfully tested create supplier");
+    });
+});
 
 describe("POST /api/v1/supplier/:company_id", () => {
-
     it("should reject duplicate GST in same company", async () => {
-        const gst = `30ABCDE${Date.now()}`;
+        const gst = createTestGST();
 
         const owner = await createUserAndLogin();
         const companyResponse = await createCompany(owner.cookies, "company11");
@@ -66,9 +77,8 @@ describe("POST /api/v1/supplier/:company_id", () => {
         console.log("Successfully tested duplicate GST");
     });
 
-
     it("should allow same GST in different company", async () => {
-        const gst = `30ABCDE${Date.now()}`;
+        const gst = createTestGST();
 
         const owner = await createUserAndLogin();
         const owner2 = await createUserAndLogin();
@@ -108,7 +118,6 @@ describe("POST /api/v1/supplier/:company_id", () => {
         console.log("Successfully tested same GST in different company");
     });
 
-
     it("should reject empty required field", async () => {
         const owner = await createUserAndLogin();
         const companyResponse = await createCompany(owner.cookies, "company14");
@@ -122,16 +131,15 @@ describe("POST /api/v1/supplier/:company_id", () => {
                 contact_no: "9876543210",
                 email: `supplier_${Date.now()}@example.com`,
                 address: "123 Test Street",
-                gst_no: `30ABCDE${Date.now()}`
+                gst_no: createTestGST()
             });
 
         expect(response.status).toBe(400);
-        expect(response.body.message).toBe("All fields are required");
+        expect(response.body.message).toBe("Validation failed");
 
         console.log(response.body);
         console.log("Successfully tested empty supplier field");
     });
-
 
     it("should reject unauthenticated user", async () => {
         const response = await request(app)
@@ -141,7 +149,7 @@ describe("POST /api/v1/supplier/:company_id", () => {
                 contact_no: "9876543210",
                 email: `supplier_${Date.now()}@example.com`,
                 address: "123 Test Street",
-                gst_no: `30ABCDE${Date.now()}`
+                gst_no: createTestGST()
             });
 
         expect(response.status).toBe(401);
@@ -149,7 +157,6 @@ describe("POST /api/v1/supplier/:company_id", () => {
         console.log(response.body);
         console.log("Successfully rejected unauthenticated supplier create");
     });
-
 });
 
 
@@ -168,7 +175,7 @@ describe("GET /api/v1/supplier/:company_id", () => {
                 contact_no: "9876543210",
                 email: `supplier_${Date.now()}@example.com`,
                 address: "123 Test Street",
-                gst_no: `30ABCDE${Date.now()}`
+                gst_no: createTestGST()
             });
 
         const response2 = await request(app)
@@ -256,7 +263,7 @@ describe("GET /api/v1/supplier/:company_id/:supplier_id", () => {
                 contact_no: "9876543210",
                 email: `supplier_${Date.now()}@example.com`,
                 address: "123 Test Street",
-                gst_no: `30ABCDE${Date.now()}`
+                gst_no: createTestGST()
             });
 
         const supplierId = response.body.data.supplier.supplier_id;
@@ -310,7 +317,7 @@ describe("GET /api/v1/supplier/:company_id/:supplier_id", () => {
                 contact_no: "9876543210",
                 email: `supplier_${Date.now()}@example.com`,
                 address: "123 Test Street",
-                gst_no: `30ABCDE${Date.now()}`
+                gst_no: createTestGST()
             });
 
         const supplierId = response.body.data.supplier.supplier_id;
@@ -340,7 +347,6 @@ describe("GET /api/v1/supplier/:company_id/:supplier_id", () => {
 
 });
 
-
 describe("PATCH /api/v1/supplier/:company_id/:supplier_id", () => {
 
     it("should update the supplier", async () => {
@@ -356,8 +362,10 @@ describe("PATCH /api/v1/supplier/:company_id/:supplier_id", () => {
                 contact_no: "9876543210",
                 email: `supplier_${Date.now()}@example.com`,
                 address: "123 Test Street",
-                gst_no: `30ABCDE${Date.now()}`
+                gst_no: createTestGST()
             });
+
+        expect(response.status).toBe(201);
 
         const supplierId = response.body.data.supplier.supplier_id;
 
@@ -369,26 +377,30 @@ describe("PATCH /api/v1/supplier/:company_id/:supplier_id", () => {
                 contact_no: "9999999999",
                 email: `updated_${Date.now()}@example.com`,
                 address: "Updated Address",
-                gst_no: `40ABCDE${Date.now()}`
+                gst_no: createTestGST()
             });
 
-        expect(response.status).toBe(201);
         expect(response2.status).toBe(200);
         expect(response2.body.data.supplierUpdated.name).toBe("Updated Traders");
         expect(response2.body.data.supplierUpdated.contact_no).toBe("9999999999");
 
-        console.log(response2.body);
-        console.log("Successfully tested update supplier");
+        console.log("Successfully tested supplier update");
     });
 
 
-    it("should reject duplicate GST during update", async () => {
-        const gst = `30ABCDE${Date.now()}`;
 
+    it("should reject duplicate GST during update", async () => {
         const owner = await createUserAndLogin();
         const companyResponse = await createCompany(owner.cookies, "company24");
         const companyId = companyResponse.body.data.resp.company_id;
 
+        const duplicateGST = createTestGST();
+        const secondGST = createTestGST();
+
+        
+        console.log("First GST:", duplicateGST);
+        console.log("Second GST:", secondGST);
+        // Create the first supplier with GST A.
         const response = await request(app)
             .post(`/api/v1/supplier/${companyId}`)
             .set("Cookie", owner.cookies)
@@ -397,9 +409,12 @@ describe("PATCH /api/v1/supplier/:company_id/:supplier_id", () => {
                 contact_no: "9876543210",
                 email: `supplier1_${Date.now()}@example.com`,
                 address: "123 Test Street",
-                gst_no: `40ABCDE${Date.now()}`
+                gst_no: duplicateGST
             });
 
+        expect(response.status).toBe(201);
+
+        // Create the second supplier with a different GST B.
         const response2 = await request(app)
             .post(`/api/v1/supplier/${companyId}`)
             .set("Cookie", owner.cookies)
@@ -408,11 +423,14 @@ describe("PATCH /api/v1/supplier/:company_id/:supplier_id", () => {
                 contact_no: "9876543211",
                 email: `supplier2_${Date.now()}@example.com`,
                 address: "456 Test Street",
-                gst_no: gst
+                gst_no: secondGST
             });
 
-        const supplierId = response.body.data.supplier.supplier_id;
+        expect(response2.status).toBe(201);
 
+        const supplierId = response2.body.data.supplier.supplier_id;
+
+        // Attempt to update supplier 2 using supplier 1's GST.
         const response3 = await request(app)
             .patch(`/api/v1/supplier/${companyId}/${supplierId}`)
             .set("Cookie", owner.cookies)
@@ -421,25 +439,22 @@ describe("PATCH /api/v1/supplier/:company_id/:supplier_id", () => {
                 contact_no: "9999999999",
                 email: `updated_${Date.now()}@example.com`,
                 address: "Updated Address",
-                gst_no: gst
+                gst_no: duplicateGST
             });
 
-        expect(response.status).toBe(201);
-        expect(response2.status).toBe(201);
         expect(response3.status).toBe(409);
         expect(response3.body.message).toBe("Already exists");
 
-        console.log(response3.body);
         console.log("Successfully tested duplicate GST during supplier update");
     });
 
 
-    it("should update supplier with same GST", async () => {
-        const gst = `30ABCDE${Date.now()}`;
-
+    it("should update supplier with the same GST", async () => {
         const owner = await createUserAndLogin();
         const companyResponse = await createCompany(owner.cookies, "company25");
         const companyId = companyResponse.body.data.resp.company_id;
+
+        const gst = createTestGST();
 
         const response = await request(app)
             .post(`/api/v1/supplier/${companyId}`)
@@ -452,6 +467,8 @@ describe("PATCH /api/v1/supplier/:company_id/:supplier_id", () => {
                 gst_no: gst
             });
 
+        expect(response.status).toBe(201);
+
         const supplierId = response.body.data.supplier.supplier_id;
 
         const response2 = await request(app)
@@ -465,11 +482,10 @@ describe("PATCH /api/v1/supplier/:company_id/:supplier_id", () => {
                 gst_no: gst
             });
 
-        expect(response.status).toBe(201);
         expect(response2.status).toBe(200);
+        expect(response2.body.data.supplierUpdated.gst_no).toBe(gst);
 
-        console.log(response2.body);
-        console.log("Successfully tested same GST during supplier update");
+        console.log("Successfully tested updating supplier with its existing GST");
     });
 
 
@@ -486,13 +502,14 @@ describe("PATCH /api/v1/supplier/:company_id/:supplier_id", () => {
                 contact_no: "9999999999",
                 email: `updated_${Date.now()}@example.com`,
                 address: "Updated Address",
-                gst_no: `50ABCDE${Date.now()}`
+                gst_no: createTestGST()
             });
 
         expect(response.status).toBe(404);
-        expect(response.body.message).toBe("Customer not found");
 
-        console.log(response.body);
+        // Keep this expectation aligned with the actual supplier controller message.
+        expect(response.body.message).toBe("Supplier not found");
+
         console.log("Successfully tested non-existent supplier update");
     });
 
@@ -510,13 +527,12 @@ describe("PATCH /api/v1/supplier/:company_id/:supplier_id", () => {
                 contact_no: "9999999999",
                 email: `updated_${Date.now()}@example.com`,
                 address: "Updated Address",
-                gst_no: `50ABCDE${Date.now()}`
+                gst_no: createTestGST()
             });
 
         expect(response.status).toBe(400);
-        expect(response.body.message).toBe("All fields are required");
+        expect(response.body.message).toBe("Validation failed");
 
-        console.log(response.body);
         console.log("Successfully tested empty field during supplier update");
     });
 
@@ -529,12 +545,11 @@ describe("PATCH /api/v1/supplier/:company_id/:supplier_id", () => {
                 contact_no: "9999999999",
                 email: `updated_${Date.now()}@example.com`,
                 address: "Updated Address",
-                gst_no: `50ABCDE${Date.now()}`
+                gst_no: createTestGST()
             });
 
         expect(response.status).toBe(401);
 
-        console.log(response.body);
         console.log("Successfully rejected unauthenticated supplier update");
     });
 
