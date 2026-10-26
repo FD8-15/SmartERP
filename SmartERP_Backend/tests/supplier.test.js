@@ -555,3 +555,234 @@ describe("PATCH /api/v1/supplier/:company_id/:supplier_id", () => {
 
 });
 
+describe("Zod validation - Supplier", () => {
+
+    // 1. Reject invalid email.
+    it("should reject invalid email", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(
+            owner.cookies,
+            "zod_email"
+        );
+
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .post(`/api/v1/supplier/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                name: "ABC Traders",
+                contact_no: "9876543210",
+                email: "invalid-email",
+                address: "123 Test Street",
+                gst_no: createTestGST()
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+    });
+
+
+    // 2. Reject invalid contact number.
+    it("should reject invalid contact number", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(
+            owner.cookies,
+            "zod_contact"
+        );
+
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .post(`/api/v1/supplier/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                name: "ABC Traders",
+                contact_no: "123",
+                email: `contact_${Date.now()}@example.com`,
+                address: "123 Test Street",
+                gst_no: createTestGST()
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+    });
+
+
+    // 3. Reject empty supplier name.
+    it("should reject empty supplier name", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(
+            owner.cookies,
+            "zod_name"
+        );
+
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .post(`/api/v1/supplier/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                name: "",
+                contact_no: "9876543210",
+                email: `name_${Date.now()}@example.com`,
+                address: "123 Test Street",
+                gst_no: createTestGST()
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+    });
+
+
+    // 4. Reject supplier name longer than 255 characters.
+    it("should reject supplier name exceeding 255 characters", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(
+            owner.cookies,
+            "zod_long_name"
+        );
+
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .post(`/api/v1/supplier/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                name: "A".repeat(256),
+                contact_no: "9876543210",
+                email: `longname_${Date.now()}@example.com`,
+                address: "123 Test Street",
+                gst_no: createTestGST()
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+    });
+
+
+    // 5. Reject GST number with an invalid length.
+    it("should reject GST number with invalid length", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(
+            owner.cookies,
+            "zod_gst_length"
+        );
+
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .post(`/api/v1/supplier/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                name: "ABC Traders",
+                contact_no: "9876543210",
+                email: `gstlength_${Date.now()}@example.com`,
+                address: "123 Test Street",
+                gst_no: "12345"
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+    });
+
+
+    // 6. Reject GST number with an invalid format.
+    it("should reject GST number with invalid format", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(
+            owner.cookies,
+            "zod_gst_format"
+        );
+
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .post(`/api/v1/supplier/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                name: "ABC Traders",
+                contact_no: "9876543210",
+                email: `gstformat_${Date.now()}@example.com`,
+                address: "123 Test Street",
+                gst_no: "30ABCDE1234F1Z@"
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+    });
+
+
+    // 7. Reject a missing required field.
+    it("should reject a missing address", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(
+            owner.cookies,
+            "zod_missing_address"
+        );
+
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .post(`/api/v1/supplier/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                name: "ABC Traders",
+                contact_no: "9876543210",
+                email: `missingaddress_${Date.now()}@example.com`,
+                gst_no: createTestGST()
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+    });
+
+
+    // 8. Reject a non-numeric company ID.
+    it("should reject invalid company ID", async () => {
+        const owner = await createUserAndLogin();
+
+        const response = await request(app)
+            .post("/api/v1/supplier/abc")
+            .set("Cookie", owner.cookies)
+            .send({
+                name: "ABC Traders",
+                contact_no: "9876543210",
+                email: `companyid_${Date.now()}@example.com`,
+                address: "123 Test Street",
+                gst_no: createTestGST()
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+    });
+
+
+    // 9. Reject a non-numeric supplier ID.
+    it("should reject invalid supplier ID", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(
+            owner.cookies,
+            "zod_supplier_id"
+        );
+
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .patch(`/api/v1/supplier/${companyId}/abc`)
+            .set("Cookie", owner.cookies)
+            .send({
+                name: "ABC Traders",
+                contact_no: "9876543210",
+                email: `supplierid_${Date.now()}@example.com`,
+                address: "123 Test Street",
+                gst_no: createTestGST()
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+    });
+
+});
+
+
