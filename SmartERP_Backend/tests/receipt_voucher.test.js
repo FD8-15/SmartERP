@@ -650,7 +650,7 @@ describe("PATCH /api/v1/receipt-voucher/:company_id/:sales_id/:receipt_id", () =
             .set("Cookie", owner.cookies)
             .send({
                 name: "Wrong Customer",
-                contact_no: `98765${Date.now()}`
+                contact_no: "9800005001"
             });
 
         const createResponse = await request(app)

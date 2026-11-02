@@ -732,3 +732,269 @@ describe("PATCH /api/v1/payment-voucher/:company_id/:voucher_id/:supplier_id/:pa
     });
 
 });
+
+
+describe("Payment Voucher - Zod Validation", () => {
+
+    // ── POST body validation ──────────────────────────────────────────────────
+
+    it("should reject missing paid_amt", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_pv_z1");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const purchaseResponse = await createPurchaseVoucher(owner.cookies, companyId);
+        const voucherId = purchaseResponse.body.data.voucher.voucher_id;
+        const supplierId = purchaseResponse.body.data.voucher.supplier_id;
+
+        const response = await request(app)
+            .post(`/api/v1/payment-voucher/${companyId}/${voucherId}/${supplierId}`)
+            .set("Cookie", owner.cookies)
+            .send({ date: "2026-09-28", mode: "cash" });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: missing paid_amt →", response.body.message);
+    });
+
+    it("should reject negative paid_amt", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_pv_z2");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const purchaseResponse = await createPurchaseVoucher(owner.cookies, companyId);
+        const voucherId = purchaseResponse.body.data.voucher.voucher_id;
+        const supplierId = purchaseResponse.body.data.voucher.supplier_id;
+
+        const response = await request(app)
+            .post(`/api/v1/payment-voucher/${companyId}/${voucherId}/${supplierId}`)
+            .set("Cookie", owner.cookies)
+            .send({ paid_amt: -100, date: "2026-09-28", mode: "cash" });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: negative paid_amt →", response.body.message);
+    });
+
+    it("should reject zero paid_amt", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_pv_z3");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const purchaseResponse = await createPurchaseVoucher(owner.cookies, companyId);
+        const voucherId = purchaseResponse.body.data.voucher.voucher_id;
+        const supplierId = purchaseResponse.body.data.voucher.supplier_id;
+
+        const response = await request(app)
+            .post(`/api/v1/payment-voucher/${companyId}/${voucherId}/${supplierId}`)
+            .set("Cookie", owner.cookies)
+            .send({ paid_amt: 0, date: "2026-09-28", mode: "cash" });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: zero paid_amt →", response.body.message);
+    });
+
+    it("should reject missing date", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_pv_z4");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const purchaseResponse = await createPurchaseVoucher(owner.cookies, companyId);
+        const voucherId = purchaseResponse.body.data.voucher.voucher_id;
+        const supplierId = purchaseResponse.body.data.voucher.supplier_id;
+
+        const response = await request(app)
+            .post(`/api/v1/payment-voucher/${companyId}/${voucherId}/${supplierId}`)
+            .set("Cookie", owner.cookies)
+            .send({ paid_amt: 10000, mode: "cash" });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: missing date →", response.body.message);
+    });
+
+    it("should reject invalid date format", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_pv_z5");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const purchaseResponse = await createPurchaseVoucher(owner.cookies, companyId);
+        const voucherId = purchaseResponse.body.data.voucher.voucher_id;
+        const supplierId = purchaseResponse.body.data.voucher.supplier_id;
+
+        const response = await request(app)
+            .post(`/api/v1/payment-voucher/${companyId}/${voucherId}/${supplierId}`)
+            .set("Cookie", owner.cookies)
+            .send({ paid_amt: 10000, date: "28-09-2026", mode: "cash" });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: invalid date format →", response.body.message);
+    });
+
+    it("should reject missing mode", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_pv_z6");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const purchaseResponse = await createPurchaseVoucher(owner.cookies, companyId);
+        const voucherId = purchaseResponse.body.data.voucher.voucher_id;
+        const supplierId = purchaseResponse.body.data.voucher.supplier_id;
+
+        const response = await request(app)
+            .post(`/api/v1/payment-voucher/${companyId}/${voucherId}/${supplierId}`)
+            .set("Cookie", owner.cookies)
+            .send({ paid_amt: 10000, date: "2026-09-28" });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: missing mode →", response.body.message);
+    });
+
+    it("should reject empty mode string", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_pv_z7");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const purchaseResponse = await createPurchaseVoucher(owner.cookies, companyId);
+        const voucherId = purchaseResponse.body.data.voucher.voucher_id;
+        const supplierId = purchaseResponse.body.data.voucher.supplier_id;
+
+        const response = await request(app)
+            .post(`/api/v1/payment-voucher/${companyId}/${voucherId}/${supplierId}`)
+            .set("Cookie", owner.cookies)
+            .send({ paid_amt: 10000, date: "2026-09-28", mode: "" });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: empty mode →", response.body.message);
+    });
+
+    // ── POST param validation ─────────────────────────────────────────────────
+
+    it("should reject non-integer company_id param on POST", async () => {
+        const owner = await createUserAndLogin();
+
+        const response = await request(app)
+            .post("/api/v1/payment-voucher/abc/1/1")
+            .set("Cookie", owner.cookies)
+            .send({ paid_amt: 10000, date: "2026-09-28", mode: "cash" });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: invalid company_id param →", response.body.message);
+    });
+
+    it("should reject negative voucher_id param on POST", async () => {
+        const owner = await createUserAndLogin();
+
+        const response = await request(app)
+            .post("/api/v1/payment-voucher/1/-5/1")
+            .set("Cookie", owner.cookies)
+            .send({ paid_amt: 10000, date: "2026-09-28", mode: "cash" });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: negative voucher_id param →", response.body.message);
+    });
+
+    it("should reject negative supplier_id param on POST", async () => {
+        const owner = await createUserAndLogin();
+
+        const response = await request(app)
+            .post("/api/v1/payment-voucher/1/1/-3")
+            .set("Cookie", owner.cookies)
+            .send({ paid_amt: 10000, date: "2026-09-28", mode: "cash" });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: negative supplier_id param →", response.body.message);
+    });
+
+    // ── PATCH body validation ─────────────────────────────────────────────────
+
+    it("should reject missing amtNew on PATCH", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_pv_z8");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const purchaseResponse = await createPurchaseVoucher(owner.cookies, companyId);
+        const voucherId = purchaseResponse.body.data.voucher.voucher_id;
+        const supplierId = purchaseResponse.body.data.voucher.supplier_id;
+
+        const createPv = await request(app)
+            .post(`/api/v1/payment-voucher/${companyId}/${voucherId}/${supplierId}`)
+            .set("Cookie", owner.cookies)
+            .send({ paid_amt: 10000, date: "2026-09-28", mode: "cash" });
+        const paymentId = createPv.body.data.Voucher.payment_id;
+
+        const response = await request(app)
+            .patch(`/api/v1/payment-voucher/${companyId}/${voucherId}/${supplierId}/${paymentId}`)
+            .set("Cookie", owner.cookies)
+            .send({});
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: missing amtNew →", response.body.message);
+    });
+
+    it("should reject negative amtNew on PATCH", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_pv_z9");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const purchaseResponse = await createPurchaseVoucher(owner.cookies, companyId);
+        const voucherId = purchaseResponse.body.data.voucher.voucher_id;
+        const supplierId = purchaseResponse.body.data.voucher.supplier_id;
+
+        const createPv = await request(app)
+            .post(`/api/v1/payment-voucher/${companyId}/${voucherId}/${supplierId}`)
+            .set("Cookie", owner.cookies)
+            .send({ paid_amt: 10000, date: "2026-09-28", mode: "cash" });
+        const paymentId = createPv.body.data.Voucher.payment_id;
+
+        const response = await request(app)
+            .patch(`/api/v1/payment-voucher/${companyId}/${voucherId}/${supplierId}/${paymentId}`)
+            .set("Cookie", owner.cookies)
+            .send({ amtNew: -500 });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: negative amtNew →", response.body.message);
+    });
+
+    it("should reject invalid payment_id param on PATCH", async () => {
+        const owner = await createUserAndLogin();
+
+        const response = await request(app)
+            .patch("/api/v1/payment-voucher/1/1/1/abc")
+            .set("Cookie", owner.cookies)
+            .send({ amtNew: 5000 });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: invalid payment_id param on PATCH →", response.body.message);
+    });
+
+    // ── GET query validation ──────────────────────────────────────────────────
+
+    it("should reject invalid page query param on GET all", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_pv_z10");
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .get(`/api/v1/payment-voucher/${companyId}?page=abc`)
+            .set("Cookie", owner.cookies);
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: invalid page query →", response.body.message);
+    });
+
+    it("should reject limit exceeding 100 on GET all", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_pv_z11");
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .get(`/api/v1/payment-voucher/${companyId}?limit=200`)
+            .set("Cookie", owner.cookies);
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: limit > 100 →", response.body.message);
+    });
+});

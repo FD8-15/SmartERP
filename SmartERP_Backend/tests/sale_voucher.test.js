@@ -3,7 +3,7 @@ import { createCompany } from "./helpers/company.js";
 import { createItem } from "./helpers/item.js";
 import { createSalesVoucher } from "./helpers/sale_voucher.js";
 import request from "supertest";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeAll } from "vitest";
 import app from "../src/app.js";
 
 
@@ -36,7 +36,7 @@ describe("POST /api/v1/sales-voucher/:company_id/:customer_id/:contact_no", () =
             .set("Cookie", owner.cookies)
             .send({
                 name: "ABC Customer",
-                contact_no: `98765${Date.now()}`
+                contact_no: "9800001001"
             });
 
         const customerId = customerResponse.body.data.Customer.customer_id;
@@ -105,7 +105,7 @@ describe("POST /api/v1/sales-voucher/:company_id/:customer_id/:contact_no", () =
             .set("Cookie", owner.cookies)
             .send({
                 name: "ABC Customer",
-                contact_no: `98765${Date.now()}`
+                contact_no: "9800001002"
             });
 
         const customerId = customerResponse.body.data.Customer.customer_id;
@@ -142,7 +142,7 @@ describe("POST /api/v1/sales-voucher/:company_id/:customer_id/:contact_no", () =
             .set("Cookie", owner.cookies)
             .send({
                 name: "ABC Customer",
-                contact_no: `98765${Date.now()}`
+                contact_no: "9800001003"
             });
 
         const customerId = customerResponse.body.data.Customer.customer_id;
@@ -202,7 +202,7 @@ describe("POST /api/v1/sales-voucher/:company_id/:customer_id/:contact_no", () =
             .set("Cookie", owner.cookies)
             .send({
                 name: "ABC Customer",
-                contact_no: `98765${Date.now()}`
+                contact_no: "9800001004"
             });
 
         const customerId = customerResponse.body.data.Customer.customer_id;
@@ -254,7 +254,7 @@ describe("POST /api/v1/sales-voucher/:company_id/:customer_id/:contact_no", () =
             .set("Cookie", owner.cookies)
             .send({
                 name: "ABC Customer",
-                contact_no: `98765${Date.now()}`
+                contact_no: "9800001005"
             });
 
         const customerId = customerResponse.body.data.Customer.customer_id;
@@ -680,7 +680,7 @@ describe("PATCH /api/v1/sales-voucher/:company_id/:sales_id", () => {
             .set("Cookie", owner.cookies)
             .send({
                 name: "ABC Customer",
-                contact_no: `98765${Date.now()}`
+                contact_no: "9800001006"
             });
 
         const customerId = customerResponse.body.data.Customer.customer_id;
@@ -751,7 +751,7 @@ describe("PATCH /api/v1/sales-voucher/:company_id/:sales_id", () => {
             .set("Cookie", owner.cookies)
             .send({
                 name: "ABC Customer",
-                contact_no: `98765${Date.now()}`
+                contact_no: "9800001007"
             });
 
         const customerId = customerResponse.body.data.Customer.customer_id;
@@ -822,7 +822,7 @@ describe("PATCH /api/v1/sales-voucher/:company_id/:sales_id", () => {
             .set("Cookie", owner.cookies)
             .send({
                 name: "ABC Customer",
-                contact_no: `98765${Date.now()}`
+                contact_no: "9800001008"
             });
 
         const customerId = customerResponse.body.data.Customer.customer_id;
@@ -963,4 +963,171 @@ describe("PATCH /api/v1/sales-voucher/:company_id/:sales_id", () => {
         console.log("Successfully rejected employee sales update");
     });
 
+});
+
+describe("Sales Voucher - Zod Validation", () => {
+    let owner;
+    let companyId;
+    let customerId;
+    let contactNo;
+    let itemId;
+
+    beforeAll(async () => {
+        owner = await createUserAndLogin();
+        const comp = await createCompany(owner.cookies, "SVZodCo");
+        companyId = comp.body.data.resp.company_id;
+        contactNo = "9800099999";
+        const cust = await request(app)
+            .post(`/api/v1/customer/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                name: "Zod Customer",
+                contact_no: contactNo
+            });
+        customerId = cust.body.data.Customer.customer_id;
+        const item = await createItem(owner.cookies, companyId, 50, 2000);
+        itemId = item.body.data.result3.item_id;
+    });
+
+    describe("POST /api/v1/sale-voucher/:company_id/:customer_id/:contact_no - Zod Validation", () => {
+        it("should reject when date is missing", async () => {
+            const res = await request(app)
+                .post(`/api/v1/sales-voucher/${companyId}/${customerId}/${contactNo}`)
+                .set("Cookie", owner.cookies)
+                .send({
+                    items: [{ item_id: itemId, qty: 1 }]
+                });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+
+        it("should reject when date format is invalid", async () => {
+            const res = await request(app)
+                .post(`/api/v1/sales-voucher/${companyId}/${customerId}/${contactNo}`)
+                .set("Cookie", owner.cookies)
+                .send({
+                    date: "2026/09/28",
+                    items: [{ item_id: itemId, qty: 1 }]
+                });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+
+        it("should reject when items array is empty", async () => {
+            const res = await request(app)
+                .post(`/api/v1/sales-voucher/${companyId}/${customerId}/${contactNo}`)
+                .set("Cookie", owner.cookies)
+                .send({
+                    date: "2026-09-28",
+                    items: []
+                });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+
+        it("should reject when item qty is negative or zero", async () => {
+            const res = await request(app)
+                .post(`/api/v1/sales-voucher/${companyId}/${customerId}/${contactNo}`)
+                .set("Cookie", owner.cookies)
+                .send({
+                    date: "2026-09-28",
+                    items: [{ item_id: itemId, qty: -2 }]
+                });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+
+        it("should reject invalid contact_no in params", async () => {
+            const res = await request(app)
+                .post(`/api/v1/sales-voucher/${companyId}/${customerId}/12345`)
+                .set("Cookie", owner.cookies)
+                .send({
+                    date: "2026-09-28",
+                    items: [{ item_id: itemId, qty: 1 }]
+                });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+
+        it("should reject invalid customer_id in params", async () => {
+            const res = await request(app)
+                .post(`/api/v1/sales-voucher/${companyId}/abc/${contactNo}`)
+                .set("Cookie", owner.cookies)
+                .send({
+                    date: "2026-09-28",
+                    items: [{ item_id: itemId, qty: 1 }]
+                });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+
+        it("should reject invalid company_id in params", async () => {
+            const res = await request(app)
+                .post(`/api/v1/sales-voucher/invalid/${customerId}/${contactNo}`)
+                .set("Cookie", owner.cookies)
+                .send({
+                    date: "2026-09-28",
+                    items: [{ item_id: itemId, qty: 1 }]
+                });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+    });
+
+    describe("GET /api/v1/sales-voucher/:company_id - Zod Validation", () => {
+        it("should reject invalid company_id in GET all", async () => {
+            const res = await request(app)
+                .get("/api/v1/sales-voucher/xyz")
+                .set("Cookie", owner.cookies);
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+
+        it("should reject invalid pagination limit query param", async () => {
+            const res = await request(app)
+                .get(`/api/v1/sales-voucher/${companyId}?limit=abc`)
+                .set("Cookie", owner.cookies);
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+    });
+
+    describe("GET /api/v1/sales-voucher/:company_id/:sales_id - Zod Validation", () => {
+        it("should reject invalid sales_id param", async () => {
+            const res = await request(app)
+                .get(`/api/v1/sales-voucher/${companyId}/abc`)
+                .set("Cookie", owner.cookies);
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+    });
+
+    describe("PATCH /api/v1/sales-voucher/:company_id/:sales_id - Zod Validation", () => {
+        it("should reject empty items array on update", async () => {
+            const res = await request(app)
+                .patch(`/api/v1/sales-voucher/${companyId}/1`)
+                .set("Cookie", owner.cookies)
+                .send({ items: [] });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+
+        it("should reject invalid qty on update", async () => {
+            const res = await request(app)
+                .patch(`/api/v1/sales-voucher/${companyId}/1`)
+                .set("Cookie", owner.cookies)
+                .send({ items: [{ item_id: itemId, qty: 0 }] });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+
+        it("should reject invalid sales_id on update", async () => {
+            const res = await request(app)
+                .patch(`/api/v1/sales-voucher/${companyId}/invalid`)
+                .set("Cookie", owner.cookies)
+                .send({ items: [{ item_id: itemId, qty: 1 }] });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+    });
 });

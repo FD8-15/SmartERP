@@ -115,7 +115,7 @@ const updateUnit = asyncHandler(async (req, res) => {
     }
 
     const result2 = await pool.query(
-        `UPDATE units SET unit_name = $1WHERE company_id = $2 AND unit_id = $3 RETURNING *`,
+        `UPDATE units SET unit_name = $1 WHERE company_id = $2 AND unit_id = $3 RETURNING *`,
         [unitName, company_id, unit_id]
     );
 

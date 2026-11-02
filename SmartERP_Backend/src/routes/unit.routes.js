@@ -8,6 +8,13 @@ import {
 import { auth } from "../middlewares/jwt.js";
 import { company_access } from "../middlewares/company_access.middleware.js";
 import { checkRole } from "../middlewares/checkRole.middleware.js";
+import { validate } from "../middlewares/validate.middleware.js";
+import {
+  createUnitSchema,
+  updateUnitSchema,
+  getUnitsSchema,
+  unitIdParamsSchema
+} from "../schemas/unit.schema.js";
 
 const router = Router();
 
@@ -97,6 +104,7 @@ const router = Router();
 router.post(
   "/:company_id",
   auth,
+  validate(createUnitSchema),
   company_access,
   checkRole("owner", "manager"),
   createUnit
@@ -125,7 +133,13 @@ router.post(
  *       403:
  *         description: Access to the company denied
  */
-router.get("/:company_id", auth, company_access, getUnits);
+router.get(
+  "/:company_id",
+  auth,
+  validate(getUnitsSchema),
+  company_access,
+  getUnits
+);
 
 /**
  * @swagger
@@ -158,7 +172,13 @@ router.get("/:company_id", auth, company_access, getUnits);
  *       404:
  *         description: Unit not found
  */
-router.get("/:company_id/:unit_id", auth, company_access, getOneUnit);
+router.get(
+  "/:company_id/:unit_id",
+  auth,
+  validate(unitIdParamsSchema),
+  company_access,
+  getOneUnit
+);
 
 /**
  * @swagger
@@ -209,10 +229,10 @@ router.get("/:company_id/:unit_id", auth, company_access, getOneUnit);
 router.patch(
   "/:company_id/:unit_id",
   auth,
+  validate(updateUnitSchema),
   company_access,
   checkRole("owner", "manager"),
   updateUnit
 );
 
 export default router;
-

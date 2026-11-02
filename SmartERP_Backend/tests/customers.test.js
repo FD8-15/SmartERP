@@ -72,7 +72,7 @@ describe("POST /api/v1/customer/:company_id", () => {
             });
 
         expect(response.status).toBe(400);
-        expect(response.body.message).toBe("All fields are required");
+        expect(response.body.message).toBe("Validation failed");
 
         console.log(response.body);
         console.log("Successfully tested missing customer fields");
@@ -366,7 +366,7 @@ describe("PATCH /api/v1/customer/:company_id/:customer_id", () => {
             });
 
         expect(response.status).toBe(400);
-        expect(response.body.message).toBe("All fields are required");
+        expect(response.body.message).toBe("Validation failed");
 
         console.log(response.body);
         console.log("Successfully tested missing fields during customer update");
@@ -441,6 +441,179 @@ describe("PATCH /api/v1/customer/:company_id/:customer_id", () => {
 
         console.log(response.body);
         console.log("Successfully tested customer update isolation");
+    });
+
+});
+describe("Zod validation - Customer", () => {
+
+    it("should reject invalid contact number", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "zod_cust_contact");
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .post(`/api/v1/customer/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                name: "ABC Customer",
+                contact_no: "12345"
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+    });
+
+    it("should reject customer contact number with invalid starting digit", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "zod_cust_digit");
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .post(`/api/v1/customer/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                name: "ABC Customer",
+                contact_no: "1876543210"
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+    });
+
+    it("should reject customer name with less than 2 characters", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "zod_cust_short_name");
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .post(`/api/v1/customer/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                name: "A",
+                contact_no: "9876543210"
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+    });
+
+    it("should reject customer name exceeding 255 characters", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "zod_cust_long_name");
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .post(`/api/v1/customer/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                name: "A".repeat(256),
+                contact_no: "9876543210"
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+    });
+
+    it("should reject missing required field in customer creation", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "zod_cust_missing");
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .post(`/api/v1/customer/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                name: "ABC Customer"
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+    });
+
+    it("should reject invalid non-numeric company ID in POST", async () => {
+        const owner = await createUserAndLogin();
+
+        const response = await request(app)
+            .post("/api/v1/customer/invalid_id")
+            .set("Cookie", owner.cookies)
+            .send({
+                name: "ABC Customer",
+                contact_no: "9876543210"
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+    });
+
+    it("should reject invalid non-numeric company ID in GET", async () => {
+        const owner = await createUserAndLogin();
+
+        const response = await request(app)
+            .get("/api/v1/customer/invalid_id")
+            .set("Cookie", owner.cookies);
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+    });
+
+    it("should reject invalid non-numeric customer ID in GET one", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "zod_cust_get_id");
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .get(`/api/v1/customer/${companyId}/abc`)
+            .set("Cookie", owner.cookies);
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+    });
+
+    it("should reject invalid non-numeric customer ID in PATCH", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "zod_cust_patch_id");
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .patch(`/api/v1/customer/${companyId}/abc`)
+            .set("Cookie", owner.cookies)
+            .send({
+                name: "Updated Name",
+                contact_no: "9876543210"
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+    });
+
+    it("should reject invalid query pagination parameters in GET customers", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "zod_cust_query");
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .get(`/api/v1/customer/${companyId}?page=-5&limit=abc`)
+            .set("Cookie", owner.cookies);
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+    });
+
+    it("should accept valid customer creation", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "zod_cust_valid");
+        const companyId = companyResponse.body.data.resp.company_id;
+
+        const response = await request(app)
+            .post(`/api/v1/customer/${companyId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                name: "Valid Customer",
+                contact_no: "9876543210"
+            });
+
+        expect(response.status).toBe(201);
+        expect(response.body.data.Customer.name).toBe("Valid Customer");
     });
 
 });

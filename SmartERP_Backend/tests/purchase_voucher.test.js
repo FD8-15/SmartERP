@@ -45,7 +45,7 @@ describe("POST /api/v1/purchase-voucher/:company_id", () => {
             .set("Cookie", owner.cookies)
             .send({
                 date: "2026-09-28",
-                gst_no: "99999999999",
+                gst_no: "30ABCDE9999F1Z5",
                 items: [
                     {
                         item_id: itemId,
@@ -1109,5 +1109,183 @@ describe("PATCH /api/v1/purchase-voucher/:company_id/:voucher_id", () => {
         expect(response2.status).toBe(403);
         console.log(response2.body);
         console.log("Successfully rejected employee from updating purchase voucher");
+    });
+});
+
+describe("Purchase Voucher - Zod Validation", () => {
+    let owner;
+    let companyId;
+    let supplierGst;
+    let itemId;
+
+    beforeAll(async () => {
+        owner = await createUserAndLogin();
+        const comp = await createCompany(owner.cookies, "PVZodCompany");
+        companyId = comp.body.data.resp.company_id;
+        const sup = await createSupplier(owner.cookies, companyId);
+        supplierGst = sup.body.data.supplier.gst_no;
+        const item = await createItem(owner.cookies, companyId);
+        itemId = item.body.data.result3.item_id;
+    });
+
+    describe("POST /api/v1/purchase-voucher/:company_id - Zod Validation", () => {
+        it("should reject when date is missing", async () => {
+            const res = await request(app)
+                .post(`/api/v1/purchase-voucher/${companyId}`)
+                .set("Cookie", owner.cookies)
+                .send({
+                    gst_no: supplierGst,
+                    items: [{ item_id: itemId, qty: 1 }]
+                });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+
+        it("should reject when date format is invalid", async () => {
+            const res = await request(app)
+                .post(`/api/v1/purchase-voucher/${companyId}`)
+                .set("Cookie", owner.cookies)
+                .send({
+                    date: "01-01-2026",
+                    gst_no: supplierGst,
+                    items: [{ item_id: itemId, qty: 1 }]
+                });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+
+        it("should reject when gst_no is missing", async () => {
+            const res = await request(app)
+                .post(`/api/v1/purchase-voucher/${companyId}`)
+                .set("Cookie", owner.cookies)
+                .send({
+                    date: "2026-09-28",
+                    items: [{ item_id: itemId, qty: 1 }]
+                });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+
+        it("should reject when gst_no format is invalid", async () => {
+            const res = await request(app)
+                .post(`/api/v1/purchase-voucher/${companyId}`)
+                .set("Cookie", owner.cookies)
+                .send({
+                    date: "2026-09-28",
+                    gst_no: "INVALID_GST",
+                    items: [{ item_id: itemId, qty: 1 }]
+                });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+
+        it("should reject when items is not an array or empty", async () => {
+            const res = await request(app)
+                .post(`/api/v1/purchase-voucher/${companyId}`)
+                .set("Cookie", owner.cookies)
+                .send({
+                    date: "2026-09-28",
+                    gst_no: supplierGst,
+                    items: []
+                });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+
+        it("should reject when item_id is negative or non-integer", async () => {
+            const res = await request(app)
+                .post(`/api/v1/purchase-voucher/${companyId}`)
+                .set("Cookie", owner.cookies)
+                .send({
+                    date: "2026-09-28",
+                    gst_no: supplierGst,
+                    items: [{ item_id: -5, qty: 1 }]
+                });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+
+        it("should reject when qty is negative or zero", async () => {
+            const res = await request(app)
+                .post(`/api/v1/purchase-voucher/${companyId}`)
+                .set("Cookie", owner.cookies)
+                .send({
+                    date: "2026-09-28",
+                    gst_no: supplierGst,
+                    items: [{ item_id: itemId, qty: 0 }]
+                });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+
+        it("should reject invalid company_id URL param", async () => {
+            const res = await request(app)
+                .post("/api/v1/purchase-voucher/invalid")
+                .set("Cookie", owner.cookies)
+                .send({
+                    date: "2026-09-28",
+                    gst_no: supplierGst,
+                    items: [{ item_id: itemId, qty: 1 }]
+                });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+    });
+
+    describe("GET /api/v1/purchase-voucher/:company_id - Zod Validation", () => {
+        it("should reject invalid company_id param", async () => {
+            const res = await request(app)
+                .get("/api/v1/purchase-voucher/abc")
+                .set("Cookie", owner.cookies);
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+
+        it("should reject invalid pagination query params", async () => {
+            const res = await request(app)
+                .get(`/api/v1/purchase-voucher/${companyId}?page=invalid`)
+                .set("Cookie", owner.cookies);
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+    });
+
+    describe("GET /api/v1/purchase-voucher/:company_id/:voucher_id - Zod Validation", () => {
+        it("should reject invalid voucher_id param", async () => {
+            const res = await request(app)
+                .get(`/api/v1/purchase-voucher/${companyId}/xyz`)
+                .set("Cookie", owner.cookies);
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+    });
+
+    describe("PATCH /api/v1/purchase-voucher/:company_id/:voucher_id - Zod Validation", () => {
+        it("should reject missing or empty items array", async () => {
+            const res = await request(app)
+                .patch(`/api/v1/purchase-voucher/${companyId}/1`)
+                .set("Cookie", owner.cookies)
+                .send({ items: [] });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+
+        it("should reject invalid item qty in update", async () => {
+            const res = await request(app)
+                .patch(`/api/v1/purchase-voucher/${companyId}/1`)
+                .set("Cookie", owner.cookies)
+                .send({ items: [{ item_id: itemId, qty: -1 }] });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
+
+        it("should reject invalid voucher_id param", async () => {
+            const res = await request(app)
+                .patch(`/api/v1/purchase-voucher/${companyId}/abc`)
+                .set("Cookie", owner.cookies)
+                .send({ items: [{ item_id: itemId, qty: 1 }] });
+            expect(res.status).toBe(400);
+            expect(res.body.message).toBe("Validation failed");
+        });
     });
 });

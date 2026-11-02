@@ -938,6 +938,17 @@ describe("PATCH /api/v1/item/:company_id/:item_id", () => {
         const response2 = await request(app)
             .patch(`/api/v1/item/${companyId}/${item_id}`)
             .set("Cookie", owner2.cookies)
+            .send({
+                item_name: "Laptop",
+                sku: sku,
+                brand: "HP",
+                category_id: categoryResponse.body.data.category_id,
+                unit_id: unitResponse.body.data.unit_id,
+                gst_percentage: 10,
+                default_purchase_price: 50000,
+                default_selling_price: 60000,
+                status: "active"
+            });
         expect(response.status).toBe(201);
         expect(response2.status).toBe(403);
         console.log(response2.body)

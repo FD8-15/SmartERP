@@ -1,14 +1,16 @@
 import request from "supertest";
 import app from "../../src/app.js";
 import { createItem } from "./item.js";
+import { createTestPhone } from "./customer.js";
 
 async function createSalesVoucher(cookies, companyId, quantity = 2, sellingPrice = 60000) {
+    const phone = createTestPhone();
     const customerResponse = await request(app)
         .post(`/api/v1/customer/${companyId}`)
         .set("Cookie", cookies)
         .send({
             name: "ABC Customer",
-            contact_no: `98765${Date.now()}`
+            contact_no: phone
         });
 
     const customerId = customerResponse.body.data.Customer.customer_id;

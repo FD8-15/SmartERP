@@ -1,16 +1,21 @@
 import request from "supertest";
 import app from "../../src/app.js";
-import { randomUUID } from "node:crypto";
 
-async function createUser() {
-    const email = `vitest_${randomUUID()}@example.com`;
+let userCounter = 1;
+
+export function getNextUserEmail(prefix = "vitest_user") {
+    return `${prefix}_${Date.now()}_${userCounter++}@example.com`;
+}
+
+async function createUser(emailParam = null, password = "password123", name = "Test User") {
+    const email = emailParam || getNextUserEmail();
 
     const response = await request(app)
         .post("/api/v1/users/register")
         .send({
-            name: "Test User",
+            name,
             email,
-            password: "password123",
+            password
         });
 
     if (response.status !== 201) {
@@ -19,15 +24,15 @@ async function createUser() {
         );
     }
 
-    return { email };
+    return { email, name };
 }
 
-async function loginUser(email) {
+async function loginUser(email, password = "password123") {
     const response = await request(app)
         .post("/api/v1/users/login")
         .send({
             email,
-            password: "password123"
+            password
         });
 
     if (response.status !== 200) {
@@ -41,9 +46,9 @@ async function loginUser(email) {
     return { cookies };
 }
 
-async function createUserAndLogin() {
-    const user = await createUser();
-    const login = await loginUser(user.email);
+async function createUserAndLogin(emailParam = null, password = "password123") {
+    const user = await createUser(emailParam, password);
+    const login = await loginUser(user.email, password);
 
     return {
         email: user.email,
