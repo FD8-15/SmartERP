@@ -743,3 +743,416 @@ describe("PATCH /api/v1/receipt-voucher/:company_id/:sales_id/:receipt_id", () =
     });
 
 });
+
+
+
+describe("Receipt Voucher - Zod Validation", () => {
+
+    // ── POST body validation ──────────────────────────────────────────────────
+
+    it("should reject missing connect_no", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_rv_z1");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const result = await createSalesVoucher(owner.cookies, companyId);
+        const salesId = result.response.body.data.Voucher.sales_id;
+
+        const response = await request(app)
+            .post(`/api/v1/receipt-voucher/${companyId}/${salesId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                current_amt_paid: 20000,
+                date: "2026-09-28",
+                mode: "cash"
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: missing connect_no →", response.body.message);
+    });
+
+    it("should reject invalid connect_no format", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_rv_z2");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const result = await createSalesVoucher(owner.cookies, companyId);
+        const salesId = result.response.body.data.Voucher.sales_id;
+
+        const response = await request(app)
+            .post(`/api/v1/receipt-voucher/${companyId}/${salesId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                connect_no: "12345",
+                current_amt_paid: 20000,
+                date: "2026-09-28",
+                mode: "cash"
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: invalid connect_no format →", response.body.message);
+    });
+
+    it("should reject missing current_amt_paid", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_rv_z3");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const result = await createSalesVoucher(owner.cookies, companyId);
+        const salesId = result.response.body.data.Voucher.sales_id;
+
+        const response = await request(app)
+            .post(`/api/v1/receipt-voucher/${companyId}/${salesId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                connect_no: result.contactNo,
+                date: "2026-09-28",
+                mode: "cash"
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: missing current_amt_paid →", response.body.message);
+    });
+
+    it("should reject negative current_amt_paid", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_rv_z4");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const result = await createSalesVoucher(owner.cookies, companyId);
+        const salesId = result.response.body.data.Voucher.sales_id;
+
+        const response = await request(app)
+            .post(`/api/v1/receipt-voucher/${companyId}/${salesId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                connect_no: result.contactNo,
+                current_amt_paid: -500,
+                date: "2026-09-28",
+                mode: "cash"
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: negative current_amt_paid →", response.body.message);
+    });
+
+    it("should reject zero current_amt_paid", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_rv_z5");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const result = await createSalesVoucher(owner.cookies, companyId);
+        const salesId = result.response.body.data.Voucher.sales_id;
+
+        const response = await request(app)
+            .post(`/api/v1/receipt-voucher/${companyId}/${salesId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                connect_no: result.contactNo,
+                current_amt_paid: 0,
+                date: "2026-09-28",
+                mode: "cash"
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: zero current_amt_paid →", response.body.message);
+    });
+
+    it("should reject missing date", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_rv_z6");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const result = await createSalesVoucher(owner.cookies, companyId);
+        const salesId = result.response.body.data.Voucher.sales_id;
+
+        const response = await request(app)
+            .post(`/api/v1/receipt-voucher/${companyId}/${salesId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                connect_no: result.contactNo,
+                current_amt_paid: 20000,
+                mode: "cash"
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: missing date →", response.body.message);
+    });
+
+    it("should reject invalid date format", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_rv_z7");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const result = await createSalesVoucher(owner.cookies, companyId);
+        const salesId = result.response.body.data.Voucher.sales_id;
+
+        const response = await request(app)
+            .post(`/api/v1/receipt-voucher/${companyId}/${salesId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                connect_no: result.contactNo,
+                current_amt_paid: 20000,
+                date: "28-09-2026",
+                mode: "cash"
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: invalid date format →", response.body.message);
+    });
+
+    it("should reject missing mode", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_rv_z8");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const result = await createSalesVoucher(owner.cookies, companyId);
+        const salesId = result.response.body.data.Voucher.sales_id;
+
+        const response = await request(app)
+            .post(`/api/v1/receipt-voucher/${companyId}/${salesId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                connect_no: result.contactNo,
+                current_amt_paid: 20000,
+                date: "2026-09-28"
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: missing mode →", response.body.message);
+    });
+
+    it("should reject empty mode string", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_rv_z9");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const result = await createSalesVoucher(owner.cookies, companyId);
+        const salesId = result.response.body.data.Voucher.sales_id;
+
+        const response = await request(app)
+            .post(`/api/v1/receipt-voucher/${companyId}/${salesId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                connect_no: result.contactNo,
+                current_amt_paid: 20000,
+                date: "2026-09-28",
+                mode: ""
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: empty mode →", response.body.message);
+    });
+
+    // ── POST param validation ─────────────────────────────────────────────────
+
+    it("should reject non-integer company_id param on POST", async () => {
+        const owner = await createUserAndLogin();
+
+        const response = await request(app)
+            .post("/api/v1/receipt-voucher/xyz/1")
+            .set("Cookie", owner.cookies)
+            .send({
+                connect_no: "9876543210",
+                current_amt_paid: 20000,
+                date: "2026-09-28",
+                mode: "cash"
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: non-integer company_id →", response.body.message);
+    });
+
+    it("should reject negative sales_id param on POST", async () => {
+        const owner = await createUserAndLogin();
+
+        const response = await request(app)
+            .post("/api/v1/receipt-voucher/1/-5")
+            .set("Cookie", owner.cookies)
+            .send({
+                connect_no: "9876543210",
+                current_amt_paid: 20000,
+                date: "2026-09-28",
+                mode: "cash"
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: negative sales_id →", response.body.message);
+    });
+
+    // ── PATCH body validation ─────────────────────────────────────────────────
+
+    it("should reject missing connect_no on PATCH", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_rv_z10");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const result = await createSalesVoucher(owner.cookies, companyId);
+        const salesId = result.response.body.data.Voucher.sales_id;
+
+        const createResponse = await request(app)
+            .post(`/api/v1/receipt-voucher/${companyId}/${salesId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                connect_no: result.contactNo,
+                current_amt_paid: 20000,
+                date: "2026-09-28",
+                mode: "cash"
+            });
+        const receiptId = createResponse.body.data.voucher.receipt_id;
+
+        const response = await request(app)
+            .patch(`/api/v1/receipt-voucher/${companyId}/${salesId}/${receiptId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                current_amt_paid: 30000
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: missing connect_no on PATCH →", response.body.message);
+    });
+
+    it("should reject invalid connect_no on PATCH", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_rv_z11");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const result = await createSalesVoucher(owner.cookies, companyId);
+        const salesId = result.response.body.data.Voucher.sales_id;
+
+        const createResponse = await request(app)
+            .post(`/api/v1/receipt-voucher/${companyId}/${salesId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                connect_no: result.contactNo,
+                current_amt_paid: 20000,
+                date: "2026-09-28",
+                mode: "cash"
+            });
+        const receiptId = createResponse.body.data.voucher.receipt_id;
+
+        const response = await request(app)
+            .patch(`/api/v1/receipt-voucher/${companyId}/${salesId}/${receiptId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                connect_no: "12345",
+                current_amt_paid: 30000
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: invalid connect_no on PATCH →", response.body.message);
+    });
+
+    it("should reject missing current_amt_paid on PATCH", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_rv_z12");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const result = await createSalesVoucher(owner.cookies, companyId);
+        const salesId = result.response.body.data.Voucher.sales_id;
+
+        const createResponse = await request(app)
+            .post(`/api/v1/receipt-voucher/${companyId}/${salesId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                connect_no: result.contactNo,
+                current_amt_paid: 20000,
+                date: "2026-09-28",
+                mode: "cash"
+            });
+        const receiptId = createResponse.body.data.voucher.receipt_id;
+
+        const response = await request(app)
+            .patch(`/api/v1/receipt-voucher/${companyId}/${salesId}/${receiptId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                connect_no: result.contactNo
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: missing current_amt_paid on PATCH →", response.body.message);
+    });
+
+    it("should reject negative current_amt_paid on PATCH", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_rv_z13");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const result = await createSalesVoucher(owner.cookies, companyId);
+        const salesId = result.response.body.data.Voucher.sales_id;
+
+        const createResponse = await request(app)
+            .post(`/api/v1/receipt-voucher/${companyId}/${salesId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                connect_no: result.contactNo,
+                current_amt_paid: 20000,
+                date: "2026-09-28",
+                mode: "cash"
+            });
+        const receiptId = createResponse.body.data.voucher.receipt_id;
+
+        const response = await request(app)
+            .patch(`/api/v1/receipt-voucher/${companyId}/${salesId}/${receiptId}`)
+            .set("Cookie", owner.cookies)
+            .send({
+                connect_no: result.contactNo,
+                current_amt_paid: -100
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: negative current_amt_paid on PATCH →", response.body.message);
+    });
+
+    it("should reject invalid receipt_id param on PATCH", async () => {
+        const owner = await createUserAndLogin();
+
+        const response = await request(app)
+            .patch("/api/v1/receipt-voucher/1/1/abc")
+            .set("Cookie", owner.cookies)
+            .send({
+                connect_no: "9876543210",
+                current_amt_paid: 30000
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: invalid receipt_id param on PATCH →", response.body.message);
+    });
+
+    // ── GET query validation ──────────────────────────────────────────────────
+
+    it("should reject invalid page query param on GET receipts by sales voucher", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_rv_z14");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const result = await createSalesVoucher(owner.cookies, companyId);
+        const salesId = result.response.body.data.Voucher.sales_id;
+
+        const response = await request(app)
+            .get(`/api/v1/receipt-voucher/${companyId}/${salesId}/${result.customerId}?page=abc`)
+            .set("Cookie", owner.cookies);
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: invalid page query →", response.body.message);
+    });
+
+    it("should reject limit exceeding 100 on GET receipts by sales voucher", async () => {
+        const owner = await createUserAndLogin();
+        const companyResponse = await createCompany(owner.cookies, "company_rv_z15");
+        const companyId = companyResponse.body.data.resp.company_id;
+        const result = await createSalesVoucher(owner.cookies, companyId);
+        const salesId = result.response.body.data.Voucher.sales_id;
+
+        const response = await request(app)
+            .get(`/api/v1/receipt-voucher/${companyId}/${salesId}/${result.customerId}?limit=200`)
+            .set("Cookie", owner.cookies);
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Validation failed");
+        console.log("Zod: limit > 100 →", response.body.message);
+    });
+});
