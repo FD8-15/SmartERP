@@ -6,6 +6,7 @@ const options = {
     info: {
       title: "SmartERP API",
       version: "1.0.0",
+      summary: "SmartERP is a Tally-style cloud billing, inventory, and accounting ERP backend built with Express.js and PostgreSQL.",
       description: `
 ## Overview
 
