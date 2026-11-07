@@ -3,26 +3,26 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light">
+  <meta name="color-scheme" content="dark">
   <meta name="description" content="SmartERP API documentation — a clear reference for the billing, inventory, and accounting API.">
   <title>SmartERP API Documentation</title>
   <style>
     :root {
-      --ink: #102a43;
-      --text: #243b53;
-      --muted: #627d98;
-      --teal: #0f766e;
-      --teal-dark: #115e59;
-      --mint: #ccfbf1;
-      --page: #f6f8fb;
-      --panel: #ffffff;
-      --line: #e3eaf2;
-      --soft: #f0f5f9;
-      --code: #0b1220;
-      --green: #15803d;
-      --amber: #b45309;
-      --red: #b91c1c;
-      --shadow: 0 12px 35px rgba(15, 42, 67, .055);
+      --ink: #f0f6fc;
+      --text: #cbd5e1;
+      --muted: #8b949e;
+      --teal: #2dd4bf;
+      --teal-dark: #14b8a6;
+      --mint: #134e4a;
+      --page: #0b0f19;
+      --panel: #121826;
+      --line: #202b3c;
+      --soft: #172235;
+      --code: #070b12;
+      --green: #4ade80;
+      --amber: #fbbf24;
+      --red: #f87171;
+      --shadow: 0 12px 35px rgba(0, 0, 0, .45);
       --radius: 16px;
     }
     * { box-sizing: border-box; }
@@ -32,19 +32,19 @@
     button, a { -webkit-tap-highlight-color: transparent; }
     a { color: var(--teal); }
     code, pre, .endpoint-path, .mono { font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
-    .topbar { min-height: 70px; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 0 clamp(18px, 4vw, 56px); background: rgba(255,255,255,.94); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 30; backdrop-filter: blur(14px); }
+    .topbar { min-height: 70px; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 0 clamp(18px, 4vw, 56px); background: rgba(11,15,25,.94); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 30; backdrop-filter: blur(14px); }
     .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; color: var(--ink); min-width: 0; }
     .brand-mark { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 11px; background: linear-gradient(145deg, #0f766e, #164e63); color: #fff; font-weight: 850; font-size: 18px; box-shadow: 0 5px 13px rgba(15,118,110,.19); }
     .brand-name { font-size: 17px; font-weight: 800; letter-spacing: -.4px; }
     .brand-sub { display: block; margin-top: -3px; color: var(--muted); font-size: 10px; font-weight: 650; letter-spacing: .11em; text-transform: uppercase; }
     .top-actions { display: flex; align-items: center; gap: 9px; }
-    .version-chip { border: 1px solid var(--line); color: #486581; background: #f8fafc; padding: 5px 9px; border-radius: 999px; font-size: 11px; font-weight: 750; }
+    .version-chip { border: 1px solid var(--line); color: var(--muted); background: var(--soft); padding: 5px 9px; border-radius: 999px; font-size: 11px; font-weight: 750; }
     .top-link { color: var(--text); text-decoration: none; font-weight: 650; font-size: 12px; padding: 9px 12px; border-radius: 9px; }
     .top-link:hover { background: var(--soft); }
-    .top-link.primary { color: #fff; background: var(--teal); }
+    .top-link.primary { color: #081a18; background: var(--teal); }
     .top-link.primary:hover { background: var(--teal-dark); }
 
-    .hero { color: #f8fafc; background: radial-gradient(ellipse at 88% 8%, rgba(45,212,191,.18), transparent 31%), linear-gradient(118deg, #0d253c 0%, #12394b 55%, #115e59 100%); padding: 47px clamp(18px, 5.5vw, 78px) 42px; position: relative; overflow: hidden; }
+    .hero { color: #f8fafc; background: radial-gradient(ellipse at 88% 8%, rgba(45,212,191,.15), transparent 31%), linear-gradient(118deg, #071524 0%, #0c2333 55%, #0f3d38 100%); padding: 47px clamp(18px, 5.5vw, 78px) 42px; position: relative; overflow: hidden; }
     .hero:after { content: ""; position: absolute; right: -95px; bottom: -150px; width: 370px; height: 370px; border: 1px solid rgba(255,255,255,.1); border-radius: 50%; box-shadow: 0 0 0 38px rgba(255,255,255,.025), 0 0 0 78px rgba(255,255,255,.02); pointer-events: none; }
     .hero-inner { max-width: 1300px; margin: 0 auto; position: relative; z-index: 1; }
     .eyebrow { display: inline-flex; align-items: center; gap: 8px; padding: 5px 10px; border: 1px solid rgba(204,251,241,.28); border-radius: 999px; background: rgba(204,251,241,.08); color: #bff9ee; font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
@@ -63,7 +63,7 @@
     .btn-outline { color: #f8fafc; border-color: rgba(255,255,255,.26); background: rgba(255,255,255,.045); }
     .btn-outline:hover { background: rgba(255,255,255,.1); }
 
-    .stat-strip { max-width: 1300px; margin: -1px auto 0; padding: 0 clamp(18px, 5.5vw, 78px); background: #fff; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); }
+    .stat-strip { max-width: 1300px; margin: -1px auto 0; padding: 0 clamp(18px, 5.5vw, 78px); background: #0e1422; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); }
     .stat { padding: 18px 21px; border-right: 1px solid var(--line); }
     .stat:first-child { padding-left: 0; }
     .stat:last-child { border-right: 0; }
@@ -71,26 +71,44 @@
     .stat-value { margin-top: 2px; color: var(--ink); font-size: 22px; line-height: 1.35; font-weight: 820; letter-spacing: -.6px; }
 
     .layout { display: grid; grid-template-columns: 248px minmax(0, 1fr); max-width: 1600px; margin: 0 auto; align-items: start; }
-    .sidebar { align-self: stretch; min-height: calc(100vh - 70px); position: sticky; top: 70px; max-height: calc(100vh - 70px); overflow: auto; padding: 24px 15px 30px 22px; border-right: 1px solid var(--line); background: #fbfcfe; }
-    .sidebar-kicker { margin: 0 8px 10px; color: #829ab1; font-size: 10px; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+    .sidebar { align-self: stretch; min-height: calc(100vh - 70px); position: sticky; top: 70px; max-height: calc(100vh - 70px); overflow: auto; padding: 24px 15px 30px 22px; border-right: 1px solid var(--line); background: #0c111d; }
+    .sidebar-kicker { margin: 0 8px 10px; color: var(--muted); font-size: 10px; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
     .search-wrap { position: relative; margin: 0 4px 21px; }
-    .search-icon { position: absolute; left: 11px; top: 10px; color: #829ab1; font-size: 13px; pointer-events: none; }
-    .search { width: 100%; min-height: 38px; padding: 8px 11px 8px 32px; border: 1px solid #dce5ee; border-radius: 9px; outline: none; background: #fff; color: var(--ink); font-size: 12px; }
-    .search:focus { border-color: #5eead4; box-shadow: 0 0 0 3px rgba(15,118,110,.10); }
-    .side-link { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 2px 0; padding: 8px 10px; border-radius: 8px; text-decoration: none; color: #52667a; font-size: 12px; font-weight: 650; }
-    .side-link:hover, .side-link.active { color: var(--teal-dark); background: #e8f8f5; }
-    .side-count { min-width: 21px; padding: 1px 5px; text-align: center; border-radius: 6px; background: #edf2f7; color: #627d98; font-size: 10px; font-weight: 800; }
-    .side-link.active .side-count { background: #c7f6ec; color: #115e59; }
-    .sidebar-note { margin: 26px 4px 0; padding: 13px; border: 1px solid #dfeeea; border-radius: 11px; background: #f0fdfa; color: #47746f; font-size: 11px; line-height: 1.7; }
-    .sidebar-note strong { display: block; margin-bottom: 3px; color: #115e59; font-size: 11px; }
+    .search-icon { position: absolute; left: 11px; top: 10px; color: var(--muted); font-size: 13px; pointer-events: none; }
+    .search { width: 100%; min-height: 38px; padding: 8px 11px 8px 32px; border: 1px solid var(--line); border-radius: 9px; outline: none; background: #151d2d; color: var(--ink); font-size: 12px; }
+    .search:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(45,212,191,.15); }
+    .side-link { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 2px 0; padding: 8px 10px; border-radius: 8px; text-decoration: none; color: var(--muted); font-size: 12px; font-weight: 650; }
+    .side-link:hover, .side-link.active { color: #5eead4; background: #132a35; }
+    .side-count { min-width: 21px; padding: 1px 5px; text-align: center; border-radius: 6px; background: #1c273a; color: var(--muted); font-size: 10px; font-weight: 800; }
+    .side-link.active .side-count { background: #0f4e48; color: #5eead4; }
+    .sidebar-note { margin: 26px 4px 0; padding: 13px; border: 1px solid #134e4a; border-radius: 11px; background: #091f24; color: #5eead4; font-size: 11px; line-height: 1.7; }
+    .sidebar-note strong { display: block; margin-bottom: 3px; color: #5eead4; font-size: 11px; }
 
     .main { min-width: 0; padding: 30px clamp(17px, 3.4vw, 48px) 58px; }
-    .intro-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(240px, .8fr); gap: 17px; margin-bottom: 30px; }
+    .intro-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(240px, .8fr); gap: 17px; margin-bottom: 24px; }
     .intro-card, .auth-card { border: 1px solid var(--line); border-radius: 14px; background: #fff; padding: 20px 22px; box-shadow: 0 4px 15px rgba(15,42,67,.025); }
     .section-kicker { margin: 0 0 5px; color: var(--teal); font-size: 10px; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
     .intro-card h2, .auth-card h2 { margin: 0 0 8px; color: var(--ink); font-size: 19px; font-weight: 800; letter-spacing: -.5px; }
     .intro-card p, .auth-card p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.85; }
     .server-url { display: block; margin-top: 12px; padding: 10px 12px; overflow-wrap: anywhere; border: 1px solid var(--line); border-radius: 8px; background: #f8fafc; color: #234e52; font: 11px/1.6 ui-monospace, SFMono-Regular, Consolas, monospace; }
+
+    .guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 17px; margin-bottom: 12px; }
+    .guide-card { border: 1px solid var(--line); border-radius: 14px; background: #fff; padding: 22px 24px; box-shadow: 0 4px 15px rgba(15,42,67,.025); margin-bottom: 20px; scroll-margin-top: 90px; }
+    .guide-card h2, .guide-card h3 { margin: 0 0 10px; color: var(--ink); font-size: 17px; font-weight: 800; letter-spacing: -.4px; }
+    .guide-card p { margin: 0 0 11px; color: #52667a; font-size: 12px; line-height: 1.85; }
+    .guide-card ul, .guide-card ol { margin: 0 0 14px 20px; padding: 0; color: #52667a; font-size: 12px; line-height: 1.85; }
+    .guide-card li { margin-bottom: 6px; }
+    .badge-chip { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 5px; font: 750 10px ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .badge-chip.green { background: #dcfce7; color: #15803d; }
+    .badge-chip.amber { background: #fef3c7; color: #b45309; }
+    .badge-chip.red { background: #fee2e2; color: #b91c1c; }
+    .badge-chip.teal { background: #ccfbf1; color: #0f766e; }
+    .badge-chip.purple { background: #f3e8ff; color: #7e22ce; }
+    .badge-chip.gray { background: #f1f5f9; color: #475569; }
+    .callout { padding: 12px 14px; border-radius: 8px; border-left: 3px solid; margin: 12px 0; font-size: 11.5px; line-height: 1.7; }
+    .callout.info { background: #f0fdfa; border-color: #0f766e; color: #134e4a; }
+    .callout.warning { background: #fffbeb; border-color: #d97706; color: #92400e; }
+    .callout.danger { background: #fef2f2; border-color: #dc2626; color: #991b1b; }
     .reference-top { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; margin: 0 0 17px; }
     .reference-top h2 { margin: 0; color: var(--ink); font-size: 25px; line-height: 1.25; letter-spacing: -.85px; }
     .reference-top p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
@@ -262,12 +280,205 @@
           <div id="base-url-area"></div>
         </section>
         <section class="auth-card" id="authentication-card">
-          <p class="section-kicker">Before you call an endpoint</p>
+          <p class="section-kicker">Security & Session</p>
           <h2>Authentication & access</h2>
           <p id="authentication-summary">Check each operation's security requirements and endpoint description before making a request. Authentication behavior is documented only when declared in the API specification.</p>
           <div id="security-schemes"></div>
         </section>
       </div>
+
+      <!-- Authentication & Token Lifecycle Guide -->
+      <section class="guide-card" id="auth-guide">
+        <p class="section-kicker">Authentication Architecture</p>
+        <h3>JWT Tokens & HTTP-Only Cookie Lifecycle</h3>
+        <p>SmartERP uses a secure, dual-token JSON Web Token (JWT) architecture designed for browser-based ERP workflows:</p>
+        <div class="guide-grid" style="margin-top:14px">
+          <div>
+            <strong style="color:var(--ink);font-size:12px;display:block;margin-bottom:6px">1. Login & Token Generation</strong>
+            <p>Clients send credentials to <code class="inline-code">POST /api/v1/users/login</code>. On successful bcrypt password verification, the server generates:</p>
+            <ul>
+              <li><strong>Access Token:</strong> Short-lived JWT (default 1 day) signed with <code class="inline-code">ACCESS_TOKEN_SECRET</code> containing <code class="inline-code">{ user_id, email, name }</code>.</li>
+              <li><strong>Refresh Token:</strong> Long-lived JWT (default 10 days) signed with <code class="inline-code">REFRESH_TOKEN_SECRET</code> containing <code class="inline-code">{ user_id }</code> and stored in the <code class="inline-code">users</code> table.</li>
+              <li><strong>Cookie Delivery:</strong> Tokens are sent as <code class="inline-code">HttpOnly; Secure; SameSite=Strict</code> cookies (<code class="inline-code">accessToken</code> and <code class="inline-code">refreshToken</code>) preventing client-side script access (XSS mitigation), while also returned in the JSON response payload.</li>
+            </ul>
+          </div>
+          <div>
+            <strong style="color:var(--ink);font-size:12px;display:block;margin-bottom:6px">2. Verification & Session Guard</strong>
+            <p>Protected endpoints pass through the <code class="inline-code">auth</code> middleware:</p>
+            <ul>
+              <li>Extracts token from <code class="inline-code">req.cookies?.accessToken</code> with fallback to <code class="inline-code">Authorization: Bearer &lt;token&gt;</code> header.</li>
+              <li>Verifies token validity; attaches the authenticated user record to <code class="inline-code">req.user</code>.</li>
+              <li>Returns <code class="inline-code">401 Unauthorized</code> (<code class="inline-code">"Please Login"</code>) if the cookie/header is missing, forged, or expired.</li>
+              <li><strong>Logout (<code class="inline-code">POST /api/v1/users/logout</code>):</strong> Clears the database-stored refresh token and invalidates client cookies.</li>
+            </ul>
+            <div class="callout warning">
+              <strong>Token Refresh Note:</strong> The controller function <code class="inline-code">refreshAccessToken</code> is implemented in <code class="inline-code">src/controllers/user.controller.js</code>, but is currently not mapped to an active route in <code class="inline-code">user.routes.js</code>. Clients should prompt re-login when the access token expires.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Multi-Tenancy & RBAC Matrix Guide -->
+      <section class="guide-card" id="rbac-guide">
+        <p class="section-kicker">Multi-Tenancy & Role-Based Access Control</p>
+        <h3>Company Isolation & Permissions Matrix</h3>
+        <p>SmartERP enforces multi-tenant data segregation. Every company's business data (items, suppliers, customers, categories, units, vouchers) is isolated using the <code class="inline-code">:company_id</code> path parameter and governed by the <code class="inline-code">company_access</code> middleware. Users are mapped to companies via <code class="inline-code">company_users(user_id, company_id, role)</code>.</p>
+        
+        <div class="table-wrap" style="margin: 14px 0 16px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Resource / Action</th>
+                <th>Public / Anonymous</th>
+                <th>Owner</th>
+                <th>Manager</th>
+                <th>Employee</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>User Registration & Login</strong></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+              </tr>
+              <tr>
+                <td><strong>Create New Company</strong></td>
+                <td><span class="badge-chip red">401 Auth</span></td>
+                <td><span class="badge-chip green">Allowed (Becomes Owner)</span></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+              </tr>
+              <tr>
+                <td><strong>Invite Users to Company / Update Company Details</strong></td>
+                <td><span class="badge-chip red">401 Auth</span></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+                <td><span class="badge-chip red">403 Forbidden</span></td>
+                <td><span class="badge-chip red">403 Forbidden</span></td>
+              </tr>
+              <tr>
+                <td><strong>Master Data Read (Units, Categories, Items, Suppliers, Customers)</strong></td>
+                <td><span class="badge-chip red">401 Auth</span></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+              </tr>
+              <tr>
+                <td><strong>Master Data Create & Update (Units, Categories, Items, Suppliers, Customers)</strong></td>
+                <td><span class="badge-chip red">401 Auth</span></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+                <td><span class="badge-chip red">403 Forbidden</span></td>
+              </tr>
+              <tr>
+                <td><strong>Delete Category</strong></td>
+                <td><span class="badge-chip red">401 Auth</span></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+                <td><span class="badge-chip red">403 Forbidden</span></td>
+                <td><span class="badge-chip red">403 Forbidden</span></td>
+              </tr>
+              <tr>
+                <td><strong>Create Purchase / Sales / Payment / Receipt Voucher</strong></td>
+                <td><span class="badge-chip red">401 Auth</span></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+              </tr>
+              <tr>
+                <td><strong>Read Vouchers & Settlement History</strong></td>
+                <td><span class="badge-chip red">401 Auth</span></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+              </tr>
+              <tr>
+                <td><strong>Modify / Patch Existing Vouchers</strong></td>
+                <td><span class="badge-chip red">401 Auth</span></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+                <td><span class="badge-chip green">Allowed</span></td>
+                <td><span class="badge-chip red">403 Forbidden</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout info">
+          <strong>Authentication vs. Authorization Status Codes:</strong>
+          <br>• <strong>HTTP 401 Unauthorized:</strong> Missing, expired, or invalid credentials (<code class="inline-code">accessToken</code>). The client must authenticate.
+          <br>• <strong>HTTP 403 Forbidden:</strong> Valid session authenticated, but the user either does not belong to the target <code class="inline-code">company_id</code> (rejected by <code class="inline-code">company_access</code>) or lacks the required role (rejected by <code class="inline-code">checkRole(['owner', 'manager'])</code>).
+        </div>
+      </section>
+
+      <!-- Inventory Flow & Settlement Guarantees Guide -->
+      <section class="guide-card" id="inventory-guide">
+        <p class="section-kicker">Core Business Logic</p>
+        <h3>Inventory Stock Mechanics & Voucher Settlement Bounds</h3>
+        <p>All voucher operations in SmartERP run within atomic PostgreSQL transactions (<code class="inline-code">BEGIN</code> / <code class="inline-code">COMMIT</code> / <code class="inline-code">ROLLBACK</code>) to maintain strict inventory and accounting integrity:</p>
+        
+        <div class="guide-grid" style="margin-top:14px">
+          <div>
+            <strong style="color:var(--ink);font-size:12px;display:block;margin-bottom:6px">Real-Time Inventory Stock Flow</strong>
+            <ul>
+              <li><strong>Purchase Vouchers (<code class="inline-code">POST /api/v1/purchase-voucher/{company_id}</code>):</strong> Inward stock. Verifies supplier belongs to company, generates purchase voucher items, and automatically increments <code class="inline-code">items.current_quantity = current_quantity + quantity</code> for each received line item.</li>
+              <li><strong>Sales Vouchers (<code class="inline-code">POST /api/v1/sale-voucher/{company_id}</code>):</strong> Outward stock. Verifies customer belongs to company and performs an atomic <em>pre-sale stock sufficiency check</em> (<code class="inline-code">current_quantity &gt;= quantity</code>). If any item has insufficient stock, the transaction aborts with <code class="inline-code">HTTP 400 Insufficient stock</code>. When sufficient, it decrements <code class="inline-code">items.current_quantity</code> and records line items.</li>
+            </ul>
+          </div>
+          <div>
+            <strong style="color:var(--ink);font-size:12px;display:block;margin-bottom:6px">Voucher Settlement & Financial Bounds</strong>
+            <ul>
+              <li><strong>Payment Vouchers (<code class="inline-code">POST /api/v1/payment-voucher/{company_id}</code>):</strong> Outward payments to suppliers against purchase vouchers. Computes cumulative prior payments (<code class="inline-code">SUM(amount)</code>) and strictly prevents overpayment: <code class="inline-code">total_paid + new_amount &lt;= total_purchase_amount</code>. Excess payment throws <code class="inline-code">HTTP 400</code>.</li>
+              <li><strong>Receipt Vouchers (<code class="inline-code">POST /api/v1/receipt-voucher/{company_id}</code>):</strong> Inward customer payment collections against sales vouchers. Computes cumulative receipts and enforces <code class="inline-code">total_received + new_receipt &lt;= sales_voucher_amount</code>. Excess receipt throws <code class="inline-code">HTTP 400</code>.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Response Envelope & Error Format Guide -->
+      <section class="guide-card" id="envelope-guide">
+        <p class="section-kicker">Data Standards & Validation</p>
+        <h3>API Response Envelopes & Zod Validation</h3>
+        <p>All SmartERP endpoints adhere to standard response wrappers defined in <code class="inline-code">ApiResponse</code> and <code class="inline-code">ApiError</code> utilities:</p>
+        
+        <div class="guide-grid" style="margin-top:14px">
+          <div>
+            <strong style="color:var(--ink);font-size:12px;display:block;margin-bottom:6px">Standard Success Envelope (HTTP 200 / 201)</strong>
+            <div class="example-wrap">
+              <div class="example-head"><span>JSON Success Format</span></div>
+              <pre><code>{
+  "statusCode": 200,
+  "data": {
+    "item_id": 1,
+    "item_name": "Premium Basmati Rice",
+    "current_quantity": 150
+  },
+  "message": "Item fetched successfully",
+  "success": true
+}</code></pre>
+            </div>
+          </div>
+          <div>
+            <strong style="color:var(--ink);font-size:12px;display:block;margin-bottom:6px">Standard Error Envelope (HTTP 400 / 401 / 403 / 404 / 409 / 500)</strong>
+            <div class="example-wrap">
+              <div class="example-head"><span>JSON Error Format</span></div>
+              <pre><code>{
+  "statusCode": 400,
+  "message": "Validation failed",
+  "success": false,
+  "errors": [
+    {
+      "field": "body.contact_no",
+      "message": "Contact number must be a valid 10-digit Indian phone number"
+    }
+  ]
+}</code></pre>
+            </div>
+          </div>
+        </div>
+        <div class="callout info" style="margin-top:14px">
+          <strong>Zod Request Validation:</strong> Endpoints validate incoming <code class="inline-code">req.body</code>, <code class="inline-code">req.params</code>, and <code class="inline-code">req.query</code> using Zod schemas before reaching the controller. Path parameters (<code class="inline-code">company_id</code>, <code class="inline-code">item_id</code>, etc.) are coerced to positive integers. Validation failures return HTTP 400 with granular field-level diagnostics.
+        </div>
+      </section>
 
       <div id="api-reference">
         <div class="reference-top">
@@ -508,7 +719,14 @@
       const schemes = SPEC.components?.securitySchemes || {};
       const schemeEntries = Object.entries(schemes);
       $('#security-schemes').innerHTML = schemeEntries.length ? schemeEntries.map(([name,s]) => `<div style="margin-top:10px;padding-top:10px;border-top:1px solid #e8eef4"><strong style="display:block;color:#243b53;font-size:11px">${esc(s.description || name)}</strong><span style="color:#829ab1;font-size:10px">${esc(s.type || 'security')} · ${esc(s.scheme || s.in || s.name || '')}</span></div>`).join('') : '<div class="security-note" style="margin-top:12px">No reusable security scheme is declared in this OpenAPI specification. Endpoint descriptions and response codes may contain additional access details; verify them against the implementation.</div>';
-      const side = [`<a class="side-link" href="#quick-start"><span>Overview & quick start</span></a>`, ...groups.map(([tag, items], idx) => `<a class="side-link" href="#group-${idx}" data-side-tag="${esc(tag)}"><span>${esc(niceName(tag))}</span><span class="side-count">${items.length}</span></a>`)].join('');
+      const side = [
+        `<a class="side-link" href="#quick-start"><span>Overview & Base URL</span></a>`,
+        `<a class="side-link" href="#auth-guide"><span>Authentication & JWT</span></a>`,
+        `<a class="side-link" href="#rbac-guide"><span>Multi-tenant RBAC</span></a>`,
+        `<a class="side-link" href="#inventory-guide"><span>Inventory & Settlement</span></a>`,
+        `<a class="side-link" href="#envelope-guide"><span>Response & Validation</span></a>`,
+        ...groups.map(([tag, items], idx) => `<a class="side-link" href="#group-${idx}" data-side-tag="${esc(tag)}"><span>${esc(niceName(tag))}</span><span class="side-count">${items.length}</span></a>`)
+      ].join('');
       $('#side-nav').innerHTML = side;
       let globalFirst = true;
       $('#api-content').innerHTML = groups.map(([tag, items], groupIdx) => {
@@ -557,7 +775,7 @@
         catch { const range = document.createRange(); range.selectNodeContents(el); const selection = window.getSelection(); selection.removeAllRanges(); selection.addRange(range); showToast('Select and copy the highlighted example'); }
         setTimeout(() => { btn.textContent = 'Copy'; }, 1300);
       });
-      $$('.side-link[data-side-tag]').forEach(link => link.addEventListener('click', () => {
+      $$('.side-link').forEach(link => link.addEventListener('click', () => {
         $$('.side-link').forEach(item => item.classList.remove('active'));
         link.classList.add('active');
       }));

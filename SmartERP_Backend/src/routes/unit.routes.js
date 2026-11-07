@@ -26,80 +26,78 @@ const router = Router();
  *       - Units
  *     summary: Create a measurement unit
  *     operationId: createUnit
+ *     security:
+ *       - cookieAuth: []
  *     description: |
- *       Creates a new measurement unit for a company in SmartERP.
+ *       Creates a new inventory measurement unit (e.g., Kilogram, Litre, Piece, Box) for a company.
+ *       Unit names must be unique within the company (case-insensitive check).
  *
  *       ### Access requirements
- *
- *       - **Authentication:** Required.
- *       - **Company access:** The user must have access to the specified company.
+ *       - **Authentication:** Required (`accessToken` cookie).
+ *       - **Company access:** User must belong to `company_id`.
  *       - **Required role:** `owner` or `manager`.
  *
- *       ### When should I use this endpoint?
- *
- *       Use this endpoint to create a measurement unit that can be used
- *       when managing inventory, such as Kilogram, Litre, or Piece.
- *
- *       ### Before sending the request
- *
- *       1. Authenticate the user.
- *       2. Provide the company ID in the URL.
- *       3. Send the unit details as a JSON request body.
- *
+ *       ### Zod validation rules
+ *       - `unit_name`: String, trimmed, 1 to 50 characters, required.
+ *       - `company_id`: Positive integer path parameter.
  *     parameters:
  *       - in: path
  *         name: company_id
  *         required: true
- *         description: Unique ID of the company in which the unit will be created.
  *         schema:
  *           type: integer
  *         example: 1
- *
+ *         description: Unique ID of the company.
  *     requestBody:
  *       required: true
- *       description: Details of the measurement unit to create.
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - unit_name
  *             properties:
- *               name:
+ *               unit_name:
  *                 type: string
- *                 description: Full name of the measurement unit.
  *                 example: Kilogram
- *               short_name:
- *                 type: string
- *                 description: Short abbreviation used to identify the unit.
- *                 example: kg
- *           example:
- *             name: Kilogram
- *             short_name: kg
- *
+ *                 description: Name of the measurement unit (e.g. Kilogram, Litre, Box).
  *     responses:
  *       201:
- *         description: |
- *           **Unit created successfully.**
- *
- *           The server accepted the request and created the new measurement unit.
- *
+ *         description: Unit created successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 201
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     unit_id:
+ *                       type: integer
+ *                       example: 4
+ *                     company_id:
+ *                           type: integer
+ *                           example: 1
+ *                     unit_name:
+ *                       type: string
+ *                       example: Kilogram
+ *                 message:
+ *                   type: string
+ *                   example: Unit created successfully
+ *                 success:
+ *                   type: boolean
+ *                   example: true
  *       400:
- *         description: |
- *           **Invalid request data.**
- *
- *           Check that the submitted unit details satisfy the API's validation rules.
- *
+ *         description: Validation failed or unit name missing.
  *       401:
- *         description: |
- *           **Authentication required.**
- *
- *           Provide valid authentication credentials before accessing this endpoint.
- *
+ *         description: Unauthenticated user.
  *       403:
- *         description: |
- *           **Access denied.**
- *
- *           The authenticated user may not have access to this company
- *           or may not have the required `owner` or `manager` role.
+ *         description: Access denied or insufficient role (employees cannot create units).
+ *       409:
+ *         description: Unit already exists in this company.
  */
 router.post(
   "/:company_id",
@@ -114,24 +112,63 @@ router.post(
  * @swagger
  * /api/v1/unit/{company_id}:
  *   get:
- *     summary: Get all units for a company
- *     description: Retrieves units belonging to the specified company.
  *     tags:
  *       - Units
+ *     summary: Get all units for a company
+ *     security:
+ *       - cookieAuth: []
+ *     description: |
+ *       Retrieves all measurement units configured for a company, ordered alphabetically by `unit_name`.
+ *
+ *       ### Access requirements
+ *       - **Authentication:** Required (`accessToken` cookie).
+ *       - **Company access:** User must belong to `company_id`.
+ *       - **Required role:** Any member (`owner`, `manager`, or `employee`).
  *     parameters:
  *       - in: path
  *         name: company_id
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID of the company
+ *         example: 1
+ *         description: Unique ID of the company.
  *     responses:
  *       200:
- *         description: Units retrieved successfully
+ *         description: Units retrieved successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       unit_id:
+ *                         type: integer
+ *                         example: 4
+ *                       company_id:
+ *                         type: integer
+ *                         example: 1
+ *                       unit_name:
+ *                         type: string
+ *                         example: Kilogram
+ *                 message:
+ *                   type: string
+ *                   example: Units fetched successfully
+ *                 success:
+ *                   type: boolean
+ *                   example: true
  *       401:
- *         description: Authentication required
+ *         description: Unauthenticated user.
  *       403:
- *         description: Access to the company denied
+ *         description: Access to company denied.
+ *       404:
+ *         description: No units found for this company.
  */
 router.get(
   "/:company_id",
@@ -145,32 +182,68 @@ router.get(
  * @swagger
  * /api/v1/unit/{company_id}/{unit_id}:
  *   get:
- *     summary: Get a specific unit
- *     description: Retrieves one unit belonging to the specified company.
  *     tags:
  *       - Units
+ *     summary: Get a unit by ID
+ *     security:
+ *       - cookieAuth: []
+ *     description: |
+ *       Retrieves details of a specific measurement unit belonging to the company.
+ *
+ *       ### Access requirements
+ *       - **Authentication:** Required (`accessToken` cookie).
+ *       - **Company access:** User must belong to `company_id`.
+ *       - **Required role:** Any member (`owner`, `manager`, or `employee`).
  *     parameters:
  *       - in: path
  *         name: company_id
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID of the company
+ *         example: 1
+ *         description: Unique ID of the company.
  *       - in: path
  *         name: unit_id
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID of the unit
+ *         example: 4
+ *         description: Unique ID of the unit.
  *     responses:
  *       200:
- *         description: Unit retrieved successfully
+ *         description: Unit fetched successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     unit_id:
+ *                       type: integer
+ *                       example: 4
+ *                     company_id:
+ *                       type: integer
+ *                       example: 1
+ *                     unit_name:
+ *                       type: string
+ *                       example: Kilogram
+ *                 message:
+ *                   type: string
+ *                   example: Unit fetched successfully
+ *                 success:
+ *                   type: boolean
+ *                   example: true
  *       401:
- *         description: Authentication required
+ *         description: Unauthenticated user.
  *       403:
- *         description: Access to the company denied
+ *         description: Access to company denied.
  *       404:
- *         description: Unit not found
+ *         description: Unit not found.
  */
 router.get(
   "/:company_id/:unit_id",
@@ -184,47 +257,89 @@ router.get(
  * @swagger
  * /api/v1/unit/{company_id}/{unit_id}:
  *   patch:
- *     summary: Update a unit
- *     description: Updates a unit belonging to a company. Requires owner or manager permissions.
  *     tags:
  *       - Units
+ *     summary: Update a unit
+ *     security:
+ *       - cookieAuth: []
+ *     description: |
+ *       Updates the name of an existing measurement unit.
+ *       The new name must not collide with any other unit in the same company.
+ *
+ *       ### Access requirements
+ *       - **Authentication:** Required (`accessToken` cookie).
+ *       - **Company access:** User must belong to `company_id`.
+ *       - **Required role:** `owner` or `manager`.
+ *
+ *       ### Zod validation rules
+ *       - `unit_name`: String, trimmed, 1 to 50 characters, required.
  *     parameters:
  *       - in: path
  *         name: company_id
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID of the company
+ *         example: 1
+ *         description: Unique ID of the company.
  *       - in: path
  *         name: unit_id
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID of the unit
+ *         example: 4
+ *         description: Unique ID of the unit to update.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - unit_name
  *             properties:
- *               name:
+ *               unit_name:
  *                 type: string
- *                 example: Kilogram
- *               short_name:
- *                 type: string
- *                 example: kg
+ *                 example: Grams
+ *                 description: Updated name for the measurement unit.
  *     responses:
  *       200:
- *         description: Unit updated successfully
+ *         description: Unit updated successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 200
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     unit_id:
+ *                       type: integer
+ *                       example: 4
+ *                     company_id:
+ *                       type: integer
+ *                       example: 1
+ *                     unit_name:
+ *                       type: string
+ *                       example: Grams
+ *                 message:
+ *                   type: string
+ *                   example: Unit updated successfully
+ *                 success:
+ *                   type: boolean
+ *                   example: true
  *       400:
- *         description: Invalid request data
+ *         description: Validation failed or missing unit_name.
  *       401:
- *         description: Authentication required
+ *         description: Unauthenticated user.
  *       403:
- *         description: Access denied or insufficient permissions
+ *         description: Access denied or insufficient permissions.
  *       404:
- *         description: Unit not found
+ *         description: Unit not found.
+ *       409:
+ *         description: Unit with this name already exists in the company.
  */
 router.patch(
   "/:company_id/:unit_id",
