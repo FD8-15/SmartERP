@@ -109,3 +109,40 @@ export const salesOutstanding = asyncHandler(async (req, res) => {
         }, "Outstanding report fetched successfully")
     );
 });
+
+export const customerWiseSales = asyncHandler(async (req, res) => {
+
+    const { company_id } = req.params;
+    const { date_from, date_to } = req.query;
+
+    const result = await pool.query(
+        `SELECT
+            c.customer_id,
+            c.name AS customer_name,
+            COUNT(s.sales_id) AS total_vouchers,
+            COALESCE(SUM(s.total_amt), 0) AS total_sales,
+            COALESCE(SUM(r.total_received), 0) AS total_received,
+            COALESCE(SUM(s.total_amt - COALESCE(r.total_received, 0)), 0) AS outstanding
+         FROM customers c
+         LEFT JOIN sales_voucher s
+            ON s.customer_id = c.customer_id
+            AND s.company_id = $1
+            AND s.date BETWEEN $2 AND $3
+         LEFT JOIN (
+            SELECT sales_id, SUM(amount_paid) AS total_received
+            FROM receipt_vouchers
+            GROUP BY sales_id
+         ) r ON r.sales_id = s.sales_id
+         WHERE c.company_id = $1
+         GROUP BY c.customer_id, c.name
+         HAVING COUNT(s.sales_id) > 0
+         ORDER BY total_sales DESC`,
+        [company_id, date_from, date_to]
+    );
+
+    return res.status(200).json(
+        new ApiResponse(200, {
+            customers: result.rows
+        }, "Customer-wise sales fetched successfully")
+    );
+});
