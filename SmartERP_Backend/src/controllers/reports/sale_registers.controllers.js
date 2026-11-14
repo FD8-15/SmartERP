@@ -146,3 +146,36 @@ export const customerWiseSales = asyncHandler(async (req, res) => {
         }, "Customer-wise sales fetched successfully")
     );
 });
+export const salesProfitability = asyncHandler(async (req, res) => {
+
+    const { company_id } = req.params;
+    const { date_from, date_to } = req.query;
+
+    const result = await pool.query(
+        `SELECT
+            i.item_id,
+            i.item_name,
+            SUM(svi.qty) AS total_quantity_sold,
+            SUM(svi.total_amt) AS total_sales,
+            SUM(svi.qty * i.default_purchase_price) AS estimated_cost,
+            SUM(svi.total_amt) -
+            SUM(svi.qty * i.default_purchase_price) AS estimated_gross_profit
+         FROM sales_voucher_items svi
+         JOIN sales_voucher s
+            ON s.sales_id = svi.sales_id
+         JOIN items i
+            ON i.item_id = svi.item_id
+         WHERE s.company_id = $1
+         AND s.date BETWEEN $2 AND $3
+         GROUP BY i.item_id, i.item_name
+         ORDER BY estimated_gross_profit DESC`,
+        [company_id, date_from, date_to]
+    );
+
+    return res.status(200).json(
+        new ApiResponse(200, {
+            profitability: result.rows,
+            calculation: "Estimated using current default purchase price"
+        }, "Profitability report fetched successfully")
+    );
+});
