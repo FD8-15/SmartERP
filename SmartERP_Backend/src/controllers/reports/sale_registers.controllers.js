@@ -179,3 +179,42 @@ export const salesProfitability = asyncHandler(async (req, res) => {
         }, "Profitability report fetched successfully")
     );
 });
+export const salesAnalysis = asyncHandler(async (req, res) => {
+
+    const { company_id } = req.params;
+    const { date_from, date_to } = req.query;
+
+    const groupBy = req.query.group_by || "daily";
+
+    const intervals = {
+        daily: "day",
+        weekly: "week",
+        monthly: "month",
+        yearly: "year"
+    };
+
+    if (!intervals[groupBy]) {
+        throw new ApiError(400, "Invalid grouping period");
+    }
+
+    const result = await pool.query(
+        `SELECT
+            DATE_TRUNC($4, date)::date AS period,
+            COUNT(sales_id) AS total_vouchers,
+            SUM(total_amt) AS total_sales,
+            AVG(total_amt) AS average_bill_value
+         FROM sales_voucher
+         WHERE company_id = $1
+         AND date BETWEEN $2 AND $3
+         GROUP BY DATE_TRUNC($4, date)
+         ORDER BY period ASC`,
+        [company_id, date_from, date_to, intervals[groupBy]]
+    );
+
+    return res.status(200).json(
+        new ApiResponse(200, {
+            groupBy,
+            analysis: result.rows
+        }, "Sales analysis fetched successfully")
+    );
+});
