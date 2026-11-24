@@ -3,7 +3,7 @@ import { register, login, logout } from "../controllers/user.controller.js";
 import { auth } from "../middlewares/jwt.js";
 import { validate } from "../middlewares/validate.middleware.js";
 import { registerUserSchema, loginUserSchema } from "../schemas/user.schema.js";
-
+import { loginLimiter } from "../middlewares/loginLimiter.js";
 const router = Router();
 
 /**
@@ -201,7 +201,7 @@ router.route("/register").post(validate(registerUserSchema), register);
  *                   items:
  *                     type: object
  */
-router.route("/login").post(validate(loginUserSchema), login);
+router.route("/login").post(loginLimiter,validate(loginUserSchema), login);
 
 /**
  * @swagger
