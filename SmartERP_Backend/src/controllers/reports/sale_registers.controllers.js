@@ -3,7 +3,7 @@ import { ApiError } from "../../utils/ApiError";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { ApiResponse } from "../../utils/ApiResponse";
 
- export const salesRegister = asyncHandler(async (req, res) => {
+export const salesRegister = asyncHandler(async (req, res) => {
 
     const { company_id } = req.params
     const { date_from, date_to } = req.query;
@@ -12,7 +12,7 @@ import { ApiResponse } from "../../utils/ApiResponse";
     const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 50));
     const offset = (page - 1) * limit;
 
-    const result = await pool.query("select s.* from sale_vouchers s  where s.date between $1 and $2 and s.company_id=$3 order by s.date ASC limit $4 offset $5", [date_from, date_to, company_id, limit,offset])
+    const result = await pool.query("select s.* from sale_vouchers s  where s.date between $1 and $2 and s.company_id=$3 order by s.date ASC limit $4 offset $5", [date_from, date_to, company_id, limit, offset])
 
     const totalResult = await pool.query("SELECT COUNT(*) FROM sale_vouchers WHERE company_id = $1 AND date BETWEEN $2 AND $3", [company_id, date_from, date_to]
     );
@@ -34,3 +34,33 @@ import { ApiResponse } from "../../utils/ApiResponse";
         }, "Vouchers fetched successfully"))
 })
 
+export const salesSummary = asyncHandler(async (req, res) => {
+
+    const { company_id } = req.params;
+    const { date_from, date_to } = req.query;
+
+    if (!date_from || !date_to) {
+        throw new ApiError(400, "Date range is required");
+    }
+
+    const result = await pool.query(
+        `SELECT
+            COALESCE(SUM(total_amount), 0) AS "totalSales",
+            COUNT(*) AS "totalVouchers",
+            COALESCE(ROUND(AVG(total_amount), 2), 0) AS "averageSale"
+        FROM sale_vouchers
+        WHERE company_id = $1
+        AND date BETWEEN $2 AND $3`,
+        [company_id, date_from, date_to]
+    );
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                result.rows[0],
+                "Sales summary fetched successfully"
+            )
+        );
+});
