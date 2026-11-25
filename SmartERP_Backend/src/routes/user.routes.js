@@ -203,6 +203,8 @@ router.route("/register").post(validate(registerUserSchema), register);
  */
 router.route("/login").post(loginLimiter,validate(loginUserSchema), login);
 
+
+
 /**
  * @swagger
  * /api/v1/users/logout:
