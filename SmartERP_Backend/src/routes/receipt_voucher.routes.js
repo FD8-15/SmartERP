@@ -14,6 +14,7 @@ import {
 
 const router = Router();
 
+
 /**
  * @swagger
  * /api/v1/receipt-voucher/{company_id}/{sales_id}:
